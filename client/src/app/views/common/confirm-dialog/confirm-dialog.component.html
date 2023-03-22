@@ -1,0 +1,30 @@
+<div fxLayout="column" class="container-div">
+
+    <mat-toolbar class="mat-accent-bg m-0" fxLayoutAlign="end flex-end">
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between flex-end" class="mat-toolbar-header">
+            <span class="title dialog-title">{{data.heading}}</span>
+            <button class="mat-icon-button mat-button" aria-label="Close dialog" mat-button (click)="matDialog.close()">
+                <span class="mat-button-wrapper">
+                    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">close</mat-icon>
+                </span>
+            </button>
+        </div>
+    </mat-toolbar>
+    <mat-divider class="mt-10"></mat-divider>
+    <div class="content p-20 mt-20" fxLayout="column">
+        <div fx-layout="column">
+            <div fxLayout="column" fxLayout.gt-xs="row" class="mt-30 form-div" >
+                <div fxLayout="column" fxLayout.gt-xs="row">
+                    <p>{{data.message}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <mat-toolbar class="mat-accent-bg m-0 mt-12" fxLayoutAlign="center" >
+        <div fxlayout="row" fxLayoutAlign="flex-end" class="mt-12" fxFlex="100"
+            class="mat-toolbar-footer action-buttons">
+            <button type="submit" mat-raised-button color="primary" (click)="matDialog.close(true)">Yes</button>
+            <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button>
+        </div>
+    </mat-toolbar>
+</div>

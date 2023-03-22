@@ -1,0 +1,81 @@
+<div fxLayout="column" class="container-div">
+
+
+    <mat-toolbar class="mat-accent-bg m-0" fxLayoutAlign="end flex-end">
+        <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between flex-end" class="mat-toolbar-header">
+            <span class="title dialog-title">{{!userDetails?.isSignedUp?(userDetails?._id?'Reinvite User':'Invite User'):'User Details'}}</span>
+            <button class="mat-icon-button mat-button" aria-label="Close dialog" mat-button (click)="matDialog.close()">
+                <span class="mat-button-wrapper">
+                    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">close</mat-icon>
+                </span>
+            </button>
+        </div>
+    </mat-toolbar>
+    <mat-divider class="mt-10"></mat-divider>
+    <div class="content p-20 mt-20" fxLayout="column">
+
+
+        <form [formGroup]="inviteUserForm" fx-layout="column">
+            <div fxLayout="column" fxLayout.gt-xs="row" [class.form-div]="!isViewOnly" [class.mt-30]="isViewOnly">
+                <!-- <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>User Details</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content> -->
+                        <mat-form-field *ngIf="userDetails.firstName">
+                            <input type="text" matInput placeholder="Name"
+                                [value]="userDetails?.firstName+' '+userDetails?.lastName" readonly>
+                        </mat-form-field>
+                        <!-- <mat-form-field>
+                            <input type="text" matInput placeholder="Email" [value]="userDetails.email" readonly>
+                        </mat-form-field> -->
+                        <mat-form-field  *ngIf="userDetails.role">
+                            <input type="text" matInput placeholder="Role" [value]="userDetails?.role" readonly>
+                        </mat-form-field>
+                    <!-- </mat-card-content>
+                </mat-card> -->
+
+                <div fxLayout="column" fxLayout.gt-xs="row">
+                    <mat-form-field
+                        [class.mb-10]="inviteUserForm.controls['email'].touched && inviteUserForm.controls['email'].hasError('required')"
+                        fxFlex="100">
+                        <mat-label>Email
+                        </mat-label>
+                        <input type="text" matInput formControlName="email" trim autocomplete="off"
+                            [errorStateMatcher]="matcher" [readonly]="userDetails?.isSignedUp">
+                        <mat-error *ngIf="inviteUserForm.controls['email'].hasError('required')">Required
+                        </mat-error>
+                        <mat-error
+                            *ngIf="!inviteUserForm.controls['email'].hasError('required') && !inviteUserForm.controls['email'].hasError('pattern') && inviteUserForm.controls['email'].hasError('not_unique')">
+                            Email already exists.
+                        </mat-error>
+                        <mat-error
+                            *ngIf="!inviteUserForm.controls['email'].hasError('required') && inviteUserForm.controls['email'].hasError('pattern')">
+                            Invalid Email.
+                        </mat-error>
+                        <!-- <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+                            inviteUserForm.controls['email'].value.length}}
+                            {{nameMaxLength -
+                            inviteUserForm.controls['email'].value.length>1?'characters':'character'}}
+                            left.</mat-hint> -->
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </div>
+    <mat-toolbar class="mat-accent-bg m-0 mt-12" fxLayoutAlign="center" *ngIf="!isViewOnly">
+        <div fxlayout="row" fxLayoutAlign="flex-end" class="mt-12" fxFlex="100"
+            class="mat-toolbar-footer action-buttons">
+            <button mat-raised-button color="primary" type="submit" *ngIf="!userDetails.isSignedUp" [disabled]="inviteUserForm.invalid || apiCallActive"
+                (click)="inviteUser()">
+                <span *ngIf="apiCallActive" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true"></span>
+                <span *ngIf="apiCallActive" class="sr-only">Loading...</span>
+                <span *ngIf="!apiCallActive"> {{userDetails?._id?'Reinvite':'Invite'}}</span>
+            </button>
+            <!-- <button type="submit" mat-raised-button color="primary" [disabled]="inviteUserForm.invalid || apiCallActive"
+                (click)="inviteUser()">{{userDetails?._id?'Reinvite':'Invite'}}</button> -->
+            <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button>
+        </div>
+    </mat-toolbar>
+</div>

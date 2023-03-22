@@ -1,0 +1,39 @@
+<div class="title-group">
+    <div class="title">
+        <h1 class="mat-h1" *ngIf="courseDetails?.name">
+            <a class="link" routerLink="/dashboard/course/list/{{courseDetails?.type}}">Course List</a> >
+            <i>{{courseDetails?.name|titlecase}}</i>
+        </h1>
+    </div>
+    <div class="title-buttons ">
+        <!-- <button mat-raised-button color="primary" (click)="openCourseForm(false)">
+            Create
+        </button> -->
+        <!-- <button mat-raised-button color="accent" (click)="copyText()">
+            Copy FAQ snippet
+        </button> -->
+    </div>
+</div>
+<mat-divider fxFlex="1 0"></mat-divider>
+<p class="no-data" *ngIf="!apiCallActive && !courseDetails?._id">
+    Course details not found!
+</p>
+<div class="container" *ngIf="!apiCallActive && courseDetails?._id">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{ courseDetails.name | titlecase}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <!-- <div class="image-container">
+                <img [src]="courseDetails.imageUrl" alt="{{ courseDetails.name | titlecase }}">
+            </div> -->
+            <div class="details-container">
+                <p>{{ courseDetails.description }}</p>
+                <p>Published: {{ courseDetails.isPublished?'Yes':'No' }}</p>
+                <!-- <button mat-raised-button color="primary">Add to Cart</button> -->
+            </div>
+            <slide-list></slide-list>
+
+        </mat-card-content>
+    </mat-card>
+</div>
