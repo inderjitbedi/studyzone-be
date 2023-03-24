@@ -50,6 +50,18 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="column" fxLayout.gt-xs="row">
+                    <mat-form-field
+                        [class.mb-10]="courseForm.controls['description'].touched && courseForm.controls['description'].hasError('required')"
+                        fxFlex="100">
+                        <mat-label>Course Description
+                        </mat-label>
+                        <textarea matInput rows="8" formControlName="description" trim autocomplete="off"
+                            [errorStateMatcher]="matcher" [readonly]="isViewOnly"></textarea>
+                        <mat-error *ngIf="courseForm.controls['description'].hasError('required')">Required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="column" fxLayout.gt-xs="row">
                     <!-- <mat-form-field> -->
                         <mat-checkbox  formControlName="isPublished">
                             Publish now

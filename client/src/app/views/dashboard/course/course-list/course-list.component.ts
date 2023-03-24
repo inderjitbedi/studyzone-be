@@ -1,7 +1,8 @@
+import { Location } from '@angular/common';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AlertService } from 'src/app/providers/alert.service';
 import { apiConstants } from 'src/app/providers/api.constants';
 import { CommonAPIService } from 'src/app/providers/api.service';
@@ -27,13 +28,12 @@ export class CourseListComponent implements OnInit {
     private errorHandlingService: ErrorHandlingService,
     private alertService: AlertService,
     private activeRoute: ActivatedRoute,
-    private router: Router
+    public router: Router, private _location: Location
   ) {
     this.displayedColumns = ['id', 'name', 'type', 'isPublished', 'action'];
-
     this.activeRoute.params.subscribe({
       next: ({ type }) => {
-
+        this.currentUrl = this.router.url
         this.getCourses(type);
       }
     })
@@ -53,9 +53,16 @@ export class CourseListComponent implements OnInit {
       },
     ];
   }
+  currentUrl: any = ''
+  updateUrl(navLink: any) {
+    this._location.go(navLink.link);
+    this.currentUrl = navLink.link
+    this.getCourses(navLink.label.toLowerCase());
+  }
   navLinks: any[];
   activeLinkIndex = -1;
   ngOnInit(): void {
+    // for reloading current page 
     this.router.routeReuseStrategy.shouldReuseRoute = () => {
       return false
     }
@@ -87,7 +94,6 @@ export class CourseListComponent implements OnInit {
       next: (data: any) => {
         if (data) {
           this.router.navigate(['/dashboard/course/list/' + (data?.course?.type || 'public')], { skipLocationChange: true })
-          // this.getCourses(data.course.type);
         }
       },
     });

@@ -43,6 +43,7 @@ export class CourseFormComponent implements OnInit {
     this.courseForm = this.fb.group({
       name: [data.name || '', [Validators.required, Validators.pattern('^[a-zA-Z0-9 \s]*$')]],
       type: [data.type || 'public', Validators.required],
+      description: [data.description || '', Validators.required],
       isPublished: [data.isPublished]
     });
 
@@ -86,6 +87,7 @@ export class CourseFormComponent implements OnInit {
       let payload: any = {
         type: this.courseForm.value.type,
         name: this.courseForm.value.name.trim().toLowerCase(),
+        description: this.courseForm.value.description,
         isPublished: this.courseForm.value.isPublished,
       }
       let apiUrl = apiConstants.createCourse;

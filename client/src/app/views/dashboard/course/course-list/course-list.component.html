@@ -12,10 +12,9 @@
     </div>
 </div>
 <mat-divider fxFlex="1 0"></mat-divider>
-
 <nav mat-tab-nav-bar>
-    <a mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.link" routerLinkActive #rla="routerLinkActive"
-        [active]="rla.isActive">{{link.label}}
+    <a mat-tab-link *ngFor="let link of navLinks" (click)="updateUrl(link)"
+        [active]="currentUrl.indexOf(link.link)>-1">{{link.label}}
     </a>
 </nav>
 

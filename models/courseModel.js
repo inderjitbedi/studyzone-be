@@ -4,6 +4,7 @@ const CommentModel = require('./commentModel');
 const courseSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true, lowercase: true },
     type: { type: String, enum: ['public', 'private', 'paid'], default: 'public' },
+    description: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
     isPublished: { type: Boolean, default: false },
     rootComments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
