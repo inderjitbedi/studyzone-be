@@ -1,87 +1,40 @@
-<button mat-raised-button color="primary" class="m-4" (click)="openAddSlideForm(false)">
-    Add New <i class="material-icons">add_circle_outline</i>
-</button>
-<button mat-raised-button color="primary" class="m-4" *ngIf="slides?.length>2"
-    (click)="!reorderMode?reorderSlides():saveOrder()">
-    <span *ngIf="!reorderMode"> Reorder<i class="material-icons">add_circle_outline</i></span>
-    <span *ngIf="reorderMode"> Save<i class="material-icons">add_circle_outline</i></span>
-</button>
-<button mat-raised-button color="primary" class="m-4" *ngIf="reorderMode" (click)="cancelReorder()">
-    <span> Cancel<i class="material-icons">cancel</i></span>
-</button>
-<div cdkDropList class="slide-list mt-20" (cdkDropListDropped)="drop($event)">
-    <div class="slide-box" *ngFor="let slide of slides, index as i" cdkDrag>
-        <div class="w-10 drag-icon" *ngIf="reorderMode">
-            <i class="material-icons" cdkDragHandle>reorder</i>
-        </div>
-
-        <div class="drag-index">{{i+1}}</div>
-        <div class="w-100 drag-content">
-            {{slide.name | titlecase}}
-            <!-- <mat-checkbox (change)="slide.isDisable = !slide.isDisable">Click and drop only through
-                icon</mat-checkbox> -->
-        </div>
-        <div class="w-10 delete-icon">
-            <button mat-icon-button>
-                <i class="material-icons" (click)="delete(i)">delete_outline</i>
-            </button>
-            <button mat-icon-button>
-                <i class="material-icons" (click)="openAddSlideForm(false,slide)">edit</i>
-            </button>
-        </div>
-    </div>
-</div>
-
-<div *ngFor="let comment of rootComments; let i= index">
-
-    <div class="comment">
-        <div class="user-banner">
-            <div class="user">
-                <div class="avatar" style="background-color:#fff5e9;border-color:#ffe0bd; color:#F98600">
-                    AF
+<div class="slide-list-wrapper">
+    <div class="reorder-wrapper">
+        <div cdkDropList class="slide-list mt-20" (cdkDropListDropped)="drop($event)">
+            <div class="slide-box" *ngFor="let slide of slides, index as i" cdkDrag>
+                <div class="w-10 drag-icon" *ngIf="reorderMode">
+                    <i class="material-icons" cdkDragHandle>drag_indicator</i>
                 </div>
-                <h5>{{comment.author.firstName | titlecase}}</h5>
-            </div>
-            <button mat-icon-button>
-                <i class="material-icons" (click)="delete(i)">delete_outline</i>
-            </button>
-        </div>
-        <div class="content">
-            <p>{{comment.text}}</p>
-        </div>
-        <div class="footer">
-            <!-- <button class="btn"><i class="ri-emotion-line"></i></button>
-            <div class="divider"></div>
-            <a href="#">Reply</a>
-            <div class="divider"></div> -->
-            <span class="is-mute">{{comment.createdAt}}</span>
-        </div>
-    </div>
-    <div class="reply comment" *ngFor="let reply of comment.children">
-        <div class="user-banner">
-            <div class="user">
-                <div class="avatar">
-                    <div class="avatar" style="background-color:#fff5e9;border-color:#ffe0bd; color:#F98600">
-                        BC
-                    </div>
-                </div>
-                <h5>{{reply.author.firstName|titlecase}}</h5>
-            </div>
-            <button mat-icon-button>
-                <i class="material-icons" (click)="delete(i)">delete_outline</i>
-            </button>
-            <!-- <button class="btn dropdown"><i class="ri-more-line"></i></button> -->
-        </div>
-        <div class="content">
-            <p>{{reply.text}}</p>
-        </div>
-        <div class="footer">
-            <!-- <button class="btn"><i class="ri-emotion-line"></i></button>
 
-            <div class="divider"></div> -->
-            <span class="is-mute">{{reply.createdAt}}</span>
-            <div class="divider "></div>
-            <a>Reply</a>
+                <div class="drag-index">{{i+1}}</div>
+                <div class="w-100 drag-content">
+                    {{slide.name | titlecase}}
+                    <!-- <mat-checkbox (change)="slide.isDisable = !slide.isDisable">Click and drop only through
+                    icon</mat-checkbox> -->
+                </div>
+                <div class="w-10 delete-icon">
+                    <button mat-icon-button *ngIf="!reorderMode">
+                        <i class="material-icons" (click)="delete(i)">delete_outline</i>
+                    </button>
+                    <button mat-icon-button *ngIf="!reorderMode">
+                        <i class="material-icons" (click)="openAddSlideForm(false,slide)">edit</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button mat-raised-button color="primary" class="m-4" *ngIf="slides?.length>2"
+                (click)="!reorderMode?reorderSlides():saveOrder()">
+                {{!reorderMode?"Reorder":"Save"}} <i
+                    class="material-icons">{{!reorderMode?"swap_vert":"add_circle_outline"}}</i>
+                <!-- <span *ngIf="reorderMode"> Save <i class="material-icons"></i></span> -->
+            </button>
+            <button mat-raised-button color="primary" class="m-4" *ngIf="reorderMode" (click)="cancelReorder()">
+                Cancel<i class="material-icons">cancel</i>
+            </button>
         </div>
     </div>
+    <button mat-raised-button color="primary" class="m-4" (click)="openAddSlideForm(false)">
+        Add New <i class="material-icons">add_circle_outline</i>
+    </button>
 </div>
