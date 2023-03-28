@@ -97,7 +97,7 @@ const slideController = {
 
     async editSlide(req, res) {
         try {
-            let slide = await Slide.findOne({ _id: req.params.id, isDeleted: false });
+            let slide = await Slide.findOne({ _id: req.params.slideid, isDeleted: false });
             if (!slide) {
                 return res.status(400).json({ message: 'Slide not found.' });
             }

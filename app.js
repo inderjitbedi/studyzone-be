@@ -46,6 +46,7 @@ app.use('/api/admin', adminRoute);
 app.use("/temp",express.static(path.join(__dirname, 'temp')));
 app.use("/slide",express.static(path.join(__dirname, 'uploads')));
 app.use("/",express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'assets')));
 
 app.listen(3005, () => {
     console.log('Server started on port 3005');
