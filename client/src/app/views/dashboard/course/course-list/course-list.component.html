@@ -41,7 +41,7 @@
             <td mat-cell *matCellDef="let element; let i = index">
                 <!-- [indeterminate]="someComplete()"  -->
                 <mat-checkbox [checked]="element.isPublished"
-                    (click)="$event.preventDefault();openConfirmDialog( i,element)">
+                    (click)="$event.preventDefault();manageCourseVisibility( i,element)">
                     Published
                 </mat-checkbox>
                 <!-- {{element.isPublished?'Published':'Not Published'}} -->

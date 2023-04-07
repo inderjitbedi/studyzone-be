@@ -36,10 +36,10 @@
             <th mat-header-cell *matHeaderCellDef> Enrolled On </th>
             <td mat-cell *matCellDef="let element"> {{element.enrolledOn | date:"dd/MM/yyyy"}} </td>
         </ng-container>
-        <ng-container matColumnDef="progress">
+        <!-- <ng-container matColumnDef="progress">
             <th mat-header-cell *matHeaderCellDef> Progress </th>
             <td mat-cell *matCellDef="let element"> {{element.progress.$numberDecimal +"%"}} </td>
-        </ng-container>
+        </ng-container> -->
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let element; let i = index">

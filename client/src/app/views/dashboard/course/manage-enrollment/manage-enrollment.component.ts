@@ -41,7 +41,7 @@ export class ManageEnrollmentComponent implements OnInit {
 
   ngOnInit(): void {
     // if (this.courseDetails.type == 'paid') {
-      this.displayedColumns = ['id', 'user', 'email', 'enrolledOn', 'progress', 'action'];
+      this.displayedColumns = ['id', 'user', 'email', 'enrolledOn', 'action'];
     // } else
     //   this.displayedColumns = ['id', 'user', 'email', 'enrolledOn', 'progress', 'action'];
     this.selectedCourseId = this.courseDetails._id
