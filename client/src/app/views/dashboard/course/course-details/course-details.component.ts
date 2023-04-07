@@ -15,8 +15,6 @@ import { CommentComponent } from '../comment/comment.component';
   styleUrls: ['./course-details.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-
-
 export class CourseDetailsComponent implements OnInit {
   addUserDialogRef: any;
   activeSlide: number = 1;
