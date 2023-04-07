@@ -39,67 +39,29 @@
                 </a>
                 <a mat-tab-link (click)="activeSlide=2" [active]="activeSlide==2"> Comments
                 </a>
+                <a mat-tab-link (click)="activeSlide=3" [active]="activeSlide==3"> Enrollments
+                </a>
+                <a *ngIf="courseDetails?.type == 'paid'" mat-tab-link (click)="activeSlide=4" [active]="activeSlide==4">
+                    Enrollment Requests
+                </a>
             </nav>
-            <div [hidden]="activeSlide == 2">
+            <div [hidden]="activeSlide != 1">
                 <slide-list></slide-list>
             </div>
-            <div [hidden]="activeSlide == 1">
-
+            <div [hidden]="activeSlide != 2">
+                <!-- <form [formGroup]="faqForm" fx-layout="column"> -->
+                <!-- formArrayName="faqs" -->
+                <div class="no-data flex-start" *ngIf="!rootComments?.length">No comments found</div>
                 <mat-card *ngFor="let comment of rootComments; let i= index">
-
-                    <div class="comment">
-                        <div class="user-banner">
-                            <div class="avatar" style="background-color:#fff5e9;border-color:#ffe0bd; color:#F98600">
-                                AF
-                            </div>
-                            <div class="user">
-                                <h5>{{comment.author.firstName | titlecase}} </h5>
-                                <span class="is-mute">- {{comment.createdAt}}</span>
-                                <a class="reply"> <i class="material-icons">reply</i> Reply</a>
-
-                                <button mat-icon-button>
-                                    <i class="material-icons">delete_outline</i>
-                                </button>
-                                <div class="content">
-
-                                    <div> {{comment.text}}</div>
-                                    <div class="reply-body comment" *ngFor="let reply of comment.children">
-                                        <div class="user-banner">
-                                            <div class="avatar"
-                                                style="background-color:#fff5e9;border-color:#ffe0bd; color:#F98600">
-                                                BC
-                                            </div>
-                                            <div class="user">
-                                                <h5>{{reply.author.firstName|titlecase}}</h5>
-                                                <span class="is-mute">- {{reply.createdAt}}</span>
-                                                <div class="content">
-                                                    {{reply.text}}
-                                                </div>
-                                            </div>
-                                            <button mat-icon-button>
-                                                <i class="material-icons">delete_outline</i>
-                                            </button>
-                                            <!-- <button class="btn dropdown"><i class="ri-more-line"></i></button> -->
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                                <div class="footer">
-                                    <form fx-layout="column">
-                                        <div fxLayout="column" fxLayout.gt-xs="row">
-                                            <mat-form-field fxFlex="100">
-                                                <mat-label>Reply
-                                                </mat-label>
-                                                <textarea matInput rows="4"></textarea>
-                                            </mat-form-field>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <comment [comment]="comment"></comment>
                 </mat-card>
+                <!-- </form> -->
+            </div>
+            <div [hidden]="activeSlide != 3">
+                <manage-enrollment [courseDetails]="courseDetails"></manage-enrollment>
+            </div>
+            <div [hidden]="activeSlide !=4"  *ngIf="courseDetails?.type == 'paid'">
+                <manage-enrollment-requests [courseDetails]="courseDetails"></manage-enrollment-requests>
             </div>
         </mat-card-content>
     </mat-card>

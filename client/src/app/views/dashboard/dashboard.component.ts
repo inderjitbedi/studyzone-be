@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
   };
   ngOnInit(): void {}
 
-  currentUrl: any;
+  currentUrl: any='';
   ngAfterViewInit() {
     this.currentUrl = this.router.url;
 

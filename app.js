@@ -7,6 +7,7 @@ const path = require('path');
 
 const authRoute = require('./routes/authRoute')
 const adminRoute = require('./routes/adminRoute')
+const userRoute = require('./routes/userRoute')
 const swagger = require('./swagger');
 
 dotenv.config();
@@ -43,6 +44,7 @@ mongoose.connection.on("error", err => {
 
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
+app.use('/api/user', userRoute);
 app.use("/temp",express.static(path.join(__dirname, 'temp')));
 app.use("/slide",express.static(path.join(__dirname, 'uploads')));
 app.use("/",express.static(path.join(__dirname, 'public')));

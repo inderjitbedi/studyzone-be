@@ -1,0 +1,12 @@
+.flex-row{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 8px;
+    .title{
+        width: 50%;
+    }
+    .title-buttons{
+        margin-left: auto;
+    }
+}

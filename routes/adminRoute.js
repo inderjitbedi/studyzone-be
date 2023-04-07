@@ -21,6 +21,7 @@ router.get('/course/list/:type', verifyToken, courseController.listCourses)
 router.post('/course', verifyToken, courseController.addCourse)
 router.put('/course/:id', verifyToken, courseController.editCourse)
 router.get('/course/:id', verifyToken, courseController.getCourseDetails)
+router.put('/course/:id/delete', verifyToken, courseController.deleteCourse)
 router.put('/course/manage-visibility/:id', verifyToken, courseController.editCourse)
 
 
@@ -36,7 +37,17 @@ router.put('/course/:id/slide/list/reorder', verifyToken, slideController.reorde
 router.put('/course/:id/slide/:slideid', verifyToken, slideController.editSlide)
 router.post('/course/:id/slide', verifyToken, slideController.addSlide)
 
+
+router.post('/course/:id/enrollUser', verifyToken, courseController.enrollUser)
+router.get('/course/:id/getEnrollments', verifyToken, courseController.getCourseEnrollment)
+router.get('/course/:id/getUsersToEnroll', verifyToken, courseController.getUsersToEnroll)
+router.get('/course/:id/getEnrollmentRequests', verifyToken, courseController.getEnrollmentRequests)
+
+router.put('/course/:id/manageEnrollmentRequest/:enrollmentId', verifyToken, courseController.manageCourseEnrollmentRequest)
+
+
+
 // router.post('/file/upload/:type', verifyToken, fileController.upload)
 
-router.post('/file/upload/:type',verifyToken, upload.single('file'), fileController.upload);
+router.post('/file/upload/:type', verifyToken, upload.single('file'), fileController.upload);
 module.exports = router;

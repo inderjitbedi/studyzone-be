@@ -16,9 +16,15 @@ function verifyToken(req, res, next) {
     if (req.baseUrl == "/api/admin") {
       const admin = await User.findOne({ email: decoded.email, role: 'admin' })
       if (!admin) {
-        return res.status(401).send({message:'Unauthorised! Not an admin user.'});
+        return res.status(401).send({ message: 'Unauthorised! Not an admin user.' });
       }
       req.user = admin;
+    } else if (req.baseUrl == "/api/user") {
+      const user = await User.findOne({ email: decoded.email, role: 'user' })
+      if (!user) {
+        return res.status(401).send({ message: 'Unauthorised! User does not exists.' });
+      }
+      req.user = user;
     }
     next();
   });

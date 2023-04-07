@@ -6,6 +6,8 @@ import { AlertService } from 'src/app/providers/alert.service';
 import { apiConstants } from 'src/app/providers/api.constants';
 import { CommonAPIService } from 'src/app/providers/api.service';
 import { ErrorHandlingService } from 'src/app/providers/error-handling.service';
+import { ConfirmDialogComponent } from 'src/app/views/common/confirm-dialog/confirm-dialog.component';
+import { CommentComponent } from '../comment/comment.component';
 
 @Component({
   selector: 'app-course-details',
@@ -30,29 +32,14 @@ export class CourseDetailsComponent implements OnInit {
     this.activeRoute.params.subscribe({
       next: (route) => {
         this.selectedCourseId = route['id'];
-        this.getCourses();
+        this.getCourseDetails();
       },
-    });
+    }); 
   }
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
-  openCourseForm(isViewOnly: boolean, courseData: any = {}): void {
-    // this.addUserDialogRef = this.dialog.open(CourseFormComponent, {
-    //   minWidth: '320px',
-    //   width: '585px',
-    //   disableClose: true,
-    //   data: { isViewOnly, ...courseData, selectedCoFaqurseCategory: this.selectedCourseCategory },
-    // });
-    // this.addUserDialogRef.afterClosed().subscribe({
-    //   next: (data: any) => {
-    //     if (data) {
-    //       this.getCourses();
-    //     }
-    //   },
-    // });
-  }
   courseDetails: any;
-  getCourses() {
+  getCourseDetails() {
     this.apiCallActive = true;
     this.apiService
       .get(apiConstants.getCourseDetails + this.selectedCourseId)
@@ -74,26 +61,4 @@ export class CourseDetailsComponent implements OnInit {
         },
       });
   }
-
-  deleteCourse(index: number, course: any) {
-    if (window.confirm('Are you sure you want to delete this?')) {
-      this.apiService
-        .put(apiConstants.updateCourse, { id: course._id })
-        .subscribe({
-          next: (data) => {
-            // if (data.statusCode === 201 || data.statusCode === 200) {
-            const srcData = this.dataSource.data;
-            srcData.splice(index, 1);
-            this.dataSource.data = srcData;
-            this.alertService.notify(data.message);
-            // } else {
-            //   this.errorHandlingService.handle(data);
-            // }
-          },
-          error: (e) => this.errorHandlingService.handle(e),
-        });
-    }
-  }
-
-  //new code
 }

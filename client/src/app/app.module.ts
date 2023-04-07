@@ -14,9 +14,10 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MaterialModule } from './material/material.module';
 import { LoaderService } from './providers/loader.service';
 import { LoaderModule } from './views/common/loader/loader.module';
-import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
 import { ConfirmDialogComponent } from './views/common/confirm-dialog/confirm-dialog.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { InitialsPipe } from './providers/initials.pipe';
+
 @NgModule({
   declarations: [AppComponent, ConfirmDialogComponent],
   imports: [
@@ -39,5 +40,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
+  // exports: [InitialsPipe]
 })
-export class AppModule {}
+export class AppModule { }

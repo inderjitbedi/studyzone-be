@@ -7,6 +7,7 @@ import { apiConstants } from 'src/app/providers/api.constants';
 import { CommonAPIService } from 'src/app/providers/api.service';
 import { ErrorHandlingService } from 'src/app/providers/error-handling.service';
 import { SlideFormComponent } from '../slide-form/slide-form.component';
+import { ConfirmDialogComponent } from 'src/app/views/common/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'slide-list',
@@ -35,7 +36,7 @@ export class SlideListComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
   getSlides() {
     let apiUrl = apiConstants.slide.replace(':id', this.courseId);
     this.apiCallActive = true;
@@ -80,9 +81,35 @@ export class SlideListComponent implements OnInit {
   }
   slides: any = [];
   orderedSlides: any = [];
-
+  confirmDialogRef: any;
   delete(index: any) {
-    this.slides.splice(index, 1);
+    this.confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
+      minWidth: '320px',
+      width: '585px',
+      disableClose: true,
+      data: { slide: this.slides[index], heading: "Delete slide", message: "Are you sure you want to delete this slide?" },
+    });
+    this.confirmDialogRef.afterClosed().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.deleteSlide(this.slides[index]._id);
+        }
+      },
+    });
+  }
+  deleteSlide(slideId: any) {
+
+    this.apiService.put(apiConstants.updateSlide.replace(':id', this.courseId).replace(':slideid', slideId), { isDeleted: true }).subscribe({
+      next: (data) => {
+        // if (data.statusCode === 201 || data.statusCode === 200) {
+        this.slides = this.slides.filter((slide: any) => slide._id != slideId);
+        this.alertService.notify("Slide deleted successfully");
+        // } else {
+        //   this.errorHandlingService.handle(data);
+        // }
+      },
+      error: (e) => this.errorHandlingService.handle(e),
+    });
   }
   reorderMode: boolean = false;
   reorderSlides() {

@@ -1,0 +1,60 @@
+
+<div class="comment">
+    <div class="user-banner">
+        <div class="avatar" style="background-color:#fff5e9;border-color:#ffe0bd; color:#F98600">
+            {{(comment.author.firstName+' '+comment.author.lastName)|initials}}
+        </div>
+
+        <div class="user">
+            <h5>{{comment.author.firstName | titlecase}} </h5>
+            <span class="is-mute">- {{comment.createdAt}}</span>
+
+            <button mat-icon-button (click)=" delete(comment)" class="ml-auto">
+                <i class="material-icons">delete_outline</i>
+            </button>
+            <div class="content">
+
+                <div> {{comment.text}}</div>
+                <div class="reply-body comment" *ngFor="let reply of comment.children">
+                    <div class="user-banner">
+                        <div class="avatar"
+                            style="background-color:#fff5e9;border-color:#ffe0bd; color:#F98600">
+                            {{(reply.author.firstName+' '+reply.author.lastName)|initials}}
+
+                        </div>
+                        <div class="user">
+                            <h5>{{reply.author.firstName|titlecase}}</h5>
+                            <span class="is-mute">- {{reply.createdAt}}</span>
+                            <div class="content">
+                                {{reply.text}}
+                            </div>
+                        </div>
+                        <button mat-icon-button (click)="delete(reply)">
+                            <i class="material-icons">delete_outline</i>
+                        </button>
+                        <!-- <button class="btn dropdown"><i class="ri-more-line"></i></button> -->
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="footer w-100">
+                <!-- <div fxLayout="column" fxLayout.gt-xs="row" [formGroupName]="i"> -->
+                <mat-form-field fxFlex="100" class="w-100" >
+                    <mat-label>Reply
+                    </mat-label>
+                    <textarea matInput [rows]="3"  trim></textarea>
+                    <!-- formControlName="comment" trim
+                                autocomplete="off" [errorStateMatcher]="matcher" 
+                                [readonly]="isViewOnly" -->
+                </mat-form-field>
+                <button type="submit" mat-raised-button color="primary">Reply</button>
+                <!-- [disabled]="slideForm.invalid || apiCallActive"
+                            (click)="addComment()" -->
+                <!-- </div> -->
+                <!-- <a class="reply"> <i class="material-icons">reply</i> Reply</a> -->
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -67,18 +67,41 @@ export class CourseListComponent implements OnInit {
       return false
     }
   }
+
+  delete(index: number, course: any) {
+    this.openConfirmDialog(index, course,
+      {
+        course, heading: "Delete course",
+        type: 'delete',
+        message: "Are you sure you want to delete this course?"
+      })
+  }
+  manageCourseVisibility(index: number, course: any) {
+    this.openConfirmDialog(index, course,
+      {
+        course,
+        type: 'visibility',
+        heading: (course.isPublished ? "Unpublish" : "Publish") + " Course",
+        message: "Are you sure you want to " + (course.isPublished ? "un" : "") + "publish this course?"
+      }
+    )
+  }
+
   // manageCourseVisibility(element,$event.checked)
-  openConfirmDialog($event: any, index: number, course: any): void {
+  openConfirmDialog(index: number, course: any, dialogData: any = {}): void {
     this.addCourseDialogRef = this.dialog.open(ConfirmDialogComponent, {
       minWidth: '320px',
       width: '585px',
       disableClose: true,
-      data: { course, heading: (course.isPublished ? "Unpublish" : "Publish") + " Course", message: "Are you sure you want to " + (course.isPublished ? "un" : "") + "publish this course?" },
+      data: dialogData
     });
     this.addCourseDialogRef.afterClosed().subscribe({
       next: (data: any) => {
         if (data) {
-          this.manageCourse(index, course)
+          if (dialogData.type == 'delete') {
+            this.deleteCourse(index, course)
+          } else
+            this.manageCourse(index, course)
         }
       },
     });
@@ -117,6 +140,7 @@ export class CourseListComponent implements OnInit {
     });
   }
   manageCourse(index: number, course: any) {
+
     this.apiService.put(apiConstants.manageCourseAccess + course._id, { isPublished: !course.isPublished }).subscribe({
       next: (data) => {
         // if (data.statusCode === 201 || data.statusCode === 200) {
@@ -130,18 +154,20 @@ export class CourseListComponent implements OnInit {
       error: (e) => this.errorHandlingService.handle(e),
     });
   }
-  // deleteCourse(index: number, course: any) {
-  //   this.apiService.put(apiConstants.manageCourseAccess + course._id, { isPublished: !course.isPublished }).subscribe({
-  //     next: (data) => {
-  //       // if (data.statusCode === 201 || data.statusCode === 200) {
-  //       this.dataSource.data[index].isPublished = data.course.isPublished;
 
-  //       this.alertService.notify(data.message);
-  //       // } else {
-  //       //   this.errorHandlingService.handle(data);
-  //       // }
-  //     },
-  //     error: (e) => this.errorHandlingService.handle(e),
-  //   });
-  // }
+  deleteCourse(index: number, course: any) {
+
+    this.apiService.put(apiConstants.deleteCourse.replace(":id", course._id), { isDeleted: true }).subscribe({
+      next: (data) => {
+        // if (data.statusCode === 201 || data.statusCode === 200) {
+        this.dataSource.data.splice(index, 1);
+        this.dataSource = new MatTableDataSource<any>( this.dataSource.data || []);
+        this.alertService.notify(data.message);
+        // } else {
+        //   this.errorHandlingService.handle(data);
+        // }
+      },
+      error: (e) => this.errorHandlingService.handle(e),
+    });
+  }
 }

@@ -9,6 +9,11 @@ import { CourseFormComponent } from './course-form/course-form.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { SlideFormComponent } from './slide/slide-form/slide-form.component';
 import { SlideListComponent } from './slide/slide-list/slide-list.component';
+import { InitialsPipe } from 'src/app/providers/initials.pipe';
+import { CommentComponent } from './comment/comment.component';
+import { ManageEnrollmentComponent } from './manage-enrollment/manage-enrollment.component';
+import { NewEnrollmentComponent } from './new-enrollment/new-enrollment.component';
+import { ManageEnrollmentRequestsComponent } from './manage-enrollment-requests/manage-enrollment-requests.component';
 
 const routes = [
   { path: 'list/:type', component: CourseListComponent },
@@ -24,7 +29,13 @@ const routes = [
     CourseDetailsComponent,
     CourseFormComponent,
     SlideFormComponent,
-    SlideListComponent
+    SlideListComponent,
+    InitialsPipe,
+    CommentComponent,
+    ManageEnrollmentComponent,
+    NewEnrollmentComponent,
+    ManageEnrollmentRequestsComponent
+
   ],
   imports: [
     RouterModule.forChild(routes),

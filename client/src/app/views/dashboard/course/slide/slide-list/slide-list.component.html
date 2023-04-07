@@ -1,5 +1,6 @@
 <div class="slide-list-wrapper">
-    <div class="reorder-wrapper">
+    <div class="no-data"  *ngIf="!slides?.length">No slides found</div>
+    <div class="reorder-wrapper" *ngIf="slides?.length">
         <div cdkDropList class="slide-list mt-20" (cdkDropListDropped)="drop($event)">
             <div class="slide-box" *ngFor="let slide of slides, index as i" cdkDrag>
                 <div class="w-10 drag-icon" *ngIf="reorderMode">
