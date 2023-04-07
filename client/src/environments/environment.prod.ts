@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  baseUrl: 'http://127.0.0.1:4005/',
+  baseUrl: 'https://elearningapi.chantsit.com/',
   version: '1.0.2',
 };
