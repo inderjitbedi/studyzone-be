@@ -45,8 +45,8 @@ mongoose.connection.on("error", err => {
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/user', userRoute);
-app.use("/temp",express.static(path.join(__dirname, 'temp')));
-app.use("/slide",express.static(path.join(__dirname, 'uploads')));
+app.use("/api/temp",express.static(path.join(__dirname, 'temp')));
+app.use("/api/uploads",express.static(path.join(__dirname, 'uploads')));
 app.use("/",express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'assets')));
 

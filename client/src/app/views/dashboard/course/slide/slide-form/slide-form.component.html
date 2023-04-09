@@ -73,8 +73,9 @@
                                 *ngIf="!uploadingInProgess && (!attachment && !slideForm.controls[selectedFileSettings.key]?.value)">
                                 <i class="fa fa-download" aria-hidden="true"></i>
                                 <div></div>
-                                <div id="notimage">Please select an {{selectedFileSettings.name}}. Max size:
-                                    {{selectedFileSettings.maxSize}}MB</div>
+                                <div id="notimage">Please select {{selectedFileSettings.name}} file.<br>
+                                    <span  *ngIf="selectedType != 'pdf'"> The allowed extensions are {{selectedFileSettings.extensions}}.<br> </span>
+                                     Max size: {{selectedFileSettings.maxSize}}MB</div>
                                 <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
                             </div>
                             <div id="start"

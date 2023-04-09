@@ -13,42 +13,27 @@ const slideController = {
     async addSlide(req, res) {
         try {
             let reqBody = req.body;
-            console.log(reqBody.type);
+
             if (reqBody.type == 'pdf' || reqBody.type == 'video' || reqBody.type == 'audio') {
                 let file = await File.findOne({ _id: reqBody.file });
-
-                console.log(reqBody.file);
-                const filePath = "../uploads/course_" + req.params.id + "/slides";
-
                 const tempFilePath = [file.destination, file.name].join('/')
-
+                const newFilePath = "uploads/course_" + req.params.id + "/slides";
                 const newFileName = Date.now() + "_" + file.originalName.replaceAll(' ', '_')
-                const destFilePath = [filePath, newFileName].join('/');
-
-
-                if (!fs.existsSync(filePath)) {
-                    await fs.mkdirSync(filePath, { recursive: true });
+                const destFilePath = [newFilePath, newFileName].join('/');
+                if (!fs.existsSync(newFilePath)) {
+                    await fs.mkdirSync("../" + newFilePath, { recursive: true });
                 }
-
-
-                console.log(path.join(__dirname, tempFilePath),
-                    path.join(__dirname, destFilePath));
-
-
-
-                await fs.renameSync(path.join(__dirname, tempFilePath),
-                    path.join(__dirname, destFilePath));
-
-
-
+                // console.log('\n\ntemp path = ', path.join(__dirname, "../" + tempFilePath),
+                //     '\n\ndest path = ', path.join(__dirname, "../" + destFilePath));
+                await fs.renameSync(path.join(__dirname, "../" + tempFilePath),
+                    path.join(__dirname, "../" + destFilePath));
                 file = await File.findOneAndUpdate({ _id: reqBody.file }, {
                     ...file.toObject(),
-                    destination: filePath,
+                    destination: newFilePath,
                     path: destFilePath,
                     name: newFileName
                 }, { new: true });
             }
-
 
             const slide = new Slide({ ...req.body, course: req.params.id })
             await slide.save();
@@ -101,13 +86,36 @@ const slideController = {
             if (!slide) {
                 return res.status(400).json({ message: 'Slide not found.' });
             }
+            let reqBody = req.body;
+            if (slide.file !== reqBody.file) {
+                if (reqBody.type == 'pdf' || reqBody.type == 'video' || reqBody.type == 'audio') {
+
+                    let file = await File.findOne({ _id: reqBody.file });
+
+                    const tempFilePath = [file.destination, file.name].join('/')
+                    const newFilePath = "uploads/course_" + req.params.id + "/slides";
+                    const newFileName = Date.now() + "_" + file.originalName.replaceAll(' ', '_')
+                    const destFilePath = [newFilePath, newFileName].join('/');
+                    if (!fs.existsSync(newFilePath)) {
+                        await fs.mkdirSync("../" + newFilePath, { recursive: true });
+                    }
+                    // console.log('\n\ntemp path = ', path.join(__dirname, "../" + tempFilePath),
+                    //     '\n\ndest path = ', path.join(__dirname, "../" + destFilePath));
+                    await fs.renameSync(path.join(__dirname, "../" + tempFilePath),
+                        path.join(__dirname, "../" + destFilePath));
+                    file = await File.findOneAndUpdate({ _id: reqBody.file }, {
+                        ...file.toObject(),
+                        destination: newFilePath,
+                        path: destFilePath,
+                        name: newFileName
+                    }, { new: true });
+                }
+            }
+
+
             slide = await Slide.findByIdAndUpdate(req.params.slideid, req.body, { new: true })
             res.json({ slide, message: 'Slide details updated successfully' });
 
-
-            // const slide = new Slide({ ...req.body, course: req.params.id });
-            // await slide.save();
-            // res.status(201).json({ slide, message: 'Slide added to the course successfully.' });
         } catch (error) {
             console.error("\n\nadminController:editSlide:error -", error.toString());
             res.status(400).json({ message: error.toString() });;

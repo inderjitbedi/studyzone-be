@@ -51,8 +51,8 @@ export class SlideFormComponent implements OnInit {
     this.slideForm = this.fb.group({
       name: [data.name || '', [Validators.required, Validators.pattern('^[a-zA-Z0-9 \s]*$')]],
       type: [data.type || 'text', Validators.required],
-      text: [data.text],
-      file: [data.file],
+      text: [data.text || ''],
+      file: [''],
       // isPublished: [data.isPublished]
     });
     this.selectedSlideDetails = data;
@@ -60,10 +60,15 @@ export class SlideFormComponent implements OnInit {
     this.selectedType = data.type || 'text';
     if (data._id) {
       this.slideId = data._id || null;
-      // this.categoryName = data.name?.trim();
-      // this.color = data.color;
-      this.attachment = data.file ? { ...data.file } : {}
+      this.typeUpdated(data.type);
+      if (data.file) {
+        this.attachment = data.file ? { ...data.file } : {}
+        this.slideForm.controls['file'].setValue([this.attachment.destination, this.attachment.name].join('/'))
+        
+      }
+     
     }
+
     this.slideForm['controls']['name'].valueChanges.pipe(debounceTime(500)).subscribe({
       next: (value: any) => {
         this.checkSlideUniqueness()

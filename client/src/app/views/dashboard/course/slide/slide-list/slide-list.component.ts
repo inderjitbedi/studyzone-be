@@ -74,7 +74,7 @@ export class SlideListComponent implements OnInit {
           this.router.navigate(['/dashboard/course/details/' + this.courseId], {
             skipLocationChange: true,
           });
-          // this.getSlides(data.slide.type);
+          this.getSlides();
         }
       },
     });

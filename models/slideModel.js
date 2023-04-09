@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const slideSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true, lowercase: true },
+    name: { type: String, required: true, lowercase: true },
     type: { type: String, enum: ['text', 'video', 'audio', 'pdf'], default: 'text' },
     position: { type: Number, required: true },
     course: {
