@@ -9,6 +9,7 @@ const authRoute = require('./routes/authRoute')
 const adminRoute = require('./routes/adminRoute')
 const userRoute = require('./routes/userRoute')
 const swagger = require('./swagger');
+const loggerMiddleware = require('./providers/loggerMiddleware');
 
 dotenv.config();
 
@@ -41,6 +42,7 @@ mongoose.connection.on("connected", () => {
 mongoose.connection.on("error", err => {
     console.log("DB connection failed: ", err);
 });
+app.use(loggerMiddleware);
 
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
