@@ -307,6 +307,37 @@ const courseController = {
             res.status(400).json({ message: error.toString() });;
         }
     },
+    async allCourses(req, res) {
+        try {
+
+            let filters = { isDeleted: false }
+            if (req.query.type) {
+                filters.type = req.query.type
+            }
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 6;
+
+            const startIndex = (page - 1) * limit;
+            const endIndex = page * limit;
+            const courses = await Course.find()
+                .skip(startIndex)
+                .limit(limit)
+                .populate(['rootComments', 'rootComments.author']).populate('slideCount').lean();
+
+            // const coursesWithSlideCount = await Course.populate(courses, { path: 'slideCount' });
+
+            const totalCourses = await Course.countDocuments({ isDeleted: false });
+
+            const pagination = {
+                totalPages: Math.ceil(totalCourses / limit),
+                currentPage: page
+            };
+            res.json({ courses, pagination, totalCourses, message: 'List courses fetched successfully' });
+        } catch (error) {
+            console.error("\n\nadminController:listCourses:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
 
 }
 module.exports = courseController

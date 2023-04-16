@@ -28,7 +28,7 @@ import { InitialsPipe } from './providers/initials.pipe';
     BrowserAnimationsModule,
     HttpClientModule,
     LoaderModule,
-    DragDropModule
+    DragDropModule,
   ],
   providers: [
     CommonAPIService,
@@ -42,4 +42,4 @@ import { InitialsPipe } from './providers/initials.pipe';
   bootstrap: [AppComponent],
   // exports: [InitialsPipe]
 })
-export class AppModule { }
+export class AppModule {}

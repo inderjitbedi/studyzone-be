@@ -6,6 +6,7 @@ const verifyToken = require('../providers/jwtMiddleware');
 const router = express.Router();
 
 router.post('/course/:id/requestEnrollment', verifyToken, courseController.requestCourseEnrollment)
+router.get('/course/all', verifyToken, courseController.allCourses)
 
 
 module.exports = router;

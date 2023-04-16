@@ -10,6 +10,12 @@ const courseSchema = new mongoose.Schema({
     rootComments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
 }, { timestamps: true });
 
+courseSchema.virtual('slideCount', {
+    ref: 'Slide',
+    localField: '_id',
+    foreignField: 'course',
+    count: true
+});
 courseSchema.statics.addComment = async function (commentData) {
     const { course, parent } = commentData;
 
