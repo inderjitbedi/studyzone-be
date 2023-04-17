@@ -1,6 +1,7 @@
 const Comment = require("../models/commentModel");
 const CourseEnrollment = require("../models/courseEnrollmentModel");
 const Course = require("../models/courseModel");
+const Progress = require("../models/progressModel");
 const Slide = require("../models/slideModel");
 const User = require("../models/userModel");
 const courseController = {
@@ -77,7 +78,19 @@ const courseController = {
                         }
                     }],
                 match: { isDeleted: false }
-            });
+            }).lean();
+
+            if (req.user.role === 'user' && course && course.type === 'paid') {
+                const enrollment = await CourseEnrollment.findOne({
+                    course: course._id,
+                    enrollmentRequestedBy: req.user._id
+                });
+                if (enrollment) {
+                    course.enrollmentStatus = enrollment.requestStatus;
+                } else {
+                    course.enrollmentStatus = 'not_enrolled'
+                }
+            }
 
             res.json({ course, message: 'Course details fetched successfully' });
         } catch (error) {
@@ -85,19 +98,19 @@ const courseController = {
             res.status(400).json({ message: error.toString() });;
         }
     },
-    async getCourseEnrollment(req, res) {
-        try {
-            const enrollment = await CourseEnrollment({
-                ...req.body, course: req.params.id,
-                enrolledOn: new Date(),
-            });
-            await enrollment.save();
-            res.json({ enrollment, message: 'Course enrolled successfully' });
-        } catch (error) {
-            console.error("\n\nadminController:addComment:error -", error);
-            res.status(400).json({ message: error.toString() });;
-        }
-    },
+    // async getCourseEnrollment(req, res) {
+    //     try {
+    //         const enrollment = await CourseEnrollment({
+    //             ...req.body, course: req.params.id,
+    //             enrolledOn: new Date(),
+    //         });
+    //         await enrollment.save();
+    //         res.json({ enrollment, message: 'Course enrolled successfully' });
+    //     } catch (error) {
+    //         console.error("\n\nadminController:addComment:error -", error);
+    //         res.status(400).json({ message: error.toString() });;
+    //     }
+    // },
 
 
 
@@ -230,7 +243,6 @@ const courseController = {
                 course: req.params.id,
                 isEnrolled: true,
                 enrolledOn: new Date(),
-                type: "private",
             });
             await enrollment.save();
             res.json({ enrollment, message: 'Course enrolled successfully' });
@@ -290,43 +302,56 @@ const courseController = {
     },
 
     // user requesting a paid course
-    async requestCourseEnrollment(req, res) {
-        try {
-            const enrollment = await CourseEnrollment({
-                // ...req.body,
-                course: req.params.id,
-                enrollmentRequestedBy: req.user._id,
-                enrollmentRequestedOn: new Date(),
-                isEnrolled: false,
-                requestStatus: 'pending'
-            });
-            await enrollment.save();
-            res.json({ enrollment, message: 'Course enrolled successfully' });
-        } catch (error) {
-            console.error("\n\nadminController:addComment:error -", error);
-            res.status(400).json({ message: error.toString() });;
-        }
-    },
+
     async allCourses(req, res) {
         try {
-
-            let filters = { isDeleted: false }
+            const currentUser = req.user;
+            let filters = {
+                isDeleted: false,
+                isPublished: true,
+                $or: [
+                    { type: "public" },
+                    { type: "paid" },
+                    {
+                        type: "private",
+                        _id: {
+                            $in: await CourseEnrollment.distinct("course", { user: currentUser._id })
+                        }
+                    },
+                    // {
+                    //     type: "paid",
+                    //     _id: {
+                    //       $in: await CourseEnrollment.distinct("course", {
+                    //         enrollmentRequestedBy: currentUser._id,
+                    //         requestStatus: "approved",
+                    //         isEnrolled: true
+                    //       })
+                    //     }
+                    //   }
+                ]
+            }
             if (req.query.type) {
                 filters.type = req.query.type
+            }
+            if (req.query.searchKey) {
+                filters.$or = [
+                    ...filters.$or,
+                    { name: { $regex: req.query.searchKey, $options: 'i' } },
+                    { description: { $regex: req.query.searchKey, $options: 'i' } },
+                ]
             }
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 6;
 
             const startIndex = (page - 1) * limit;
             const endIndex = page * limit;
-            const courses = await Course.find()
+            console.log("filters = ", filters);
+            const courses = await Course.find(filters)
                 .skip(startIndex)
                 .limit(limit)
-                .populate(['rootComments', 'rootComments.author']).populate('slideCount').lean();
+                .populate(['rootComments', 'rootComments.author', 'slideCount']).lean();
 
-            // const coursesWithSlideCount = await Course.populate(courses, { path: 'slideCount' });
-
-            const totalCourses = await Course.countDocuments({ isDeleted: false });
+            const totalCourses = await Course.countDocuments(filters);
 
             const pagination = {
                 totalPages: Math.ceil(totalCourses / limit),
@@ -338,6 +363,155 @@ const courseController = {
             res.status(400).json({ message: error.toString() });;
         }
     },
+    async requestCourseEnrollment(req, res) {
+        try {
+            const enrollment = await CourseEnrollment({
+                // ...req.body,
+                course: req.params.id,
+                enrollmentRequestedBy: req.user._id,
+                enrollmentRequestedOn: new Date(),
+                isEnrolled: false,
+                requestStatus: 'pending'
+            });
+            await enrollment.save();
+            res.json({ enrollment, message: 'Course enrollment requested successfully' });
+        } catch (error) {
+            console.error("\n\nadminController:addComment:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
+    async getMyCourses(req, res) {
+        try {
 
+            let filters = {
+                isDeleted: false,
+                isEnrolled: true,
+                $or: [
+                    { enrollmentRequestedBy: req.user._id },
+                    { user: req.user._id }
+                ]
+            }
+
+            let courseFilters = {
+                isDeleted: false,
+                isEnrolled: true,
+            }
+            if (req.query.type) {
+                courseFilters.type = req.query.type
+            }
+            if (req.query.searchKey) {
+                courseFilters.$or = [
+                    { name: { $regex: req.query.searchKey, $options: 'i' } },
+                    { description: { $regex: req.query.searchKey, $options: 'i' } },
+                ]
+            }
+            const enrollments = await CourseEnrollment.find(filters).populate({
+                path: 'user',
+                select: ['firstName', 'lastName', 'email']
+            }).populate({
+                path: 'course',
+                select: ['name', 'type', 'slideCount'],
+                match: courseFilters
+            }).populate({
+                path: 'enrollmentRequestedBy',
+                select: ['firstName', 'lastName', 'email']
+            });
+            // const courses = enrollments.filter(e => e.course !== null);
+
+            const coursesWithProgress = [];
+
+            for (let enrollment of enrollments) {
+                if (enrollment.course !== null) {
+                    const courseId = enrollment.course._id;
+                    const totalSlides = await Slide.countDocuments({ course: courseId, isDeleted: false });
+                    const completedSlides = await Progress.countDocuments({ course: courseId, user: req.user._id, isCompleted: true, isDeleted: false });
+                    const progress = totalSlides === 0 ? 0 : Math.round(completedSlides / totalSlides * 100);
+
+                    coursesWithProgress.push({
+                        course: enrollment.course,
+                        progress: progress,
+                    });
+                }
+            }
+
+            res.json({ courses: coursesWithProgress, message: 'My courses fetched successfully' });
+
+        } catch (error) {
+            console.error("\n\nadminController:addComment:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
+
+
+    async getMyCourseDetails(req, res) {
+        try {
+            let courseDetails = await Course.findOne({ _id: req.params.id, isDeleted: false });
+
+
+            if (!courseDetails) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+
+            const slides = await Slide.find({
+                course: courseDetails._id,
+                isDeleted: false,
+                isPublished: true,
+            }).populate('file').sort('position');
+
+
+
+            // Find the progress for the current user
+            const progress = await Progress.find({
+                course: courseDetails._id,
+                user: req.user._id,
+                isDeleted: false
+            });
+            let slidesWithProgress = []
+            for (let slide of slides) {
+                const isSlideCompleted = progress.some((p) => p.slide.toString() === slide._id.toString() && p.isCompleted);
+                slidesWithProgress.push({
+                    ...slide.toObject(),
+                    isCompleted: isSlideCompleted,
+                });
+            }
+
+            res.json({ courseDetails, slides: slidesWithProgress, message: 'My courses fetched successfully' });
+        } catch (error) {
+            console.error("\n\nadminController:addComment:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
+
+    async enrollCourse(req, res) {
+        try {
+            const enrollment = await CourseEnrollment.findOneAndUpdate({
+                course: req.params.id,
+                user: req.user._id,
+                isEnrolled: true,
+                enrolledOn: new Date()
+            }, { upsert: true, new: true });
+            res.json({ enrollment, message: `Course enrolled successfully` });
+        } catch (error) {
+            console.error("\n\nadminController:addComment:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
+
+    async getSlideDetails(req, res) {
+        try {
+            let slide = await Slide.findOne({ _id: req.params.slideid, isDeleted: false }).populate('file');
+
+            const progress = await Progress.findOne({
+                course: req.params.id,
+                user: req.user._id,
+                slide: slide._id,
+                isDeleted: false
+            });
+            res.json({ slide: { ...slide.toObject(), isCompleted: progress.isCompleted }, message: 'Slide details fetched successfully' });
+        } catch (error) {
+            console.error("\n\nadminController:getSlideDetails:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
 }
 module.exports = courseController

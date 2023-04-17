@@ -6,7 +6,6 @@ const courseEnrollmentSchema = new mongoose.Schema({
     course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
-
     // when the user requests a paid course
     enrollmentRequestedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     enrollmentRequestedOn: { type: Date },
