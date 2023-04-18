@@ -21,10 +21,14 @@ const slideController = {
                 const newFileName = Date.now() + "_" + file.originalName.replaceAll(' ', '_')
                 const destFilePath = [newFilePath, newFileName].join('/');
                 if (!fs.existsSync(newFilePath)) {
-                    await fs.mkdirSync("../" + newFilePath, { recursive: true });
+                    // await fs.mkdirSync("../" + newFilePath, { recursive: true });
+                    await fs.mkdirSync(newFilePath, { recursive: true });
+
+                    console.log(`Directory ${path.join(__dirname, "../" + newFilePath)} created successfully`);
                 }
-                // console.log('\n\ntemp path = ', path.join(__dirname, "../" + tempFilePath),
-                //     '\n\ndest path = ', path.join(__dirname, "../" + destFilePath));
+                console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
+                    '\n\n dest path = ', path.join(__dirname, "../" + newFilePath), fs.existsSync(path.join(__dirname, "../" + newFilePath)));
+
                 await fs.renameSync(path.join(__dirname, "../" + tempFilePath),
                     path.join(__dirname, "../" + destFilePath));
                 file = await File.findOneAndUpdate({ _id: reqBody.file }, {
@@ -99,8 +103,10 @@ const slideController = {
                     if (!fs.existsSync(newFilePath)) {
                         await fs.mkdirSync("../" + newFilePath, { recursive: true });
                     }
-                    // console.log('\n\ntemp path = ', path.join(__dirname, "../" + tempFilePath),
-                    //     '\n\ndest path = ', path.join(__dirname, "../" + destFilePath));
+                    console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
+                        '\n\n dest path = ', path.join(__dirname, "../" + destFilePath), fs.existsSync(path.join(__dirname, "../" + destFilePath)));
+
+
                     await fs.renameSync(path.join(__dirname, "../" + tempFilePath),
                         path.join(__dirname, "../" + destFilePath));
                     file = await File.findOneAndUpdate({ _id: reqBody.file }, {

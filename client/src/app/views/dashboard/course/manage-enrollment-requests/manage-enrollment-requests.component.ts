@@ -14,7 +14,7 @@ import { ConfirmDialogComponent } from 'src/app/views/common/confirm-dialog/conf
 })
 export class ManageEnrollmentRequestsComponent implements OnInit {
 
-  addCourseDialogRef: any;
+  manageRequestDialogRef: any;
   displayedColumns!: string[];
   dataSource: any;
   apiCallActive: boolean = true;
@@ -68,44 +68,46 @@ export class ManageEnrollmentRequestsComponent implements OnInit {
   manageRequest(index: number, request: any, action: any) {
     this.openConfirmDialog(index, request,
       {
-        request,
-        heading: (action) + " Course",
-        message: "Are you sure you want to " + (action.isPublished ? "un" : "") + "publish this course?"
+        request, action,
+        heading: (action) + " Enrollment Request",
+        message: "Are you sure you want to " + action.toLowerCase() + " this course enrollment request?"
       }
     )
   }
 
-  // manageCourseVisibility(element,$event.checked)
-  openConfirmDialog(index: number, course: any, dialogData: any = {}): void {
-    this.addCourseDialogRef = this.dialog.open(ConfirmDialogComponent, {
+  openConfirmDialog(index: number, request: any, dialogData: any = {}): void {
+    this.manageRequestDialogRef = this.dialog.open(ConfirmDialogComponent, {
       minWidth: '320px',
       width: '585px',
       disableClose: true,
       data: dialogData
     });
-    this.addCourseDialogRef.afterClosed().subscribe({
+    this.manageRequestDialogRef.afterClosed().subscribe({
       next: (data: any) => {
         if (data) {
-          this.manageCourse(index, course)
+          this.manageEnrollRequest(index, request, dialogData)
         }
       }
     });
   }
 
-  manageCourse(index: number, course: any) {
-
-    this.apiService.put(apiConstants.manageCourseAccess + course._id, { isPublished: !course.isPublished }).subscribe({
-      next: (data: any) => {
-        // if (data.statusCode === 201 || data.statusCode === 200) {
-        this.dataSource.data[index].isPublished = data.course.isPublished;
-
-        this.alertService.notify(data.message);
-        // } else {
-        //   this.errorHandlingService.handle(data);
-        // }
-      },
-      error: (e) => this.errorHandlingService.handle(e),
-    });
+  manageEnrollRequest(index: number, request: any, dialogData: any) {
+    this.apiService.put(apiConstants.manageEnrollmentRequest
+      .replace(':id', this.selectedCourseId)
+      .replace(':enrollmentId', request._id),
+      { isEnrolled: dialogData.action.toLowerCase() == 'accept' }).subscribe({
+        next: (data: any) => {
+          // if (data.statusCode === 201 || data.statusCode === 200) {
+          // this.dataSource.data[index].isEnrolled = data.enrollment.isEnrolled;
+          // this.dataSource = new MatTableDataSource<any>(this.dataSource.data);
+          this.getEnrollmentRequests()
+          this.alertService.notify(data.message);
+          // } else {
+          //   this.errorHandlingService.handle(data);
+          // }
+        },
+        error: (e) => this.errorHandlingService.handle(e),
+      });
   }
 
 

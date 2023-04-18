@@ -80,18 +80,31 @@ const courseController = {
                 match: { isDeleted: false }
             }).lean();
 
-            if (req.user.role === 'user' && course && course.type === 'paid') {
-                const enrollment = await CourseEnrollment.findOne({
-                    course: course._id,
-                    enrollmentRequestedBy: req.user._id
-                });
-                if (enrollment) {
-                    course.enrollmentStatus = enrollment.requestStatus;
-                } else {
-                    course.enrollmentStatus = 'not_enrolled'
-                }
-            }
+            if (req.user.role === 'user') {
 
+                if (course && course.type === 'paid') {
+                    const enrollment = await CourseEnrollment.findOne({
+                        course: course._id,
+                        enrollmentRequestedBy: req.user._id
+                    });
+                    if (enrollment) {
+                        course.enrollmentStatus = enrollment.requestStatus;
+                    } else {
+                        course.enrollmentStatus = 'not_enrolled'
+                    }
+                }
+
+                let filters = {
+                    course: req.params.id,
+                    user: req.user._id,
+                    isDeleted: false,
+                }
+                const progress = await Progress.find(filters);
+                if (progress && progress.length) {
+                    course.hasAlreadyStarted = true;
+                }
+
+            }
             res.json({ course, message: 'Course details fetched successfully' });
         } catch (error) {
             console.error("\n\nadminController:getCourseDetails:error -", error);
@@ -170,15 +183,17 @@ const courseController = {
                 // enrollmentRequestedBy: null
             }
             if (course.type === 'paid')
-                filters.requestStatus = 'approved'
-
-            const enrollments = await CourseEnrollment.find(filters).populate({
+                filters.requestStatus = 'accepted'
+            const enrollments = await CourseEnrollment.find(filters).populate([{
                 path: 'user',
                 select: ['firstName', 'lastName', 'email']
-            }).populate({
+            }, {
+                path: 'enrollmentRequestedBy',
+                select: ['firstName', 'lastName', 'email']
+            }, {
                 path: 'course',
                 select: ['name', 'type']
-            });
+            }])
 
             res.json({ enrollments, message: 'Enrollments fetched successfully' });
         } catch (error) {
@@ -288,13 +303,19 @@ const courseController = {
                 course: req.params.id,
                 isEnrolled: req.body.isEnrolled
             }
-            if (body.isEnrolled) body.enrolledOn = new Date();
+            //['pending', 'accepted', 'declined']
+            if (body.isEnrolled) {
+                body.enrolledOn = new Date();
+                body.requestStatus = 'accepted';
+            } else {
+                body.requestStatus = 'declined';
+            }
 
             const enrollment = await CourseEnrollment.findByIdAndUpdate(
-                { _id: req.params.enrollmentId }, body, { upsert: true });
+                { _id: req.params.enrollmentId }, body, { upsert: true, new: true });
 
             await enrollment.save();
-            res.json({ enrollment, message: `Course ${body.isEnrolled ? 'en' : 'dis'}rolled successfully` });
+            res.json({ enrollment, message: `Course enrollment request ${body.requestStatus} successfully` });
         } catch (error) {
             console.error("\n\nadminController:addComment:error -", error);
             res.status(400).json({ message: error.toString() });;
@@ -507,7 +528,7 @@ const courseController = {
                 slide: slide._id,
                 isDeleted: false
             });
-            res.json({ slide: { ...slide.toObject(), isCompleted: progress.isCompleted }, message: 'Slide details fetched successfully' });
+            res.json({ slide: { ...slide.toObject(), isCompleted: progress?.isCompleted || false }, message: 'Slide details fetched successfully' });
         } catch (error) {
             console.error("\n\nadminController:getSlideDetails:error -", error);
             res.status(400).json({ message: error.toString() });;

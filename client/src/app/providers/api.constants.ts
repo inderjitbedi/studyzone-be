@@ -50,6 +50,7 @@ export const apiConstants = {
     checkCourseUniqueness: 'admin/check-uniqueness-course/',
     addComment: 'admin/course/:id/comment',
     deleteComment: 'admin/course/:id/comment/:commentId',
+    manageEnrollmentRequest:'admin/course/:id/manageEnrollmentRequest/:enrollmentId',
 
     slide: 'admin/course/:id/slide/list',
     createSlide: 'admin/course/:id/slide',
