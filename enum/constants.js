@@ -15,9 +15,16 @@ module.exports = Object.freeze({
     },
     AUDIO_CONFIG: {
         MAX_SIZE: 200 * 1024 * 1024,
-        ALLOWED_EXTENSIONS:['mp3', 'ogg', 'wav'],
+        ALLOWED_EXTENSIONS: ['mp3', 'ogg', 'wav'],
         ALLOWED_EXTENSIONS_REGEX: /mp3|ogg|wav|mpeg/,
-        MIME_TYPES: ['audio/mpeg','audio/ogg','audio/wav'],
+        MIME_TYPES: ['audio/mpeg', 'audio/ogg', 'audio/wav'],
         FOLDER_NAME: 'audios'
-    }
+    },
+    COVER_CONFIG: {
+        MAX_SIZE: 4 * 1024 * 1024,
+        ALLOWED_EXTENSIONS: ['png', 'jpg', 'jpeg'],
+        ALLOWED_EXTENSIONS_REGEX: /png|jpg|jpeg/,
+        MIME_TYPES: ['image/png', 'image/jpg', 'image/jpeg'],
+        FOLDER_NAME: 'cover'
+    },
 });

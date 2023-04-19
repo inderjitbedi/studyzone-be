@@ -1,9 +1,13 @@
 const Comment = require("../models/commentModel");
 const CourseEnrollment = require("../models/courseEnrollmentModel");
 const Course = require("../models/courseModel");
+const File = require("../models/fileModel");
 const Progress = require("../models/progressModel");
 const Slide = require("../models/slideModel");
 const User = require("../models/userModel");
+const path = require('path');
+const fs = require('fs-extra');
+
 const courseController = {
     /*
   
@@ -12,9 +16,35 @@ const courseController = {
   */
     async addCourse(req, res) {
         try {
+            let reqBody = req.body;
+
+            let file = await File.findOne({ _id: reqBody.cover });
+            const tempFilePath = [file.destination, file.name].join('/')
+            const newFilePath = "uploads/cover";
+            const newFileName = Date.now() + "_" + file.originalName.replaceAll(' ', '_')
+            const destFilePath = [newFilePath, newFileName].join('/');
+            if (!fs.existsSync(newFilePath)) {
+                // await fs.mkdirSync("../" + newFilePath, { recursive: true });
+                await fs.mkdirSync(newFilePath, { recursive: true });
+                console.log(`Directory ${path.join(__dirname, "../" + newFilePath)} created successfully`);
+            }
+            // console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
+            //     '\n\n dest path = ', path.join(__dirname, "../" + newFilePath), fs.existsSync(path.join(__dirname, "../" + newFilePath)));
+
+            await fs.renameSync(path.join(__dirname, "../" + tempFilePath),
+                path.join(__dirname, "../" + destFilePath));
+            file = await File.findOneAndUpdate({ _id: reqBody.cover }, {
+                ...file.toObject(),
+                destination: newFilePath,
+                path: destFilePath,
+                name: newFileName
+            }, { new: true });
+
             const course = new Course(req.body);
             await course.save();
-            res.status(201).json({ course, message: 'Course created successfully' });
+            const populatedCourse = await Course.findById(course._id).populate('cover');
+
+            res.status(201).json({ course: populatedCourse, message: 'Course created successfully' });
         } catch (error) {
             console.error("\n\nadminController:addCourse:error -", error);
             res.status(400).json({ message: error.toString() });;
@@ -26,6 +56,28 @@ const courseController = {
             if (!course) {
                 return res.status(400).json({ message: 'Course not found.' });
             }
+            let reqBody = req.body;
+            if (reqBody.cover && course.cover !== reqBody.cover) {
+                let file = await File.findOne({ _id: reqBody.cover });
+                const tempFilePath = [file.destination, file.name].join('/')
+                const newFilePath = "uploads/cover";
+                const newFileName = Date.now() + "_" + file.originalName.replaceAll(' ', '_')
+                const destFilePath = [newFilePath, newFileName].join('/');
+                if (!fs.existsSync(newFilePath)) {
+                    await fs.mkdirSync("../" + newFilePath, { recursive: true });
+                }
+                console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
+                    '\n\n dest path = ', path.join(__dirname, "../" + destFilePath), fs.existsSync(path.join(__dirname, "../" + destFilePath)));
+                await fs.renameSync(path.join(__dirname, "../" + tempFilePath),
+                    path.join(__dirname, "../" + destFilePath));
+                file = await File.findOneAndUpdate({ _id: reqBody.cover }, {
+                    ...file.toObject(),
+                    destination: newFilePath,
+                    path: destFilePath,
+                    name: newFileName
+                }, { new: true });
+            }
+
             course = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true })
             res.json({ course, message: 'Course details updated successfully' });
         } catch (error) {
@@ -42,6 +94,7 @@ const courseController = {
             let course = await Course.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true })
             let slides = await Slide.updateMany({ course: req.params.id }, { isDeleted: true }, { new: true })
 
+            // TODO: delete the progress, enrollments
 
             res.json({ course, message: 'Course deleted successfully' });
         } catch (error) {
@@ -51,7 +104,7 @@ const courseController = {
     },
     async listCourses(req, res) {
         try {
-            const courses = await Course.find({ type: req.params.type, isDeleted: false }).populate(['rootComments', 'rootComments.author']);
+            const courses = await Course.find({ type: req.params.type, isDeleted: false }).populate(['rootComments', 'rootComments.author', 'cover']);
             res.json({ courses, message: 'List of ' + req.params.type + ' courses fetched successfully' });
         } catch (error) {
             console.error("\n\nadminController:listCourses:error -", error);
@@ -78,7 +131,7 @@ const courseController = {
                         }
                     }],
                 match: { isDeleted: false }
-            }).lean();
+            }).populate('cover').lean();
 
             if (req.user.role === 'user') {
 
@@ -266,7 +319,23 @@ const courseController = {
             res.status(400).json({ message: error.toString() });;
         }
     },
+    async manageCourseEnrollment(req, res) {
+        try {
 
+
+            const enrollment = await CourseEnrollment.findByIdAndUpdate(req.params.enrollmentid, {
+                isEnrolled: false,
+                isDeleted: true,
+                enrolledOn: new Date(),
+            }, { new: true });
+
+
+            res.json({ enrollment, message: 'Course enrolled successfully' });
+        } catch (error) {
+            console.error("\n\nadminController:addComment:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
     async getEnrollmentRequests(req, res) {
         try {
 
@@ -366,11 +435,10 @@ const courseController = {
 
             const startIndex = (page - 1) * limit;
             const endIndex = page * limit;
-            console.log("filters = ", filters);
             const courses = await Course.find(filters)
                 .skip(startIndex)
                 .limit(limit)
-                .populate(['rootComments', 'rootComments.author', 'slideCount']).lean();
+                .populate(['rootComments', 'rootComments.author', 'slideCount', 'cover']).lean();
 
             const totalCourses = await Course.countDocuments(filters);
 
@@ -410,12 +478,14 @@ const courseController = {
                 $or: [
                     { enrollmentRequestedBy: req.user._id },
                     { user: req.user._id }
-                ]
+                ],
+                course: { $ne: null }
             }
 
             let courseFilters = {
                 isDeleted: false,
                 isEnrolled: true,
+                isPublished: true
             }
             if (req.query.type) {
                 courseFilters.type = req.query.type
@@ -426,21 +496,27 @@ const courseController = {
                     { description: { $regex: req.query.searchKey, $options: 'i' } },
                 ]
             }
-            const enrollments = await CourseEnrollment.find(filters).populate({
-                path: 'user',
-                select: ['firstName', 'lastName', 'email']
-            }).populate({
-                path: 'course',
-                select: ['name', 'type', 'slideCount'],
-                match: courseFilters
-            }).populate({
-                path: 'enrollmentRequestedBy',
-                select: ['firstName', 'lastName', 'email']
-            });
-            // const courses = enrollments.filter(e => e.course !== null);
 
-            const coursesWithProgress = [];
 
+            let enrollments = await CourseEnrollment.find(filters)
+                // .skip(startIndex)
+                // .limit(limit)
+                .populate({
+                    path: 'user',
+                    select: ['firstName', 'lastName', 'email']
+                }).populate({
+                    path: 'course',
+                    select: ['name', 'type', 'slideCount', 'cover'],
+                    match: courseFilters,
+                    populate: ['cover']
+                }).populate({
+                    path: 'enrollmentRequestedBy',
+                    select: ['firstName', 'lastName', 'email']
+                });
+            // enrollments = enrollments.filter(e => e.course !== null);
+
+
+            let coursesWithProgress = [];
             for (let enrollment of enrollments) {
                 if (enrollment.course !== null) {
                     const courseId = enrollment.course._id;
@@ -455,7 +531,29 @@ const courseController = {
                 }
             }
 
-            res.json({ courses: coursesWithProgress, message: 'My courses fetched successfully' });
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 6;
+            const startIndex = (page - 1) * limit;
+            const endIndex = page * limit;
+
+            coursesWithProgress = coursesWithProgress.slice(startIndex, endIndex);
+
+            // const courses1 = enrollments.filter(e => e.course !== null);
+            console.log("\n\ncoursesWithProgress ==== ", coursesWithProgress.length);
+
+            let totalEnrolledCourses = await CourseEnrollment.find(filters).populate({
+                path: 'course',
+                match: courseFilters,
+            });
+            totalEnrolledCourses = totalEnrolledCourses.filter(e => e.course !== null);
+
+            console.log("\n\ntotalEnrolledCourses", totalEnrolledCourses.length);
+            const pagination = {
+                totalPages: Math.ceil(totalEnrolledCourses?.length / limit),
+                currentPage: page
+            };
+
+            res.json({ courses: coursesWithProgress, pagination, totalCourses: totalEnrolledCourses?.length, message: 'My courses fetched successfully' });
 
         } catch (error) {
             console.error("\n\nadminController:addComment:error -", error);
@@ -466,7 +564,7 @@ const courseController = {
 
     async getMyCourseDetails(req, res) {
         try {
-            let courseDetails = await Course.findOne({ _id: req.params.id, isDeleted: false });
+            let courseDetails = await Course.findOne({ _id: req.params.id, isDeleted: false }).populate('cover');
 
 
             if (!courseDetails) {
@@ -505,12 +603,27 @@ const courseController = {
 
     async enrollCourse(req, res) {
         try {
-            const enrollment = await CourseEnrollment.findOneAndUpdate({
+            let filters = {
+                course: req.params.id,
+                user: req.user._id
+            }
+            let enrollment = await CourseEnrollment.findOne(filters)
+
+            let body = {
                 course: req.params.id,
                 user: req.user._id,
                 isEnrolled: true,
                 enrolledOn: new Date()
-            }, { upsert: true, new: true });
+            }
+            console.log(enrollment?._id || 'no enrollment');
+            if (!enrollment)
+                enrollment = await CourseEnrollment.create(body);
+            else
+                enrollment = await CourseEnrollment.findOneAndUpdate(filters, body, { new: true });
+
+
+            console.log(enrollment._id);
+
             res.json({ enrollment, message: `Course enrolled successfully` });
         } catch (error) {
             console.error("\n\nadminController:addComment:error -", error);

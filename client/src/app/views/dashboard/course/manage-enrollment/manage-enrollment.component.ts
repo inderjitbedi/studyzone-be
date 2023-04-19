@@ -7,7 +7,6 @@ import { apiConstants } from 'src/app/providers/api.constants';
 import { CommonAPIService } from 'src/app/providers/api.service';
 import { ErrorHandlingService } from 'src/app/providers/error-handling.service';
 import { ConfirmDialogComponent } from 'src/app/views/common/confirm-dialog/confirm-dialog.component';
-import { CourseFormComponent } from '../course-form/course-form.component';
 import { NewEnrollmentComponent } from '../new-enrollment/new-enrollment.component';
 
 @Component({
@@ -17,7 +16,7 @@ import { NewEnrollmentComponent } from '../new-enrollment/new-enrollment.compone
 })
 export class ManageEnrollmentComponent implements OnInit {
 
-  addCourseDialogRef: any;
+  addEnrollmentDialogRef: any;
   displayedColumns!: string[];
   dataSource: any;
   apiCallActive: boolean = true;
@@ -40,10 +39,7 @@ export class ManageEnrollmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // if (this.courseDetails.type == 'paid') {
-      this.displayedColumns = ['id', 'user', 'email', 'enrolledOn']//, 'action'];
-    // } else
-    //   this.displayedColumns = ['id', 'user', 'email', 'enrolledOn', 'progress', 'action'];
+    this.displayedColumns = ['id', 'user', 'email', 'enrolledOn', 'action'];
     this.selectedCourseId = this.courseDetails._id
     this.getEnrolledUsers();
   }
@@ -68,58 +64,52 @@ export class ManageEnrollmentComponent implements OnInit {
   }
 
 
-  manageCourseVisibility(index: number, course: any) {
-    this.openConfirmDialog(index, course,
-      {
-        course,
-        type: 'visibility',
-        heading: (course.isPublished ? "Unpublish" : "Publish") + " Course",
-        message: "Are you sure you want to " + (course.isPublished ? "un" : "") + "publish this course?"
-      }
-    )
-  }
-
-  // manageCourseVisibility(element,$event.checked)
-  openConfirmDialog(index: number, course: any, dialogData: any = {}): void {
-    this.addCourseDialogRef = this.dialog.open(ConfirmDialogComponent, {
+  // manageEnrollmentVisibility(element,$event.checked)
+  openConfirmDialog(index: number, enrollment: any, dialogData: any = {}): void {
+    this.addEnrollmentDialogRef = this.dialog.open(ConfirmDialogComponent, {
       minWidth: '320px',
       width: '585px',
       disableClose: true,
-      data: dialogData
+      data: {
+        enrollment,
+        heading: "Remove Enrollment",
+        message: "Are you sure you want to remove this enrollment?"
+      }
     });
-    this.addCourseDialogRef.afterClosed().subscribe({
+    this.addEnrollmentDialogRef.afterClosed().subscribe({
       next: (data: any) => {
         if (data) {
-          this.manageCourse(index, course)
+          this.manageEnrollment(index, enrollment)
         }
       }
     });
   }
 
-  manageCourse(index: number, course: any) {
+  manageEnrollment(index: number, enrollment: any) {
 
-    this.apiService.put(apiConstants.manageCourseAccess + course._id, { isPublished: !course.isPublished }).subscribe({
-      next: (data) => {
+    // this.apiService.put(apiConstants.manageEnrollment + enrollment._id, { isDeleted: true }).subscribe({
+    //   next: (data) => {
         // if (data.statusCode === 201 || data.statusCode === 200) {
-        this.dataSource.data[index].isPublished = data.course.isPublished;
-
-        this.alertService.notify(data.message);
+        this.dataSource.data.splice(index, 1);
+        // this.dataSource = new MatTableDataSource<any>([]);
+        this.dataSource = new MatTableDataSource<any>(this.dataSource.data || []);
+        // this.alertService.notify(data.message);
         // } else {
         //   this.errorHandlingService.handle(data);
         // }
-      },
-      error: (e) => this.errorHandlingService.handle(e),
-    });
+    //   },
+    //   error: (e) => this.errorHandlingService.handle(e),
+    // });
   }
 
   openEnrollUserForm(): void {
-    this.addCourseDialogRef = this.dialog.open(NewEnrollmentComponent, {
+    this.addEnrollmentDialogRef = this.dialog.open(NewEnrollmentComponent, {
       minWidth: '320px',
       width: '585px',
       disableClose: true,
-      data: { courseId: this.selectedCourseId },
+      data: { enrollmentId: this.selectedCourseId },
     });
-    this.addCourseDialogRef.afterClosed().subscribe({
+    this.addEnrollmentDialogRef.afterClosed().subscribe({
       next: (data: any) => {
         if (data) {
           this.getEnrolledUsers()

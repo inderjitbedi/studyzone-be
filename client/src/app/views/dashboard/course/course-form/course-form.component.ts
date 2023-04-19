@@ -1,12 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { debounceTime } from 'rxjs';
 import { AlertService } from 'src/app/providers/alert.service';
 import { apiConstants } from 'src/app/providers/api.constants';
 import { CommonAPIService } from 'src/app/providers/api.service';
 import { ErrorHandlingService } from 'src/app/providers/error-handling.service';
 import { ErrorStateMatcherService } from 'src/app/providers/error-matcher.service';
+import { debounceTime, map } from "rxjs/operators";
+import { Constants } from 'src/app/providers/constant';
+import { HttpClient, HttpEventType } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-course-form',
@@ -14,6 +17,7 @@ import { ErrorStateMatcherService } from 'src/app/providers/error-matcher.servic
   styleUrls: ['./course-form.component.scss']
 })
 export class CourseFormComponent implements OnInit {
+  baseUrl = environment.baseUrl
   toggle: boolean = false
   isViewOnly: any;
   courseId: any;
@@ -37,18 +41,22 @@ export class CourseFormComponent implements OnInit {
     public matDialog: MatDialogRef<CourseFormComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
     private apiService: CommonAPIService, private errorHandlingService: ErrorHandlingService,
     public matcher: ErrorStateMatcherService, private fb: FormBuilder,
-    private alertService: AlertService) {
+    private alertService: AlertService, private http: HttpClient) {
 
     this.isViewOnly = data.isViewOnly;
     this.courseForm = this.fb.group({
       name: [data.name || '', [Validators.required, Validators.pattern('^[a-zA-Z0-9 \s]*$')]],
       type: [data.type || 'public', Validators.required],
       description: [data.description || '', Validators.required],
-      isPublished: [data.isPublished]
+      isPublished: [data.isPublished],
+      cover: [ '', Validators.required],
     });
 
     if (data._id) {
       this.courseId = data._id || null;
+      this.attachment = data.cover ? { ...data.cover } : {}
+      this.courseForm.controls['cover'].setValue([this.attachment.destination, this.attachment.name].join('/'))
+      console.log(this.courseForm.controls['cover'].value)
     }
     this.courseForm['controls']['name'].valueChanges.pipe(debounceTime(500)).subscribe({
       next: (data: any) => {
@@ -89,6 +97,7 @@ export class CourseFormComponent implements OnInit {
         name: this.courseForm.value.name.trim().toLowerCase(),
         description: this.courseForm.value.description,
         isPublished: this.courseForm.value.isPublished,
+        cover: this.attachment._id
       }
       let apiUrl = apiConstants.createCourse;
       let apiCall = this.apiService.post(apiUrl, payload);
@@ -115,5 +124,74 @@ export class CourseFormComponent implements OnInit {
 
       });
     }
+  }
+
+  uploadFiles($event: any): void {
+    if ($event.target.value) {
+      const file = $event.target.files[0];
+      this.fileObject.fileName = file.name;
+      this.fileObject.fileExtension = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
+      this.fileObject.fileSize = file.size;
+      const allowedFileExtentions = Constants.allowedImageFileExtentions;
+      if (!allowedFileExtentions.find((format) => format === this.fileObject.fileExtension)) {
+        this.alertService.notify('Please make sure your file is in one of these formats: ' + allowedFileExtentions);
+      } else if (this.fileObject.fileSize > Constants.maximumFileSize) {
+        this.alertService.notify(`Please make sure your file is less than ${Constants.maximumFileSize / 1000000} MB in size.`);
+      } else {
+        const formData = new FormData();
+        formData.append('file', file);
+        this.uploadFile(formData);
+      }
+    }
+  }
+  uploadFile(formData: any): any {
+    this.uploadingInProgess = true;
+    this.apiCallActive = true;
+    this.attachment = null
+    this.http
+      .post(environment.baseUrl + apiConstants.uploadFile + 'cover', formData, {
+        reportProgress: true,
+        observe: 'events',
+      })
+      .pipe(
+        map((event: any) => {
+          switch (event.type) {
+            case HttpEventType.Sent:
+              break;
+            case HttpEventType.ResponseHeader:
+              this.uploadingInProgess = false;
+              this.apiCallActive = false;
+              break;
+            case HttpEventType.UploadProgress:
+              this.uploadingProgress = Math.round(
+                (event.loaded / event.total) * 100
+              );
+              break;
+            case HttpEventType.Response:
+              this.apiCallActive = false;
+              if (event.status === 201 || event.status === 201) {
+                const file = event.body.file;
+                this.attachment = {
+                  ...file
+                };
+                this.courseForm.controls['cover'].setValue([this.attachment.destination, this.attachment.name].join('/'))
+              } else {
+                this.errorHandlingService.handle(event.body);
+              }
+              setTimeout(() => {
+                this.uploadingProgress = 0;
+              }, 500);
+          }
+        })
+      )
+      .subscribe();
+  }
+  formatBytes(bytes: any, decimals = 2): any {
+    if (bytes === 0) { return '0 Bytes'; }
+    const k = 1024,
+      dm = decimals <= 0 ? 0 : decimals || 2,
+      sizes = ['Bytes', 'KB', 'MB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+    return '(' + parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i] + ')';
   }
 }

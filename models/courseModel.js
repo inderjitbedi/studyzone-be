@@ -7,6 +7,9 @@ const courseSchema = new mongoose.Schema({
     description: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
     isPublished: { type: Boolean, default: false },
+    cover: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'File', required: true
+    },
     rootComments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
 }, { timestamps: true });
 

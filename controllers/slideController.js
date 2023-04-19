@@ -1,5 +1,6 @@
 const Slide = require("../models/slideModel");
-const path = require('path'); const fs = require('fs-extra');
+const path = require('path'); 
+const fs = require('fs-extra');
 
 const File = require("../models/fileModel");
 
@@ -23,11 +24,10 @@ const slideController = {
                 if (!fs.existsSync(newFilePath)) {
                     // await fs.mkdirSync("../" + newFilePath, { recursive: true });
                     await fs.mkdirSync(newFilePath, { recursive: true });
-
                     console.log(`Directory ${path.join(__dirname, "../" + newFilePath)} created successfully`);
                 }
-                console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
-                    '\n\n dest path = ', path.join(__dirname, "../" + newFilePath), fs.existsSync(path.join(__dirname, "../" + newFilePath)));
+                // console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
+                //     '\n\n dest path = ', path.join(__dirname, "../" + newFilePath), fs.existsSync(path.join(__dirname, "../" + newFilePath)));
 
                 await fs.renameSync(path.join(__dirname, "../" + tempFilePath),
                     path.join(__dirname, "../" + destFilePath));
@@ -85,6 +85,7 @@ const slideController = {
     },
 
     async editSlide(req, res) {
+        console.log('editSlide');
         try {
             let slide = await Slide.findOne({ _id: req.params.slideid, isDeleted: false });
             if (!slide) {

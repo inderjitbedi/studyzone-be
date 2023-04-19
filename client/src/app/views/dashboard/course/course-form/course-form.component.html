@@ -61,11 +61,51 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
+                <div fxLayout="column" fxLayout.gt-xs="row" class="uploadImage mt-20">
+                    <mat-label>Cover Image *
+                        <mat-icon matTooltip="Please select an image. Max size: 4MB" [matTooltipPosition]="'after'"
+                            class="mat-icon material-icons info" role="img" aria-hidden="true">
+                            info
+                        </mat-icon>
+                    </mat-label>
+                    <div id="file-upload-form" class="uploader">
+                        <input id="file-upload" type="file" name="fileUpload" accept="image/png,image/jpeg,image/jpg"
+                            (change)="uploadFiles($event)" />
+                        <label for="file-upload" id="file-drag">
+                            <div id="start" *ngIf="!uploadingInProgess && !attachment">
+                                <i class="fa fa-download" aria-hidden="true"></i>
+                                <div></div>
+                                <div id="notimage">Please select an image. Max size: 4MB</div>
+                                <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
+                            </div>
+                            <div id="response" *ngIf="uploadingInProgess">
+                                <div id="messages">Uploading... {{uploadingProgress ?
+                                    (uploadingProgress- 1)+'%' : '0%' }}</div>
+                                <progress class="progress" value="{{uploadingProgress}}" max="100">
+                                </progress>
+                            </div>
+                            <img id="file-image" *ngIf="!uploadingInProgess && attachment"
+                                [src]="courseForm.controls['cover'].value? baseUrl + courseForm.controls['cover'].value:''"
+                                alt="Preview" (change)="uploadFiles($event)">
+                        </label>
+                    </div>
+                    <mat-error *ngIf="courseForm.controls['cover']?.hasError('required')">Required
+                    </mat-error>
+                    <mat-error *ngIf="!courseForm.controls['cover']?.hasError('required') 
+                            && courseForm.controls['cover'].hasError('file_type')">
+                        Choose a certain type of file.
+                    </mat-error>
+                    <mat-error *ngIf="!courseForm.controls['cover'].hasError('required')
+                            && !courseForm.controls['cover'].hasError('file_type') 
+                            && courseForm.controls['cover'].hasError('file_size')">
+                        File size should not be greater than 4MB.
+                    </mat-error>
+                </div>
                 <div fxLayout="column" fxLayout.gt-xs="row">
                     <!-- <mat-form-field> -->
-                        <mat-checkbox  formControlName="isPublished">
-                            Publish now
-                        </mat-checkbox> 
+                    <mat-checkbox formControlName="isPublished">
+                        Publish now
+                    </mat-checkbox>
                     <!-- </mat-form-field> -->
                 </div>
             </div>
