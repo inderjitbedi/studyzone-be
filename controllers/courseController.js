@@ -329,8 +329,18 @@ const courseController = {
                 enrolledOn: new Date(),
             }, { new: true });
 
+            console.log("enrollment deleted = ", enrollment);
 
-            res.json({ enrollment, message: 'Course enrolled successfully' });
+            console.log(  enrollment.user ? "found = "+enrollment.user : "not found = "+enrollmentRequestedBy);
+            const progress = await Progress.updateMany({
+                user: enrollment.user ? enrollment.user : enrollmentRequestedBy
+                , course: enrollment.course
+            }, {
+                isDeleted: true,
+            });
+
+
+            res.json({ enrollment, message: 'Enrollment deleted successfully' });
         } catch (error) {
             console.error("\n\nadminController:addComment:error -", error);
             res.status(400).json({ message: error.toString() });;
@@ -615,14 +625,10 @@ const courseController = {
                 isEnrolled: true,
                 enrolledOn: new Date()
             }
-            console.log(enrollment?._id || 'no enrollment');
             if (!enrollment)
                 enrollment = await CourseEnrollment.create(body);
             else
                 enrollment = await CourseEnrollment.findOneAndUpdate(filters, body, { new: true });
-
-
-            console.log(enrollment._id);
 
             res.json({ enrollment, message: `Course enrolled successfully` });
         } catch (error) {

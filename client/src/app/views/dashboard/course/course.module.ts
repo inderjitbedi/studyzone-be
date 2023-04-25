@@ -17,7 +17,7 @@ import { ManageEnrollmentRequestsComponent } from './manage-enrollment-requests/
 
 const routes = [
   { path: 'list/:type', component: CourseListComponent },
-  { path: 'list/:type/slide/list', component: CourseListComponent },
+  // { path: 'list/:type/slide/list', component: CourseListComponent },
   { path: 'details/:id', component: CourseDetailsComponent },
   { path: '**', redirectTo: 'list' },
 ];

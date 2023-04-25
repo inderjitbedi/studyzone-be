@@ -43,7 +43,7 @@ router.get('/course/:id/getEnrollments', verifyToken, courseController.getCourse
 router.get('/course/:id/getUsersToEnroll', verifyToken, courseController.getUsersToEnroll)
 router.get('/course/:id/getEnrollmentRequests', verifyToken, courseController.getEnrollmentRequests)
 
-router.get('/course/:id/manageEnrollment/:enrollmentId', verifyToken, courseController.manageCourseEnrollment)
+router.put('/course/:id/manageEnrollment/:enrollmentId', verifyToken, courseController.manageCourseEnrollment)
 
 router.put('/course/:id/manageEnrollmentRequest/:enrollmentId', verifyToken, courseController.manageCourseEnrollmentRequest)
 

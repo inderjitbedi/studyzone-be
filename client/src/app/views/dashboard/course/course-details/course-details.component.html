@@ -45,10 +45,10 @@
                     Enrollment Requests
                 </a>
             </nav>
-            <div [hidden]="activeSlide != 1">
+            <div *ngIf="activeSlide == 1">
                 <slide-list></slide-list>
             </div>
-            <div [hidden]="activeSlide != 2">
+            <div *ngIf="activeSlide == 2">
                 <!-- <form [formGroup]="faqForm" fx-layout="column"> -->
                 <!-- formArrayName="faqs" -->
                 <div class="no-data flex-start" *ngIf="!rootComments?.length">No comments found</div>
@@ -57,10 +57,10 @@
                 </mat-card>
                 <!-- </form> -->
             </div>
-            <div [hidden]="activeSlide != 3">
+            <div *ngIf="activeSlide ==3">
                 <manage-enrollment [courseDetails]="courseDetails"></manage-enrollment>
             </div>
-            <div [hidden]="activeSlide !=4"  *ngIf="courseDetails?.type == 'paid'">
+            <div *ngIf="activeSlide ==4  && courseDetails?.type == 'paid'">
                 <manage-enrollment-requests [courseDetails]="courseDetails"></manage-enrollment-requests>
             </div>
         </mat-card-content>

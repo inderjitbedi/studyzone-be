@@ -28,15 +28,7 @@ export class ManageEnrollmentComponent implements OnInit {
     public dialog: MatDialog,
     private errorHandlingService: ErrorHandlingService,
     private alertService: AlertService,
-  ) {
-
-    // this.activeRoute.params.subscribe({
-    //   next: ({ id }: any) => {
-    //     this.selectedCourseId = id
-
-    //   }
-    // })
-  }
+  ) { }
 
   ngOnInit(): void {
     this.displayedColumns = ['id', 'user', 'email', 'enrolledOn', 'action'];
@@ -45,7 +37,6 @@ export class ManageEnrollmentComponent implements OnInit {
   }
 
   getEnrolledUsers() {
-    // 
     this.apiCallActive = true;
     this.apiService.get(apiConstants.getEnrollments.replace(':id', this.selectedCourseId)).subscribe({
       next: (data) => {
@@ -63,8 +54,6 @@ export class ManageEnrollmentComponent implements OnInit {
     });
   }
 
-
-  // manageEnrollmentVisibility(element,$event.checked)
   openConfirmDialog(index: number, enrollment: any, dialogData: any = {}): void {
     this.addEnrollmentDialogRef = this.dialog.open(ConfirmDialogComponent, {
       minWidth: '320px',
@@ -86,9 +75,10 @@ export class ManageEnrollmentComponent implements OnInit {
   }
 
   manageEnrollment(index: number, enrollment: any) {
+console.log(enrollment);
 
-    // this.apiService.put(apiConstants.manageEnrollment + enrollment._id, { isDeleted: true }).subscribe({
-    //   next: (data) => {
+    this.apiService.put(apiConstants.manageEnrollment.replace(':id', this.selectedCourseId).replace(':enrollmentId', enrollment._id), { isDeleted: true }).subscribe({
+      next: (data) => {
         // if (data.statusCode === 201 || data.statusCode === 200) {
         this.dataSource.data.splice(index, 1);
         // this.dataSource = new MatTableDataSource<any>([]);
@@ -97,9 +87,9 @@ export class ManageEnrollmentComponent implements OnInit {
         // } else {
         //   this.errorHandlingService.handle(data);
         // }
-    //   },
-    //   error: (e) => this.errorHandlingService.handle(e),
-    // });
+      },
+      error: (e) => this.errorHandlingService.handle(e),
+    });
   }
 
   openEnrollUserForm(): void {
