@@ -21,8 +21,7 @@
         </ng-container>
         <ng-container matColumnDef="user">
             <th mat-header-cell *matHeaderCellDef> User Name </th>
-            <td mat-cell *matCellDef="let element"> {{element?.enrollmentRequestedBy?.firstName+"
-                "+element?.enrollmentRequestedBy?.lastName | titlecase }} </td>
+            <td mat-cell *matCellDef="let element"> {{element?.enrollmentRequestedBy?.fullName | titlecase }} </td>
         </ng-container>
         <ng-container matColumnDef="email">
             <th mat-header-cell *matHeaderCellDef> Email </th>

@@ -22,9 +22,9 @@
                         <mat-card-title>User Details</mat-card-title>
                     </mat-card-header>
                     <mat-card-content> -->
-                        <mat-form-field *ngIf="userDetails.firstName">
+                        <mat-form-field *ngIf="userDetails.fullName">
                             <input type="text" matInput placeholder="Name"
-                                [value]="userDetails?.firstName+' '+userDetails?.lastName" readonly>
+                                [value]="userDetails?.fullName" readonly>
                         </mat-form-field>
                         <!-- <mat-form-field>
                             <input type="text" matInput placeholder="Email" [value]="userDetails.email" readonly>

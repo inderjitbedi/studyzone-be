@@ -2,11 +2,11 @@
 <div class="comment">
     <div class="user-banner">
         <div class="avatar" style="background-color:#fff5e9;border-color:#ffe0bd; color:#F98600">
-            {{(comment.author.firstName+' '+comment.author.lastName)|initials}}
+            {{(comment.author.fullName)|initials}}
         </div>
 
         <div class="user">
-            <h5>{{comment.author.firstName | titlecase}} </h5>
+            <h5>{{comment.author.fullName | titlecase}} </h5>
             <span class="is-mute">- {{comment.createdAt}}</span>
 
             <button mat-icon-button (click)=" delete(comment)" class="ml-auto">
@@ -19,11 +19,11 @@
                     <div class="user-banner">
                         <div class="avatar"
                             style="background-color:#fff5e9;border-color:#ffe0bd; color:#F98600">
-                            {{(reply.author.firstName+' '+reply.author.lastName)|initials}}
+                            {{(reply.author.fullName)|initials}}
 
                         </div>
                         <div class="user">
-                            <h5>{{reply.author.firstName|titlecase}}</h5>
+                            <h5>{{reply.author.fullName|titlecase}}</h5>
                             <span class="is-mute">- {{reply.createdAt}}</span>
                             <div class="content">
                                 {{reply.text}}

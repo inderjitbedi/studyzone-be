@@ -57,16 +57,20 @@ const authController = {
             res.status(401).json({ message: error.message });
         }
     },
-    // async profile(req, res) {
-    //     try {
-    //         const token = req.headers.authorization.split(' ')[1];
-    //         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    //         const email = decoded.email;
-    //         res.send({ email });
-    //     } catch (error) {
-    //         res.status(401).json({ message: 'Invalid token' });
-    //     }
-    // },
+    async checkEmailUniqueness(req, res) {
+        try {
+            const { email } = req.params;
+            // Check if user already exists
+            const existingUser = await User.findOne({ email });
+            // if (existingUser) {
+            //     return res.status(409).json({ isUnique: !existingUser, message: 'User already exists' });
+            // }
+            res.json({ isUnique: !existingUser });
+        } catch (error) {
+            console.error("\n\nauthController:checkEmailUniqueness:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
     async forgotPassword(req, res, next) {
         try {
             const { email } = req.body;

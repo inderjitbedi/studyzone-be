@@ -19,18 +19,18 @@ const userSchema = new mongoose.Schema({
         },
     },
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
-    firstName: {
+    fullName: {
         type: String,
         required: function () {
             return this.inviteToken === null;
         },
     },
-    lastName: {
-        type: String,
-        required: function () {
-            return this.inviteToken === null;
-        },
-    },
+    // lastName: {
+    //     type: String,
+    //     required: function () {
+    //         return this.inviteToken === null;
+    //     },
+    // },
     isDeleted: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     isVerified: { type: Boolean, default: false },

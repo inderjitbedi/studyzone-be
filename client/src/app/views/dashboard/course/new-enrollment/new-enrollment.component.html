@@ -20,7 +20,7 @@
                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)='changed($event.option)'>
                         <!-- [displayWith]="displayFn"> -->
                         <mat-option *ngFor="let option of filteredUsers" [value]="option.email">
-                            {{ option.email+ (option.firstName?'('+option.firstName+' '+option.lastName +')':'')}}
+                            {{ option.email+ (option.fullName||'')}}
                         </mat-option>
                         <mat-option *ngIf="!filteredUsers.length" disabled>
                             {{!enrollForm.controls['user'].value? 'Type to search for users':'No match found'}}

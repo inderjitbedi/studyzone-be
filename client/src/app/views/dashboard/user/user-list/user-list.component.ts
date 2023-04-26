@@ -28,7 +28,7 @@ export class UserListComponent implements OnInit {
     private alertService: AlertService,
     private activeRoute: ActivatedRoute
   ) {
-    this.displayedColumns = ['id', 'firstName', 'email', 'isSignedUp', 'action'];
+    this.displayedColumns = ['id', 'fullName', 'email', 'isSignedUp', 'action'];
 
     this.activeRoute.params.subscribe({
       next: (route) => {

@@ -118,7 +118,7 @@ const courseController = {
                 populate: [
                     {
                         path: 'author',
-                        select: ['firstName', 'lastName']
+                        select: ['fullName']
                     },
                     {
                         path: 'children',
@@ -127,7 +127,7 @@ const courseController = {
 
                         }, populate: {
                             path: 'author',
-                            select: ['firstName', 'lastName']
+                            select: ['fullName']
                         }
                     }],
                 match: { isDeleted: false }
@@ -206,7 +206,7 @@ const courseController = {
     },
     // async getCommentThread(commentIds) {
     //     const comments = await CommentModel.find({ _id: { $in: commentIds } })
-    //         .populate('author', ['firstName', 'lastName'])
+    //         .populate('author', ['fullName'])
     //         .lean();
 
     //     const commentMap = comments.reduce((map, comment) => {
@@ -239,10 +239,10 @@ const courseController = {
                 filters.requestStatus = 'accepted'
             const enrollments = await CourseEnrollment.find(filters).populate([{
                 path: 'user',
-                select: ['firstName', 'lastName', 'email']
+                select: ['fullName', 'email']
             }, {
                 path: 'enrollmentRequestedBy',
-                select: ['firstName', 'lastName', 'email']
+                select: ['fullName', 'email']
             }, {
                 path: 'course',
                 select: ['name', 'type']
@@ -281,16 +281,14 @@ const courseController = {
                 {
                     $match: {
                         $or: [
-                            { firstName: { $regex: req.query.search || '', $options: "i" } },
-                            { lastName: { $regex: req.query.search || '', $options: "i" } },
+                            { fullName: { $regex: req.query.search || '', $options: "i" } },
                             { email: { $regex: req.query.search || '', $options: "i" } }
                         ]
                     }
                 },
                 {
                     $project: {
-                        firstName: 1,
-                        lastName: 1,
+                        fullName: 1,
                         email: 1
                     }
                 }
@@ -323,22 +321,17 @@ const courseController = {
         try {
 
 
-            const enrollment = await CourseEnrollment.findByIdAndUpdate(req.params.enrollmentid, {
+            const enrollment = await CourseEnrollment.findByIdAndUpdate(req.params.enrollmentId, {
                 isEnrolled: false,
                 isDeleted: true,
-                enrolledOn: new Date(),
             }, { new: true });
 
-            console.log("enrollment deleted = ", enrollment);
-
-            console.log(  enrollment.user ? "found = "+enrollment.user : "not found = "+enrollmentRequestedBy);
             const progress = await Progress.updateMany({
-                user: enrollment.user ? enrollment.user : enrollmentRequestedBy
+                user: enrollment.user ? enrollment.user : enrollment.enrollmentRequestedBy
                 , course: enrollment.course
             }, {
                 isDeleted: true,
             });
-
 
             res.json({ enrollment, message: 'Enrollment deleted successfully' });
         } catch (error) {
@@ -357,13 +350,13 @@ const courseController = {
                 requestStatus: 'pending'
             }).populate({
                 path: 'user',
-                select: ['firstName', 'lastName', 'email']
+                select: ['fullName', 'email']
             }).populate({
                 path: 'course',
                 select: ['name', 'type']
             }).populate({
                 path: 'enrollmentRequestedBy',
-                select: ['firstName', 'lastName', 'email']
+                select: ['fullName', 'email']
             });
 
 
@@ -513,7 +506,7 @@ const courseController = {
                 // .limit(limit)
                 .populate({
                     path: 'user',
-                    select: ['firstName', 'lastName', 'email']
+                    select: ['fullName', 'email']
                 }).populate({
                     path: 'course',
                     select: ['name', 'type', 'slideCount', 'cover'],
@@ -521,7 +514,7 @@ const courseController = {
                     populate: ['cover']
                 }).populate({
                     path: 'enrollmentRequestedBy',
-                    select: ['firstName', 'lastName', 'email']
+                    select: ['fullName', 'email']
                 });
             // enrollments = enrollments.filter(e => e.course !== null);
 
