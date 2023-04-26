@@ -23,7 +23,7 @@
         </ng-container>
         <ng-container matColumnDef="fullName">
             <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let element"> {{(element?.fullName||'-')}} </td>
+            <td mat-cell *matCellDef="let element"> {{(element?.firstName?(element?.firstName+' '+element?.lastName):element?.fullName)| titlecase}} </td>
         </ng-container>
         <ng-container matColumnDef="email">
             <th mat-header-cell *matHeaderCellDef> Email </th>

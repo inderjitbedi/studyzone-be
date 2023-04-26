@@ -31,7 +31,7 @@ export class ManageEnrollmentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.displayedColumns = ['id', 'user', 'email', 'enrolledOn', 'action'];
+    this.displayedColumns = ['id', 'user', 'email', 'enrolledOn', 'requestStatus', 'action'];
     this.selectedCourseId = this.courseDetails._id
     this.getEnrolledUsers();
   }
@@ -75,7 +75,7 @@ export class ManageEnrollmentComponent implements OnInit {
   }
 
   manageEnrollment(index: number, enrollment: any) {
-console.log(enrollment);
+    console.log(enrollment);
 
     this.apiService.put(apiConstants.manageEnrollment.replace(':id', this.selectedCourseId).replace(':enrollmentId', enrollment._id), { isDeleted: true }).subscribe({
       next: (data) => {

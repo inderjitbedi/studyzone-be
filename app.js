@@ -44,6 +44,7 @@ mongoose.connection.on("error", err => {
 });
 app.use(loggerMiddleware);
 
+
 app.use('/api/auth', authRoute);
 app.use('/api/admin', adminRoute);
 app.use('/api/user', userRoute);

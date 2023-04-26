@@ -138,7 +138,8 @@ const courseController = {
                 if (course && course.type === 'paid') {
                     const enrollment = await CourseEnrollment.findOne({
                         course: course._id,
-                        enrollmentRequestedBy: req.user._id
+                        enrollmentRequestedBy: req.user._id,
+                        isDeleted: false
                     });
                     if (enrollment) {
                         course.enrollmentStatus = enrollment.requestStatus;
@@ -236,7 +237,8 @@ const courseController = {
                 // enrollmentRequestedBy: null
             }
             if (course.type === 'paid')
-                filters.requestStatus = 'accepted'
+                filters.$or = [{ requestStatus: 'accepted' }, { requestStatus: 'declined' }]
+
             const enrollments = await CourseEnrollment.find(filters).populate([{
                 path: 'user',
                 select: ['fullName', 'email']
