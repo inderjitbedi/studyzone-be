@@ -540,7 +540,7 @@ const getFullTemplate = (data,body) => {
                    <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                        <tr>
                            <td class="email-masthead">
-                            <img src="https://${data.req.headers.host}/media/logo/studyzone.svg" >Study Zone
+                            <img src="https://${data.req.headers.host}/api/media/logo/studyzone.svg" >Study Zone
                            </td>
                        </tr>
                        <!-- Email Body -->
