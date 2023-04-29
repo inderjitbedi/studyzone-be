@@ -51,7 +51,7 @@ app.use('/api/user', userRoute);
 app.use("/api/temp",express.static(path.join(__dirname, 'temp')));
 app.use("/api/uploads",express.static(path.join(__dirname, 'uploads')));
 app.use("/",express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'assets')));
+app.use("/api/media",express.static(path.join(__dirname, 'assets')));
 
 app.listen(4005, () => {
     console.log('Server started on port 4005');

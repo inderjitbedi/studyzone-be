@@ -14,9 +14,9 @@ const authController = {
     },
     async registerUser(req, res) {
         try {
-            const { inviteToken } = req.params;
+            let { token } = req.params;
 
-            let user = await User.findOne({ inviteToken, email: req.body.email });
+            let user = await User.findOne({ inviteToken: token, email: req.body.email });
             if (!user) {
                 return res.status(400).json({ message: 'Invalid invite token' });
             }
@@ -26,9 +26,9 @@ const authController = {
             })
             user.isSignedUp = true;
             user.isVerified = true;
-            user.inviteToken = null;
+            // user.inviteToken = null;
             user = await user.save();
-            const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
+            token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
             user = user.toObject();
             delete user.password;
             res.json({ user, token, message: 'User signed up successfully' });
@@ -95,16 +95,20 @@ const authController = {
     async resetPassword(req, res, next) {
         try {
             const { token } = req.params;
-            const { password } = req.body;
+            const { password, newPassword } = req.body;
             const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
             if (!user) {
                 return res.status(400).json({ message: 'Invalid or expired token' });
             }
-            user.password = password;
+            const isMatch = await user.comparePassword(password);
+            if (!isMatch) {
+                return res.status(400).json({ message: 'Invalid current password' });
+            }
+            user.password = newPassword;
             user.resetPasswordToken = undefined;
             user.resetPasswordExpires = undefined;
             await user.save();
-            res.status(200).json({ message: 'Password reset successful' });
+            res.status(200).json({ message: 'Password changed successfully' });
         } catch (err) {
             next(err);
         }
