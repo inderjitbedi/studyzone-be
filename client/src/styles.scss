@@ -1,13 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 
-html,
-body {
-    height: 100%;
-}
 
-body {
+body,
+*,
+.mat-h1,
+.mat-headline,
+.mat-typography .mat-h1,
+.mat-typography .mat-headline,
+.mat-typography h1 {
     margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .sidenav div {
@@ -61,8 +63,8 @@ body {
 
     .mat-form-field {
         width: 100%;
-        margin-bottom:15px;
-       
+        margin-bottom: 15px;
+
     }
 
     .mat-toolbar-footer {
@@ -396,41 +398,53 @@ body {
 }
 
 .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
-    background-color:  #b4ebaa;
+    background-color: #b4ebaa;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 table {
     width: 100% !important;
     table-layout: fixed;
+
     th.mat-header-cell {
-      font-weight: 600;
+        font-weight: 600;
     }
+
     td,
     th {
-      font-size: 13px;
-      padding: 8px;
-      // vertical-align: top;
-      button {
-        margin-right: 5px;
-      }
+        font-size: 13px;
+        padding: 8px;
+
+        // vertical-align: top;
+        button {
+            margin-right: 5px;
+        }
     }
-  }
-  
-  a {
+}
+
+a {
     text-decoration: underline;
     color: black;
-  
-  }
 
-  .flex-start{
+}
+
+.flex-start {
     justify-content: flex-start !important;
 }
 
 
 $theme: #454cad;
 $dark-text: #5f6982;
+
 .uploader {
     display: block;
     clear: both;
@@ -587,4 +601,46 @@ $dark-text: #5f6982;
         border-color: $theme;
         cursor: pointer;
     }
+}
+
+.h1,
+.mat-typography h1 {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 32px;
+    letter-spacing: 0em;
+    text-align: left;
+
+}
+
+.title {}
+
+.text {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 32px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #8F8F8F;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #242731;
+
+}
+
+.mat-card:not([class*=mat-elevation-z]) {
+    box-shadow: none;
+}
+
+button.mat-primary.mat-raised-button {
+    background: #007AFF;
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 8px 16px;
 }

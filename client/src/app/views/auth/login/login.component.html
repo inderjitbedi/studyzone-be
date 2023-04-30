@@ -1,24 +1,23 @@
-<mat-card>
-    <mat-card-title>Admin Login</mat-card-title>
-    <hr/>
+<mat-card class="login-form">
+    <h1 class="h1">Hi, Admin</h1>
+    <p class="text">Login to your account</p>
     <mat-card-content class="mt-30">
         <form [formGroup]="loginForm" (ngSubmit)="login()">
-            <p>
-                <mat-form-field>
-                    <input type="text" matInput placeholder="Email" formControlName="email"  [errorStateMatcher]="matcher">
-                    <mat-error *ngIf="loginForm.controls['email'].hasError('required')">Required</mat-error>
-                    <mat-error *ngIf="loginForm.controls['email'].hasError('pattern')">Invalid email</mat-error>
-                </mat-form-field>
-            </p>
-            <p>
-                <mat-form-field>
-                    <input type="password" matInput placeholder="Password" formControlName="password">
-                    <mat-error *ngIf="loginForm.controls['password'].hasError('required')">Required</mat-error>
-                </mat-form-field>
-            </p>
+            <mat-label>Email</mat-label>
+            <mat-form-field>
+                <input type="text" matInput formControlName="email" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="loginForm.controls['email'].hasError('required')">Required</mat-error>
+                <mat-error *ngIf="loginForm.controls['email'].hasError('pattern')">Invalid email</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input type="password" matInput placeholder="Password" formControlName="password">
+                <mat-error *ngIf="loginForm.controls['password'].hasError('required')">Required</mat-error>
+            </mat-form-field>
 
             <div class="button">
-                <button mat-raised-button  color="primary" [disabled]="loginForm.invalid ">Login</button>
+                <button mat-raised-button color="primary" [disabled]="loginForm.invalid ">Login</button>
             </div>
 
         </form>
