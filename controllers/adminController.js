@@ -13,13 +13,13 @@ const adminController = {
             }
 
             // Generate invite token
-            const inviteToken = Math.random().toString(36).substr(2, 8);
+            const token = Math.random().toString(36).substr(2, 8);
 
             // Create new user
-            const user = new User({ email, inviteToken });
+            const user = new User({ email, token });
             await user.save();
 
-            sendGrid.send(email, 'inviteUser', { req, inviteToken })
+            sendGrid.send(email, 'inviteUser', { req, token })
 
             res.json({ message: 'User invited successfully' });
         } catch (error) {
@@ -43,7 +43,7 @@ const adminController = {
 
     async reinviteUser(req, res) {
         try {
-            const { _id ,email} = req.body;
+            const { _id, email } = req.body;
 
             // Check if user already exists
             const existingUser = await User.findById({ _id });
@@ -53,13 +53,13 @@ const adminController = {
             }
 
             // Generate invite token
-            const inviteToken = Math.random().toString(36).substr(2, 8);
+            const token = Math.random().toString(36).substr(2, 8);
             existingUser.invitedAt = Date.now()
-            existingUser.inviteToken = inviteToken;
+            existingUser.inviteToken = token;
             existingUser.email = email
             await existingUser.save();
 
-            await sendGrid.send(email, 'inviteUser', { req, inviteToken })
+            await sendGrid.send(email, 'inviteUser', { req, token, email })
 
             res.json({ message: 'User reinvited successfully' });
         } catch (error) {

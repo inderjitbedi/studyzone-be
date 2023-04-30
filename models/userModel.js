@@ -4,13 +4,6 @@ const bcrypt = require('bcrypt');
 const userSchema = new mongoose.Schema({
     email: {
         type: String, required: true, unique: true, lowercase: true,
-        // validate: {
-        //     validator: function (value) {
-        //         const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-        //         return emailRegex.test(value);
-        //     },
-        //     message: 'Please enter a valid email address',
-        // },
     },
     password: {
         type: String,
@@ -21,27 +14,23 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
     fullName: {
         type: String,
-        required: function () {
-            return this.inviteToken === null;
-        },
+        // required: function () {
+        //     return this.inviteToken === null;
+        // },
     },
-    // lastName: {
-    //     type: String,
-    //     required: function () {
-    //         return this.inviteToken === null;
-    //     },
-    // },
     isDeleted: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     isVerified: { type: Boolean, default: false },
     inviteToken: {
         type: String,
-        required: function () {
-            return this.role === 'user' && this.inviteToken !== null;
-        },
+        // required: function () {
+        //     return this.role === 'user' && this.inviteToken !== null;
+        // },
     },
     invitedAt: { type: Date, default: Date.now },
     isSignedUp: { type: Boolean, default: false },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date }
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

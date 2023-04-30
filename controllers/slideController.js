@@ -1,5 +1,5 @@
 const Slide = require("../models/slideModel");
-const path = require('path'); 
+const path = require('path');
 const fs = require('fs-extra');
 
 const File = require("../models/fileModel");
@@ -18,19 +18,25 @@ const slideController = {
             if (reqBody.type == 'pdf' || reqBody.type == 'video' || reqBody.type == 'audio') {
                 let file = await File.findOne({ _id: reqBody.file });
                 const tempFilePath = [file.destination, file.name].join('/')
-                const newFilePath = "uploads/course_" + req.params.id + "/slides";
-                const newFileName = Date.now() + "_" + file.originalName.replaceAll(' ', '_')
-                const destFilePath = [newFilePath, newFileName].join('/');
-                if (!fs.existsSync(newFilePath)) {
-                    // await fs.mkdirSync("../" + newFilePath, { recursive: true });
-                    await fs.mkdirSync(newFilePath, { recursive: true });
-                    console.log(`Directory ${path.join(__dirname, "../" + newFilePath)} created successfully`);
-                }
-                // console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
-                //     '\n\n dest path = ', path.join(__dirname, "../" + newFilePath), fs.existsSync(path.join(__dirname, "../" + newFilePath)));
+                const newFilePath = "uploads/";
+                const newFileName = Date.now() + "_course_" + req.params.id + "_slide_" + file.originalName.replaceAll(' ', '_')
+                const destFilePath = newFilePath + newFileName
+                // if (!fs.existsSync(newFilePath)) {
+                //     // await fs.mkdirSync("../" + newFilePath, { recursive: true });
+                //     await fs.mkdirSync(newFilePath, { recursive: true });
+                //     console.log(`Directory ${path.join(__dirname, "../" + newFilePath)} created successfully`);
+                // }
+                // // console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
+                // //     '\n\n dest path = ', path.join(__dirname, "../" + newFilePath), fs.existsSync(path.join(__dirname, "../" + newFilePath)));
 
                 await fs.renameSync(path.join(__dirname, "../" + tempFilePath),
                     path.join(__dirname, "../" + destFilePath));
+                console.log("Saved File:", {
+                    ...file.toObject(),
+                    destination: newFilePath,
+                    path: destFilePath,
+                    name: newFileName
+                });
                 file = await File.findOneAndUpdate({ _id: reqBody.file }, {
                     ...file.toObject(),
                     destination: newFilePath,
@@ -98,18 +104,24 @@ const slideController = {
                     let file = await File.findOne({ _id: reqBody.file });
 
                     const tempFilePath = [file.destination, file.name].join('/')
-                    const newFilePath = "uploads/course_" + req.params.id + "/slides";
-                    const newFileName = Date.now() + "_" + file.originalName.replaceAll(' ', '_')
-                    const destFilePath = [newFilePath, newFileName].join('/');
-                    if (!fs.existsSync(newFilePath)) {
-                        await fs.mkdirSync("../" + newFilePath, { recursive: true });
-                    }
-                    console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
-                        '\n\n dest path = ', path.join(__dirname, "../" + destFilePath), fs.existsSync(path.join(__dirname, "../" + destFilePath)));
+                    const newFilePath = "uploads/";
+                    const newFileName = Date.now() + "_course_" + req.params.id + "_slide_" + file.originalName.replaceAll(' ', '_')
+                    const destFilePath = newFilePath + newFileName
+                    // if (!fs.existsSync(newFilePath)) {
+                    //     await fs.mkdirSync("../" + newFilePath, { recursive: true });
+                    // }
+                    // console.log('\n\n temp path = ', path.join(__dirname, "../" + tempFilePath), fs.existsSync(path.join(__dirname, "../" + tempFilePath)),
+                    //     '\n\n dest path = ', path.join(__dirname, "../" + destFilePath), fs.existsSync(path.join(__dirname, "../" + destFilePath)));
 
 
                     await fs.renameSync(path.join(__dirname, "../" + tempFilePath),
                         path.join(__dirname, "../" + destFilePath));
+                    console.log("Saved File:", {
+                        ...file.toObject(),
+                        destination: newFilePath,
+                        path: destFilePath,
+                        name: newFileName
+                    });
                     file = await File.findOneAndUpdate({ _id: reqBody.file }, {
                         ...file.toObject(),
                         destination: newFilePath,
