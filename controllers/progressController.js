@@ -1,3 +1,4 @@
+const Course = require("../models/courseModel");
 const Progress = require("../models/progressModel");
 const Slide = require("../models/slideModel");
 
@@ -9,12 +10,21 @@ const progressController = {
                 course: req.params.id,
                 user: req.user._id,
                 isDeleted: false
-            }).populate('slide').sort({"updatedAt":-1});
+            }).populate('slide').sort({ "updatedAt": -1 });
 
             let totalSlides = await Slide.countDocuments({ course: req.params.id, isDeleted: false })
             let completedSlides = await Progress.countDocuments({ course: req.params.id, user: req.user._id, isCompleted: true })
             const percentComplete = Math.round(completedSlides / totalSlides * 100);
             res.json({ progress, percentComplete, message: 'Progress fetched successfully' });
+        } catch (error) {
+            console.error("\n\nprogressController:getProgress:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
+    async getProgressByCourseType(req, res) {
+        try {
+            
+            res.json({  message: 'Progress fetched successfully' });
         } catch (error) {
             console.error("\n\nprogressController:getProgress:error -", error);
             res.status(400).json({ message: error.toString() });;

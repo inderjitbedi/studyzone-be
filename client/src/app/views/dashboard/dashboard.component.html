@@ -10,10 +10,15 @@
             <span>Users</span>
         </button>
         <button mat-button class="menu-button " routerLink="/dashboard/course/list/public" routerLinkActive="active"
-            [ngClass]="{'active': currentUrl.indexOf('course')>-1}">
+            [ngClass]="{'active': currentUrl.indexOf('dashboard/course')>-1}">
             <mat-icon>event</mat-icon>
             <span>Courses </span>
         </button>
+        <button mat-button class="menu-button " routerLink="/dashboard/progress/course/public" routerLinkActive="active"
+        [ngClass]="{'active': currentUrl.indexOf('progress')>-1}">
+        <mat-icon>signal_cellular_alt</mat-icon>
+        <span>Progress </span>
+    </button>
         <!-- <button mat-button class="menu-button" routerLink="/dashboard/reminders"  routerLinkActive="active"
             [ngClass]="{'active': currentUrl.indexOf('reminder')>-1}">
             <mat-icon>event</mat-icon>
