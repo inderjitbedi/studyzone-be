@@ -112,7 +112,8 @@ const authController = {
         } catch (err) {
             next(err);
         }
-    }
+    },
+   
 
 };
 
