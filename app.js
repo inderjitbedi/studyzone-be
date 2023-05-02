@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 swagger(app);
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect("mongodb+srv://admin:admin@cluster0.kiw6oej.mongodb.net/easygolf?retryWrites=true&w=majority");
 mongoose.connection.on("connected", () => {
     console.log("Connected to DB");
 });
