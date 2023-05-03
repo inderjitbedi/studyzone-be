@@ -1,7 +1,8 @@
 
 const sgMail = require('@sendgrid/mail');
 const emailTemplates = require('./emailTemplates')
-sgMail.setApiKey("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");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// sgMail.setApiKey("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");
 // .option('--sendGrid-api-key <sendGrid-api-key>', 'Send Grid API Key', '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')
         // .option('--sendGrid-mail-from <sendGrid-mail-from>', 'The sender mail Id to be used in sending the emails', 'info@easygolftour.com')
 const sendGrid = {
