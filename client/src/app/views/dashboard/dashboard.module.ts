@@ -22,6 +22,13 @@ const routes = [
           import('../../views/dashboard/course/course.module').then((m) => m.CourseModule),
         canActivate: [AuthGuard],
       },
+      {
+        path: 'progress',
+        loadChildren: () =>
+          import('../../views/dashboard/progress/progress.module').then((m) => m.ProgressModule),
+        canActivate: [AuthGuard],
+      },
+      
       { path: '**', redirectTo: 'user' },
 
     ],

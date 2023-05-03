@@ -18,7 +18,8 @@ router.get('/course/:id/slide/:slideid/details', verifyToken, courseController.g
 router.post('/course/:id/slide/:slideid/markProgress', verifyToken, progressController.markProgress)
 router.get('/course/:id/getProgress', verifyToken, progressController.getProgress)
 
-
+router.put('/changePassword', verifyToken, userController.changePassword)
+router.put('/profile', verifyToken, userController.updateProfile)
 
 
 module.exports = router;

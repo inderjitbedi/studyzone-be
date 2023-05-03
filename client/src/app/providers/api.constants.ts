@@ -34,7 +34,9 @@ export const apiConstants = {
     courseEnrollment: 'admin/course/:id/enrollUser',
     getEnrollments: 'admin/course/:id/getEnrollments',
     getEnrollmentRequests: 'admin/course/:id/getEnrollmentRequests',
-    getUsersToEnroll:'admin/course/:id/getUsersToEnroll'
+    getUsersToEnroll:'admin/course/:id/getUsersToEnroll',
+
+    analytics:'admin/analytics/list/:type'
 };
 
 

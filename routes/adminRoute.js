@@ -5,6 +5,7 @@ const fileController = require('../controllers/fileController');
 const slideController = require('../controllers/slideController');
 const verifyToken = require('../providers/jwtMiddleware');
 const upload = require('../providers/uploadFile');
+const progressController = require('../controllers/progressController');
 const router = express.Router();
 
 
@@ -33,23 +34,18 @@ router.put('/course/:id/comment/:commentid', verifyToken, courseController.delet
 router.get('/course/:id/slide/list', verifyToken, slideController.listSlides)
 router.get('/course/:id/slide/:slideid', verifyToken, slideController.getSlideDetails)
 router.put('/course/:id/slide/list/reorder', verifyToken, slideController.reorderSlides)
-
 router.put('/course/:id/slide/:slideid', verifyToken, slideController.editSlide)
 router.post('/course/:id/slide', verifyToken, slideController.addSlide)
-
 
 router.post('/course/:id/enrollUser', verifyToken, courseController.enrollUser)
 router.get('/course/:id/getEnrollments', verifyToken, courseController.getCourseEnrollment)
 router.get('/course/:id/getUsersToEnroll', verifyToken, courseController.getUsersToEnroll)
 router.get('/course/:id/getEnrollmentRequests', verifyToken, courseController.getEnrollmentRequests)
-
 router.put('/course/:id/manageEnrollment/:enrollmentId', verifyToken, courseController.manageCourseEnrollment)
-
 router.put('/course/:id/manageEnrollmentRequest/:enrollmentId', verifyToken, courseController.manageCourseEnrollmentRequest)
 
-
-
-// router.post('/file/upload/:type', verifyToken, fileController.upload)
-
 router.post('/file/upload/:type', verifyToken, upload.single('file'), fileController.upload);
+
+router.get('/analytics/list/:type', courseController.getAnalytics)
+
 module.exports = router;

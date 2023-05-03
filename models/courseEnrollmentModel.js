@@ -16,7 +16,6 @@ const courseEnrollmentSchema = new mongoose.Schema({
     isEnrolled: { type: Boolean, default: false },
     enrolledOn: { type: Date },
 
-    progress: { type: mongoose.Schema.Types.Decimal128, default: 0 },
     isCompleted: { type: Boolean, default: false },
     completedOn: { type: Date },
 

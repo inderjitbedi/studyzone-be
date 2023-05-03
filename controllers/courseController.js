@@ -228,7 +228,6 @@ const courseController = {
     // for admin
     async getCourseEnrollment(req, res) {
         try {
-            req.params.id
             const course = await Course.findById(req.params.id)
             let filters = {
                 course: req.params.id,
@@ -645,6 +644,100 @@ const courseController = {
             res.json({ slide: { ...slide.toObject(), isCompleted: progress?.isCompleted || false }, message: 'Slide details fetched successfully' });
         } catch (error) {
             console.error("\n\nadminController:getSlideDetails:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
+
+    async getAnalytics(req, res) {
+        try {
+            let filters = {
+                isDeleted: false,
+                isEnrolled: true,
+                // $or: [
+                //     { enrollmentRequestedBy: req.user._id },
+                //     { user: req.user._id }
+                // ],
+                course: { $ne: null }
+            }
+
+            let courseFilters = {
+                isDeleted: false,
+                isEnrolled: true,
+                isPublished: true
+            }
+            if (req.params.type) {
+                courseFilters.type = req.params.type
+            }
+            if (req.query.searchKey) {
+                courseFilters.$or = [
+                    { name: { $regex: req.query.searchKey, $options: 'i' } },
+                    { description: { $regex: req.query.searchKey, $options: 'i' } },
+                ]
+            }
+
+
+            let enrollments = await CourseEnrollment.find(filters)
+                // .skip(startIndex)
+                // .limit(limit)
+                .populate({
+                    path: 'user',
+                    select: ['fullName', 'email']
+                }).populate({
+                    path: 'course',
+                    select: ['name', 'type', 'slideCount', 'cover'],
+                    match: courseFilters,
+                    populate: ['cover']
+                }).populate({
+                    path: 'enrollmentRequestedBy',
+                    select: ['fullName', 'email']
+                });
+
+            let coursesWithProgress = [];
+            for (let enrollment of enrollments) {
+                if (enrollment.course !== null) {
+                    const courseId = enrollment.course._id;
+                    const totalSlides = await Slide.countDocuments({ course: courseId, isDeleted: false });
+                    const completedSlides = await Progress.countDocuments({ course: courseId, user: enrollment.user ? enrollment.user?._id : enrollment.enrollmentRequestedBy?._id, isCompleted: true, isDeleted: false });
+                    const latestProgress = await Progress.findOne({ course: courseId, user: enrollment.user ? enrollment.user?._id : enrollment.enrollmentRequestedBy?._id, isDeleted: false }) .sort({ updatedAt: -1 })
+                    .limit(1);
+                    const progress = totalSlides === 0 ? 0 : Math.round(completedSlides / totalSlides * 100);
+                    coursesWithProgress.push({
+                        course: enrollment.course,
+                        user: enrollment.user || enrollment.enrollmentRequestedBy,
+                        progress,
+                        enrollment,
+                        latestProgress
+                    });
+                }
+            }
+
+            // const page = parseInt(req.query.page) || 1;
+            // const limit = parseInt(req.query.limit) || 6;
+            // const startIndex = (page - 1) * limit;
+            // const endIndex = page * limit;
+
+            // coursesWithProgress = coursesWithProgress.slice(startIndex, endIndex);
+
+            // const courses1 = enrollments.filter(e => e.course !== null);
+            console.log("\n\ncoursesWithProgress ==== ", coursesWithProgress.length);
+
+            let totalEnrolledCourses = await CourseEnrollment.find(filters).populate({
+                path: 'course',
+                match: courseFilters,
+            });
+            totalEnrolledCourses = totalEnrolledCourses.filter(e => e.course !== null);
+
+            console.log("\n\ntotalEnrolledCourses", totalEnrolledCourses.length);
+            // const pagination = {
+            //     totalPages: Math.ceil(totalEnrolledCourses?.length / limit),
+            //     currentPage: page
+            // };
+            // pagination,totalCourses: totalEnrolledCourses?.length, 
+
+            res.json({ courses: coursesWithProgress,  message: 'My courses fetched successfully' });
+
+        } catch (error) {
+            console.error("\n\nadminController:addComment:error -", error);
             res.status(400).json({ message: error.toString() });;
         }
     },
