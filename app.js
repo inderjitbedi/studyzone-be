@@ -12,7 +12,7 @@ const swagger = require('./swagger');
 const loggerMiddleware = require('./providers/loggerMiddleware');
 
 dotenv.config();
-
+console.log(process.env);
 const app = express();
 app.use(express.json());
 
