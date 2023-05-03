@@ -1,29 +1,111 @@
 <div class="title-group">
     <div class="title">
-        <h1 class="mat-h1">
+        <h1 class="h1">
             <!-- <a class="link" routerLink="/dashboard/course">FAQ Category List</a> > <i>{{selectedCourseCategoryDoc?.name|titlecase}}</i> > -->
             Course List
+            <p class="line italic">7 courses</p>
         </h1>
     </div>
+
+</div>
+<div class="flex space-between mb-15">
+    <nav mat-tab-nav-bar>
+        <a mat-tab-link *ngFor="let link of navLinks" (click)="updateUrl(link)"
+            [active]="currentUrl.indexOf(link.link)>-1">{{link.label}}
+        </a>
+    </nav>
     <div class="title-buttons ">
         <button mat-raised-button color="primary" (click)="openAddCourseForm(false)">
-            Add course
+            <mat-icon>add</mat-icon> Add New
         </button>
     </div>
 </div>
 <mat-divider fxFlex="1 0"></mat-divider>
-<nav mat-tab-nav-bar>
-    <a mat-tab-link *ngFor="let link of navLinks" (click)="updateUrl(link)"
-        [active]="currentUrl.indexOf(link.link)>-1">{{link.label}}
-    </a>
-</nav>
 
-<p class="no-data" *ngIf="!apiCallActive && dataSource?.filteredData?.length <= 0">
+<p class="no-data" *ngIf="!apiCallActive && courses?.length <= 0">
     There is no course created yet!
 </p>
 
-<div class="container" *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<div *ngIf="!apiCallActive && courses?.length > 0">
+    <div class="row">
+        <div class="col-12 mt-10">
+            <div class="card mt-10 p-3 flex flex-row" *ngFor="let course of courses; let i = index">
+                <img [src]="course?.cover?.path? baseUrl + course?.cover?.path:'../assets/jillyAcadey.png'"
+                    class="col-sm-4 col-lg-3" alt="...">
+                <div class="card-body col-lg-9 col-sm-8 flex flex-row">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-6">
+                            <h2 class="card-title h2 cursor-pointer"
+                                [routerLink]="['/dashboard/course/details/',course._id]">
+                                {{course.name|titlecase}}</h2>
+                            <!-- <span class="lesson">40+ lessons </span> -->
+                            <p class="card-text">{{course.description}}</p>
+                            <div class="d-flex">
+                                <!-- <span class="badge badge-pill badge-danger">Paid</span>
+                                <span class="badge badge-pill badge-light">Private</span> -->
+                                <span class="badge badge-pill badge-success" *ngIf="course.type =='public'">Free</span>
+                                <span class="badge badge-pill badge-danger" *ngIf="course.type =='paid'">Paid</span>
+                                <span class="badge badge-pill badge-light"
+                                    *ngIf="course.type =='private'">Private</span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4 published">
+                            Published <mat-slide-toggle [(ngModel)]="course.isPublished"
+                                (click)="$event.preventDefault();manageCourseVisibility( i,course)"
+                                name="enablepublished"></mat-slide-toggle>
+                            <a class="">
+                                <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="39.5" y="0.5" width="39" height="39" rx="19.5"
+                                        transform="rotate(90 39.5 0.5)" fill="white" stroke="#F3F3F3" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20 10C21.1046 10 22 10.8954 22 12C22 13.1046 21.1046 14 20 14C18.8954 14 18 13.1046 18 12C18 10.8954 18.8954 10 20 10ZM20 18C21.1046 18 22 18.8954 22 20C22 21.1046 21.1046 22 20 22C18.8954 22 18 21.1046 18 20C18 18.8954 18.8954 18 20 18ZM22 28C22 26.8954 21.1046 26 20 26C18.8954 26 18 26.8954 18 28C18 29.1046 18.8954 30 20 30C21.1046 30 22 29.1046 22 28Z"
+                                        fill="#BFBFBF" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="card p-3 mt-10 flex flex-row">
+                <img src="../assets/jillyAcadey.png" class="col-sm-4 col-lg-3" alt="...">
+                <div class="card-body col-lg-9 col-sm-8 flex flex-row">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-6">
+                            <h2 class="card-title h2">The Brand Strategy</h2>
+                            <span class="lesson">40+ lessons </span>
+                            <p class="card-text">A deep dive into the foundation of your business, the value you
+                                provide,
+                                understanding your customer and developing your brand!</p>
+                            <div class="d-flex">
+                                <span class="badge badge-pill badge-danger">Paid</span>
+                                <span class="badge badge-pill badge-light">Private</span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4 published">
+                            Published <mat-slide-toggle ngModel name="enablepublished"></mat-slide-toggle>
+                            <a class=""><svg width="40" height="40" viewBox="0 0 40 40" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="39.5" y="0.5" width="39" height="39" rx="19.5"
+                                        transform="rotate(90 39.5 0.5)" fill="white" stroke="#F3F3F3" />
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20 10C21.1046 10 22 10.8954 22 12C22 13.1046 21.1046 14 20 14C18.8954 14 18 13.1046 18 12C18 10.8954 18.8954 10 20 10ZM20 18C21.1046 18 22 18.8954 22 20C22 21.1046 21.1046 22 20 22C18.8954 22 18 21.1046 18 20C18 18.8954 18.8954 18 20 18ZM22 28C22 26.8954 21.1046 26 20 26C18.8954 26 18 26.8954 18 28C18 29.1046 18.8954 30 20 30C21.1046 30 22 29.1046 22 28Z"
+                                        fill="#BFBFBF" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+
+    <!-- <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>#</th>
             <td mat-cell *matCellDef="let element; let i = index"> {{i+1}} </td>
@@ -39,12 +121,10 @@
         <ng-container matColumnDef="isPublished">
             <th mat-header-cell *matHeaderCellDef> Status </th>
             <td mat-cell *matCellDef="let element; let i = index">
-                <!-- [indeterminate]="someComplete()"  -->
                 <mat-checkbox [checked]="element.isPublished"
                     (click)="$event.preventDefault();manageCourseVisibility( i,element)">
                     Published
                 </mat-checkbox>
-                <!-- {{element.isPublished?'Published':'Not Published'}} -->
             </td>
         </ng-container>
         <ng-container matColumnDef="action">
@@ -58,11 +138,11 @@
                     <mat-icon>visibility</mat-icon>
                 </button>
                 <button mat-icon-button color="warn" (click)="delete(i,element)" aria-label="delete">
-                     <mat-icon >delete_outline</mat-icon>
+                    <mat-icon>delete_outline</mat-icon>
                 </button>
             </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+    </table> -->
 </div>

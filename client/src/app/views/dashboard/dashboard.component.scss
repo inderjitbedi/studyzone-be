@@ -4,15 +4,17 @@ mat-toolbar {
 }
 
 mat-sidenav {
-    margin: 16px;
-    width: 200px;
+    width: 250px;
     border-right: none;
-    background: #002b5c;
-    color: white;
-    border-radius: 10px;
-    padding: 16px;
+    background: #fff;
+    color: #8F8F8F;
+    box-sizing: border-box;
+    padding: 16px 24px;
     text-align: center;
+    font-size: 13px;
+    box-shadow: none;
 }
+
 .menu-button {
     width: 100%;
     display: flex;
@@ -23,26 +25,55 @@ mat-sidenav {
     mat-icon {
         margin-right: 8px;
     }
-    &.active{
+
+    &.active {
         border: 1px solid white;
     }
 }
 
 
 .content {
-    height: calc(100vh - 140px);
-    border-radius: 10px;
-    margin: 16px;
-    margin-left: 32px;
-    padding:20px;
+    height: calc(100vh - 40px);
+    padding: 16px 32px;
     overflow-y: auto;
     justify-content: center;
     align-items: center;
     font-size: 2rem;
     color: lightgray;
+    background: #F9F9F9;
+    box-shadow: none;
 }
 
 
 mat-sidenav-container {
     height: calc(100vh - 65px);
+
+    mat-sidenav {
+        svg {
+            margin-right: 10px;
+
+            path {
+                stroke: #8F8F8F;
+            }
+        }
+
+        .mat-icon {
+            font-size: 16px;
+        }
+
+        button {
+            &.active {
+                color: #1D1D1D;
+                background-color: #F3F5F8;
+
+                svg {
+                    path {
+                        stroke: #1D1D1D;
+                    }
+                }
+            }
+
+
+        }
+    }
 }

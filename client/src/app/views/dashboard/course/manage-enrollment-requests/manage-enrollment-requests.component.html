@@ -13,7 +13,7 @@
     There is no enrollment requests yet!
 </p>
 
-<div class="container" *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
+<div *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>#</th>

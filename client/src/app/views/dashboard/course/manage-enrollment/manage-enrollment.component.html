@@ -1,24 +1,24 @@
 <div class="flex-row">
-    <div class="title" *ngIf=" dataSource?.filteredData?.length > 0">
+    <!-- <div class="title" *ngIf=" dataSource?.filteredData?.length > 0">
         <h1 class="mat-h1">
-            <!-- <a class="link" routerLink="/dashboard/course">FAQ Category List</a> > <i>{{selectedCourseCategoryDoc?.name|titlecase}}</i> > -->
+           <a class="link" routerLink="/dashboard/course">FAQ Category List</a> > <i>{{selectedCourseCategoryDoc?.name|titlecase}}</i> 
             Enrolled Users
         </h1>
-    </div>
+    </div> -->
     <div class="title-buttons " *ngIf="courseDetails.type == 'private'">
         <button mat-raised-button color="primary" (click)="openEnrollUserForm()">
             Enroll new
         </button>
     </div>
 </div>
-<mat-divider fxFlex="1 0" *ngIf=" dataSource?.filteredData?.length > 0"></mat-divider>
+<!-- <mat-divider fxFlex="1 0" *ngIf=" dataSource?.filteredData?.length > 0"></mat-divider> -->
 
 
 <p class="no-data flex-start" *ngIf="!apiCallActive && dataSource?.filteredData?.length <= 0">
     There is no {{courseDetails.type == 'paid'?'enrollment requested':'user enrolled'}} yet!
 </p>
 
-<div class="container" *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
+<div *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>#</th>
@@ -47,7 +47,7 @@
             <td mat-cell *matCellDef="let element"> {{element.requestStatus | titlecase }} </td>
         </ng-container>
 
-        
+
         <!-- <ng-container matColumnDef="progress">
             <th mat-header-cell *matHeaderCellDef> Progress </th>
             <td mat-cell *matCellDef="let element"> {{element.progress.$numberDecimal +"%"}} </td>
@@ -55,8 +55,8 @@
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let element; let i = index">
-                  <button mat-icon-button color="warn" (click)="openConfirmDialog(i,element)" aria-label="delete">
-                     <mat-icon >delete_outline</mat-icon>
+                <button mat-icon-button color="warn" (click)="openConfirmDialog(i,element)" aria-label="delete">
+                    <mat-icon>delete_outline</mat-icon>
                 </button>
             </td>
         </ng-container>

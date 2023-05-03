@@ -13,7 +13,6 @@
 mat-card-title,
 mat-card-content {
   display: flex;
-  justify-content: center;
 }
 
 .error {
@@ -30,6 +29,7 @@ mat-card-content {
 
 .mat-card {
   padding: 20px;
+  box-shadow: none;
 }
 
 .mat-card-title {
@@ -37,6 +37,19 @@ mat-card-content {
 }
 
 .login-form {
-  width: 445px;
+  max-width: 445px;
+  width: 100%;
   margin: auto;
+}
+
+input,
+.mat-input-element {
+  font-size: 16px;
+  line-height: 46px;
+  font-weight: 400;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #8F8F8F;
+  padding-left: 20px;
+  padding-right: 20px;
 }

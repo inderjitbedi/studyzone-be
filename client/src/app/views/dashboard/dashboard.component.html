@@ -6,12 +6,21 @@
     <mat-sidenav class="mat-elevation-z8 sidenav">
         <button mat-button class="menu-button active" routerLink="/dashboard/user/list" routerLinkActive="active"
             [ngClass]="{'active': currentUrl?.indexOf('user')>-1}">
-            <mat-icon>question_answer</mat-icon>
+            <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M15 12.1974C16.2133 12.8069 17.2534 13.785 18.0127 15.008C18.1631 15.2502 18.2382 15.3713 18.2642 15.539C18.3171 15.8798 18.084 16.2988 17.7666 16.4336C17.6104 16.5 17.4347 16.5 17.0833 16.5M13.3333 8.6102C14.5681 7.99657 15.4167 6.72238 15.4167 5.25C15.4167 3.77762 14.5681 2.50343 13.3333 1.8898M11.6667 5.25C11.6667 7.32107 9.98774 9 7.91667 9C5.8456 9 4.16667 7.32107 4.16667 5.25C4.16667 3.17893 5.8456 1.5 7.91667 1.5C9.98774 1.5 11.6667 3.17893 11.6667 5.25ZM2.13269 14.782C3.46128 12.7871 5.55781 11.5 7.91667 11.5C10.2755 11.5 12.3721 12.7871 13.7006 14.782C13.9917 15.219 14.1372 15.4375 14.1205 15.7166C14.1074 15.9339 13.965 16.2 13.7913 16.3313C13.5683 16.5 13.2615 16.5 12.648 16.5H3.1853C2.57181 16.5 2.26507 16.5 2.04203 16.3313C1.86837 16.2 1.72591 15.9339 1.71286 15.7166C1.69611 15.4375 1.84164 15.219 2.13269 14.782Z"
+                    stroke="#8F8F8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
             <span>Users</span>
         </button>
         <button mat-button class="menu-button " routerLink="/dashboard/course/list/public" routerLinkActive="active"
             [ngClass]="{'active': currentUrl.indexOf('course')>-1}">
-            <mat-icon>event</mat-icon>
+            <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M9.66667 9.16663H4.66667M6.33334 12.5H4.66667M11.3333 5.83329H4.66667M14.6667 5.66663V14.3333C14.6667 15.7334 14.6667 16.4335 14.3942 16.9683C14.1545 17.4387 13.7721 17.8211 13.3016 18.0608C12.7669 18.3333 12.0668 18.3333 10.6667 18.3333H5.33334C3.9332 18.3333 3.23314 18.3333 2.69836 18.0608C2.22795 17.8211 1.8455 17.4387 1.60582 16.9683C1.33334 16.4335 1.33334 15.7334 1.33334 14.3333V5.66663C1.33334 4.26649 1.33334 3.56643 1.60582 3.03165C1.8455 2.56124 2.22795 2.17879 2.69836 1.93911C3.23314 1.66663 3.9332 1.66663 5.33334 1.66663H10.6667C12.0668 1.66663 12.7669 1.66663 13.3016 1.93911C13.7721 2.17879 14.1545 2.56124 14.3942 3.03165C14.6667 3.56643 14.6667 4.26649 14.6667 5.66663Z"
+                    stroke="#8F8F8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+
             <span>Courses </span>
         </button>
         <!-- <button mat-button class="menu-button" routerLink="/dashboard/reminders"  routerLinkActive="active"
@@ -20,7 +29,10 @@
             <span>Reminders</span>
         </button> -->
         <div class="move-to-end of side nav">
-            <mat-divider></mat-divider>
+            <button mat-button class="menu-button">
+                <mat-icon>settings</mat-icon>
+                <span>Settings</span>
+            </button>
             <button mat-button class="menu-button" (click)="logout()">
                 <mat-icon>logout</mat-icon>
                 <span>Logout</span>
@@ -33,5 +45,8 @@
         <div class="content mat-elevation-z8">
             <router-outlet></router-outlet>
         </div>
+        <footer>
+            &#169; 2023
+        </footer>
     </mat-sidenav-content>
 </mat-sidenav-container>

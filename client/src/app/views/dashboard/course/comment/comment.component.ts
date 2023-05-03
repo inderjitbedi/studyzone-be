@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'src/app/providers/alert.service';
 import { apiConstants } from 'src/app/providers/api.constants';
@@ -10,19 +10,19 @@ import { ConfirmDialogComponent } from 'src/app/views/common/confirm-dialog/conf
 @Component({
   selector: 'comment',
   templateUrl: './comment.component.html',
-  styleUrls: ['./comment.component.scss']
+  styleUrls: ['./comment.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CommentComponent implements OnInit {
-
   constructor(
     private apiService: CommonAPIService,
     public dialog: MatDialog,
     private errorHandlingService: ErrorHandlingService,
-    private alertService: AlertService,) { }
+    private alertService: AlertService
+  ) {}
 
   ngOnInit(): void {
-    console.log(this.comment); 
-    
+    console.log(this.comment);
   }
 
   @Input() comment: any;
@@ -34,7 +34,10 @@ export class CommentComponent implements OnInit {
       minWidth: '320px',
       width: '585px',
       disableClose: true,
-      data: { heading: "Delete slide", message: "Are you sure you want to delete this comment?" },
+      data: {
+        heading: 'Delete slide',
+        message: 'Are you sure you want to delete this comment?',
+      },
     });
     this.confirmDialogRef.afterClosed().subscribe({
       next: (data: any) => {
@@ -46,8 +49,14 @@ export class CommentComponent implements OnInit {
   }
 
   deleteComment(commentId: any) {
-    this.apiService.put(apiConstants.deleteComment.replace(":id", this.courseId)
-      .replace(":commentId", commentId), { isDeleted: true }).subscribe({
+    this.apiService
+      .put(
+        apiConstants.deleteComment
+          .replace(':id', this.courseId)
+          .replace(':commentId', commentId),
+        { isDeleted: true }
+      )
+      .subscribe({
         next: (data) => {
           // if (data.statusCode === 201 || data.statusCode === 200) {
 
@@ -75,15 +84,15 @@ export class CommentComponent implements OnInit {
   }
 
   addComment(commentId: any) {
-    this.apiService.post(apiConstants.addComment.replace(":id", this.courseId),
-      {
+    this.apiService
+      .post(apiConstants.addComment.replace(':id', this.courseId), {
         text: '',
-        parent: ''
-      }).subscribe({
+        parent: '',
+      })
+      .subscribe({
         next: (data) => {
           // if (data.statusCode === 201 || data.statusCode === 200) {
 
-          
           // this.rootComments.forEach((rootComment: any, index: any) => {
           //   if (rootComment._id === commentId) {
           //     this.rootComments.splice(index, 1);

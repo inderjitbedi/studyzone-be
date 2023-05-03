@@ -13,12 +13,13 @@ import { UserFormComponent } from '../user-form/user-form.component';
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss']
+  styleUrls: ['./user-list.component.scss'],
 })
 export class UserListComponent implements OnInit {
   addUserDialogRef: any;
   displayedColumns: string[];
   dataSource: any;
+  users: any = [];
   apiCallActive: boolean = true;
   selectedUserCategory: any;
   constructor(
@@ -33,23 +34,28 @@ export class UserListComponent implements OnInit {
     this.activeRoute.params.subscribe({
       next: (route) => {
         this.getUsers();
-      }
-    })
+      },
+    });
   }
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
   openConfirmDialog(index: number, user: any): void {
     this.addUserDialogRef = this.dialog.open(ConfirmDialogComponent, {
       minWidth: '320px',
       width: '585px',
       disableClose: true,
-      data: { user, heading: (user.isActive ? "Deactivate" : "Activate") + " User", message: "Are you sure you want to " + (user.isActive ? "de" : "") + "activate this user?" },
+      data: {
+        user,
+        heading: (user.isActive ? 'Deactivate' : 'Activate') + ' User',
+        message:
+          'Are you sure you want to ' +
+          (user.isActive ? 'de' : '') +
+          'activate this user?',
+      },
     });
     this.addUserDialogRef.afterClosed().subscribe({
       next: (data: any) => {
         if (data) {
-          this.manageUser(index, user)
+          this.manageUser(index, user);
         }
       },
     });
@@ -72,13 +78,13 @@ export class UserListComponent implements OnInit {
   }
   selectedUserCategoryDoc: any;
   getUsers() {
-
     this.apiCallActive = true;
     this.apiService.get(apiConstants.user).subscribe({
       next: (data) => {
         this.apiCallActive = false;
         // if (data.statusCode === 200) {
-        this.dataSource = new MatTableDataSource<any>(data.users || []);
+        this.users = data.users || [];
+        // this.dataSource = new MatTableDataSource<any>(data.users || []);
         // } else {
         //   this.errorHandlingService.handle(data);
         // }
@@ -90,17 +96,22 @@ export class UserListComponent implements OnInit {
     });
   }
   manageUser(index: number, user: any) {
-    this.apiService.put(apiConstants.manageUserAccess, { email: user.email, isActive: !user.isActive }).subscribe({
-      next: (data) => {
-        // if (data.statusCode === 201 || data.statusCode === 200) {
-          const isActive = this.dataSource.data[index].isActive;
-          this.dataSource.data[index].isActive = !isActive;
-        this.alertService.notify(data.message);
-        // } else {
-        //   this.errorHandlingService.handle(data);
-        // }
-      },
-      error: (e) => this.errorHandlingService.handle(e),
-    });
+    this.apiService
+      .put(apiConstants.manageUserAccess, {
+        email: user.email,
+        isActive: !user.isActive,
+      })
+      .subscribe({
+        next: (data) => {
+          // if (data.statusCode === 201 || data.statusCode === 200) {
+          const isActive = this.users[index].isActive;
+          this.users[index].isActive = !isActive;
+          this.alertService.notify(data.message);
+          // } else {
+          //   this.errorHandlingService.handle(data);
+          // }
+        },
+        error: (e) => this.errorHandlingService.handle(e),
+      });
   }
 }

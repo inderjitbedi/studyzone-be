@@ -1,21 +1,76 @@
 <div class="title-group">
     <div class="title">
-        <h1 class="mat-h1">
+        <h1 class="h1">
             <!-- <a class="link" routerLink="/dashboard/user">FAQ Category List</a> > <i>{{selectedUserCategoryDoc?.name|titlecase}}</i> > -->
             User List
+            <p class="line italic">10 users</p>
         </h1>
     </div>
     <div class="title-buttons ">
         <button mat-raised-button color="primary" (click)="openUserInviteForm(false)">
-            Invite user
+            <mat-icon>add</mat-icon> Invite User
         </button>
     </div>
 </div>
-<mat-divider fxFlex="1 0"></mat-divider>
-<p class="no-data" *ngIf="!apiCallActive && dataSource?.filteredData?.length <= 0">
+<mat-divider fxFlex="1 0" class=""></mat-divider>
+<p class="no-data" *ngIf="!apiCallActive && users?.length <= 0">
     There is no User created yet!
 </p>
-<div class="container" *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
+<div class="flex flex-row space-between gap mt-10">
+    <mat-card class="example-card " *ngFor="let user of users">
+        <mat-card-header>
+            <mat-card-title>{{(user?.firstName?(user?.firstName+'
+                '+user?.lastName):user?.fullName)| titlecase}}</mat-card-title>
+            <mat-card-subtitle>{{user.email}} </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-actions>
+            <button class="active-chip" *ngIf="user.isActive && user.isSignedUp">Active</button>
+            <button class="deactivated-chip" *ngIf="!user.isActive && user.isSignedUp">Deactivated</button>
+            <button class="disabled-chip" *ngIf="user.isActive && !user.isSignedUp">Invitation sent</button>
+
+
+            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g filter="url(#filter0_d_263_1997)">
+                        <rect x="27" y="1" width="24" height="24" rx="12" transform="rotate(90 27 1)" fill="white" />
+                        <rect x="26.5" y="1.5" width="23" height="23" rx="11.5" transform="rotate(90 26.5 1.5)"
+                            stroke="#F3F3F3" />
+                    </g>
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M15 6.5C15.8284 6.5 16.5 7.17157 16.5 8C16.5 8.82843 15.8284 9.5 15 9.5C14.1716 9.5 13.5 8.82843 13.5 8C13.5 7.17157 14.1716 6.5 15 6.5ZM15 11.5C15.8284 11.5 16.5 12.1716 16.5 13C16.5 13.8284 15.8284 14.5 15 14.5C14.1716 14.5 13.5 13.8284 13.5 13C13.5 12.1716 14.1716 11.5 15 11.5ZM16.5 18C16.5 17.1716 15.8284 16.5 15 16.5C14.1716 16.5 13.5 17.1716 13.5 18C13.5 18.8284 14.1716 19.5 15 19.5C15.8284 19.5 16.5 18.8284 16.5 18Z"
+                        fill="#8F8F8F" />
+                    <defs>
+                        <filter id="filter0_d_263_1997" x="0" y="0" width="30" height="30" filterUnits="userSpaceOnUse"
+                            color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dy="2" />
+                            <feGaussianBlur stdDeviation="1.5" />
+                            <feComposite in2="hardAlpha" operator="out" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0" />
+                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_263_1997" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_263_1997"
+                                result="shape" />
+                        </filter>
+                    </defs>
+                </svg>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="#">Separated link</a></li>
+            </ul>
+        </mat-card-actions>
+    </mat-card>
+</div>
+<!-- <div class="">
+
+
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>#</th>
@@ -23,7 +78,8 @@
         </ng-container>
         <ng-container matColumnDef="fullName">
             <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let element"> {{(element?.firstName?(element?.firstName+' '+element?.lastName):element?.fullName)| titlecase}} </td>
+            <td mat-cell *matCellDef="let element"> {{(element?.firstName?(element?.firstName+'
+                '+element?.lastName):element?.fullName)| titlecase}} </td>
         </ng-container>
         <ng-container matColumnDef="email">
             <th mat-header-cell *matHeaderCellDef> Email </th>
@@ -36,9 +92,6 @@
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let element; let i = index">
-                <!-- <button mat-icon-button color="primary" (click)="openUserInviteForm(false,element)" aria-label="view">
-                    <mat-icon>edit</mat-icon>
-                </button> -->
                 <button mat-icon-button color="primary" (click)="openUserInviteForm(true,element)" aria-label="view">
                     <mat-icon>visibility</mat-icon>
                 </button>
@@ -51,4 +104,4 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-</div>
+</div> -->

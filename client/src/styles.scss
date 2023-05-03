@@ -17,6 +17,18 @@ body,
     flex-direction: column !important;
 }
 
+.bg-white {
+    background-color: #fff !important;
+}
+
+.mx-24 {
+    margin: 0 24px;
+}
+
+.w-150px {
+    width: 150px;
+}
+
 .move-to-end {
     margin-top: auto;
 }
@@ -58,6 +70,10 @@ body,
     margin-top: 20px !important;
 }
 
+.mt-10 {
+    margin-top: 10px;
+}
+
 .container-div {
     position: relative;
 
@@ -92,7 +108,7 @@ body,
 }
 
 .mb-10 {
-    margin-bottom: 10px;
+    margin-bottom: 10px !important;
 }
 
 .mat-toolbar-header {
@@ -217,16 +233,8 @@ body,
 
 .title-group {
     display: flex;
-
-    h1 {
-        color: #000;
-    }
-
     flex-direction: row;
-
-    button {
-        margin: 0 0 15px 15px;
-    }
+    margin-bottom: 27px;
 
     .title,
     .title-buttons {
@@ -329,22 +337,15 @@ body,
     padding: 0;
 }
 
+.mat-card {
+    flex: 1 1 29%;
+}
+
 .title-group {
-    margin-bottom: 20px;
-    padding: 8px;
     color: #000;
-    background: linear-gradient(#cce5ff, #c5d8ef);
-    border: 1px solid #c5d8ef;
-    border-radius: 5px;
 
     h1 {
         margin-bottom: 0;
-    }
-
-    p {
-        font-size: 12px;
-        color: #838383;
-        margin: 0;
     }
 
     span:not(.mat-button-wrapper) {
@@ -394,7 +395,7 @@ body,
 }
 
 .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
-    background-color: #449258;
+    background-color: #fff;
 }
 
 .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
@@ -437,10 +438,23 @@ a {
 
 }
 
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+    ;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
 .flex-start {
     justify-content: flex-start !important;
 }
 
+.space-between {
+    justify-content: space-between;
+}
 
 $theme: #454cad;
 $dark-text: #5f6982;
@@ -603,6 +617,10 @@ $dark-text: #5f6982;
     }
 }
 
+.mb-15 {
+    margin-bottom: 15px;
+}
+
 .h1,
 .mat-typography h1 {
     font-size: 24px;
@@ -613,7 +631,27 @@ $dark-text: #5f6982;
 
 }
 
-.title {}
+.h2 {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+    color: #3F3F3F;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.line {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    margin: 0 !important;
+
+}
 
 .text {
     font-size: 16px;
@@ -624,23 +662,334 @@ $dark-text: #5f6982;
     color: #8F8F8F;
 }
 
-.form-label {
+.form-label,
+mat-label {
     font-size: 14px;
     font-weight: 500;
     line-height: 18px;
     letter-spacing: 0em;
     text-align: left;
     color: #242731;
-
+    margin-bottom: 10px;
+    display: block;
 }
 
-.mat-card:not([class*=mat-elevation-z]) {
-    box-shadow: none;
+input,
+.mat-input-element {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #8F8F8F !important;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+    width: 100%;
 }
+
+
 
 button.mat-primary.mat-raised-button {
     background: #007AFF;
     box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.05);
     border-radius: 8px;
-    padding: 8px 16px;
+    padding: 8px 15px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.mat-icon {
+    font-size: 13px;
+    line-height: 15px;
+    width: 15px !important;
+    height: 15px !important;
+}
+
+.mat-form-field-flex {
+    border: 1px solid #8F8F8F !important;
+    border-radius: 8px;
+    height: 56px;
+}
+
+.mat-form-field-infix {
+    border: 0 !important;
+}
+
+.mat-form-field-appearance-legacy .mat-form-field-underline {
+    background-color: transparent;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.mat-form-field.mat-form-field-invalid .mat-form-field-ripple,
+.mat-form-field.mat-form-field-invalid .mat-form-field-ripple.mat-accent,
+.mat-form-field-ripple {
+    background-color: transparent !important;
+}
+
+.mat-form-field.mat-form-field-invalid .mat-form-field-flex {
+    border-color: #f44336;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.mat-card.example-card {
+    padding: 16px 24px;
+
+    .mat-card-header {
+        width: 100%;
+    }
+
+    .mat-card-header-text {
+        margin: 0;
+        width: 100%;
+
+        .mat-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            color: #3F3F3F;
+        }
+
+        .mat-card-title {
+            margin-bottom: 10px;
+
+            span {
+                color: #00CD83;
+                font-size: 10px;
+                font-weight: 500;
+
+            }
+        }
+
+    }
+
+    .mat-card-actions {
+        padding: 0;
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.gap {
+    gap: 10px;
+}
+
+.active-chip,
+.deactivated-chip,
+.disabled-chip {
+    height: 24px;
+    border-radius: 41px;
+    padding: 8px 13px 8px 13px;
+    background-color: #E2F0FF;
+    color: #007AFF;
+    border: 0;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 10px;
+}
+
+.deactivated-chip {
+    color: #FF5C00;
+    background-color: #FFEFE6;
+}
+
+.disabled-chip {
+    color: #A0A5B0;
+    background-color: #F6F6F6;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+
+footer {
+    height: 40px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 40px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #A0A5B0;
+    background: #F3F3F3;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+
+}
+
+.badge {
+    height: 28px;
+    padding: 8px 13px 8px 13px;
+    font-family: 'Plus Jakarta Sans';
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 14px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #A0A5B0;
+    background: #F7F7F7;
+    border-radius: 41px;
+    margin-right: 8px;
+    font-style: normal;
+
+    &.badge-danger {
+        color: #FF5C00;
+        background-color: #FFEFE6;
+    }
+
+    &.badge-success {
+        color: #00CD83;
+        background-color: #E3FFF5;
+    }
+}
+
+
+.card {
+    border: 0;
+
+    .card-title {
+        font-family: 'Plus Jakarta Sans';
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 22px;
+        letter-spacing: 0em;
+        text-align: left;
+
+    }
+
+    .card-text {
+        font-family: 'Plus Jakarta Sans';
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 24px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: #6D6D6D;
+    }
+
+
+
+    .view-course {
+        font-family: 'Plus Jakarta Sans';
+        font-style: normal;
+        font-weight: 800;
+        font-size: 14px;
+        line-height: 24px;
+        text-decoration-line: underline;
+        color: #007AFF;
+        margin-left: auto;
+    }
+}
+
+.published {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 22px;
+    border-left: 1px solid #E7E7E7;
+    padding-left: 30px;
+    height: 40px;
+    align-self: center;
+    color: #3F3F3F;
+}
+
+mat-slide-toggle {
+    margin: 0 30px 0 10px;
+}
+
+.mat-slide-toggle {
+    .mat-slide-toggle-bar {
+        width: 36px;
+        height: 24px;
+        border-radius: 20px;
+    }
+
+    .mat-slide-toggle-thumb {
+        position: relative;
+        top: 4px;
+    }
+
+    &.mat-checked {
+        .mat-slide-toggle-bar {
+            background-color: #00CD83;
+        }
+    }
+}
+
+
+
+// Breadcrumb
+nav {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin: 0;
+    flex-wrap: wrap;
+
+    .back-button,
+    .download {
+        font-size: 12px;
+        color: #3F3F3F;
+        background: #FFFFFF;
+        border: 1px solid #EEEEEE;
+        border-radius: 68px;
+        min-width: 68px;
+        text-align: center;
+        line-height: 28px;
+        text-decoration: none;
+        height: 32px;
+        margin-right: 20px;
+    }
+
+    .download {
+        min-width: 40px;
+        max-width: 40px;
+    }
+
+    .breadcrumb {
+        margin: 0;
+
+        li {
+            font-size: 12px;
+            line-height: 15px;
+
+            &.active {
+                color: #3F3F3F;
+            }
+
+            a {
+                text-decoration: none !important;
+                color: #8F8F8F !important;
+            }
+
+        }
+    }
+}
+
+@media (max-width:767px) {
+    .card {
+        img {
+            width: 100%;
+        }
+
+        .published {
+            padding-left: 12px;
+            border-left: 0;
+            margin-top: 15px;
+        }
+    }
+
 }
