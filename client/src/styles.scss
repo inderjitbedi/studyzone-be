@@ -88,10 +88,10 @@ body,
         width: 100%;
 
         &.action-buttons {
-            justify-content: right;
+            justify-content: left;
 
             button {
-                margin-left: 10px;
+                margin-right: 10px;
             }
         }
     }
@@ -836,7 +836,7 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-
+    left: 0;
 }
 
 .badge {
@@ -912,6 +912,9 @@ footer {
     height: 40px;
     align-self: center;
     color: #3F3F3F;
+
+    display: flex;
+    align-items: center;
 }
 
 mat-slide-toggle {
@@ -1030,4 +1033,28 @@ nav {
         }
     }
 
+}
+
+
+.mat-progress-spinner circle,
+.mat-spinner circle {
+    stroke: #007AFF !important;
+}
+
+span.title.dialog-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 40px;
+
+}
+
+
+.mat-form-field-flex {
+    line-height: 40px;
+    border: 1px solid #8F8F8F !important;
+    border-radius: 8px;
+    height: 56px;
+    padding: 0 20px;
+    color: #8F8F8F;
+    font-size: 16px;
 }

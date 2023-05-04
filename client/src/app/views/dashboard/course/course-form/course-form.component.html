@@ -15,11 +15,11 @@
         <form [formGroup]="courseForm" fx-layout="column">
             <div fxLayout="column" fxLayout.gt-xs="row" [class.form-div]="!isViewOnly" [class.mt-30]="isViewOnly">
                 <div fxLayout="column" fxLayout.gt-xs="row">
-                    <mat-form-field
+                    <mat-label>Course Name
+                    </mat-label><mat-form-field
                         [class.mb-10]="courseForm.controls['name'].touched && courseForm.controls['name'].hasError('required')"
                         fxFlex="100">
-                        <mat-label>Course Name
-                        </mat-label>
+
                         <input type="text" matInput formControlName="name" trim autocomplete="off"
                             [errorStateMatcher]="matcher" maxlength="50" [readonly]="isViewOnly">
                         <mat-error *ngIf="courseForm.controls['name'].hasError('required')">Required
@@ -40,8 +40,8 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="column" fxLayout.gt-xs="row">
-                    <mat-form-field>
-                        <mat-label>Type</mat-label>
+                    <mat-label>Type</mat-label> <mat-form-field>
+
                         <mat-select formControlName="type">
                             <mat-option *ngFor="let type of types" [value]="type.value">
                                 {{type.name}}
@@ -50,24 +50,25 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="column" fxLayout.gt-xs="row">
-                    <mat-form-field
+                    <mat-label>Course Description
+                    </mat-label> <mat-form-field
                         [class.mb-10]="courseForm.controls['description'].touched && courseForm.controls['description'].hasError('required')"
                         fxFlex="100">
-                        <mat-label>Course Description
-                        </mat-label>
+
                         <textarea matInput rows="8" formControlName="description" trim autocomplete="off"
                             [errorStateMatcher]="matcher" [readonly]="isViewOnly"></textarea>
                         <mat-error *ngIf="courseForm.controls['description'].hasError('required')">Required
                         </mat-error>
                     </mat-form-field>
                 </div>
+                <mat-label>Cover Image *
+                    <mat-icon matTooltip="Please select an image. Max size: 4MB" [matTooltipPosition]="'after'"
+                        class="mat-icon material-icons info" role="img" aria-hidden="true">
+                        info
+                    </mat-icon>
+                </mat-label>
                 <div fxLayout="column" fxLayout.gt-xs="row" class="uploadImage mt-20">
-                    <mat-label>Cover Image *
-                        <mat-icon matTooltip="Please select an image. Max size: 4MB" [matTooltipPosition]="'after'"
-                            class="mat-icon material-icons info" role="img" aria-hidden="true">
-                            info
-                        </mat-icon>
-                    </mat-label>
+
                     <div id="file-upload-form" class="uploader">
                         <input id="file-upload" type="file" name="fileUpload" accept="image/png,image/jpeg,image/jpg"
                             (change)="uploadFiles($event)" />

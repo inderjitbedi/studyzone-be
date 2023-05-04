@@ -1,25 +1,24 @@
-<div fxLayout="column" class="container-div">
-
+<div fxLayout="column" class="container-div create-slide-dialog">
     <mat-toolbar class="mat-accent-bg m-0" fxLayoutAlign="end flex-end">
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between flex-end" class="mat-toolbar-header">
             <span class="title dialog-title">{{slideId?'Edit':'Create'}} Slide</span>
-            <button class="mat-icon-button mat-button" aria-label="Close dialog" mat-button (click)="matDialog.close()">
+            <!-- <button class="mat-icon-button mat-button" aria-label="Close dialog" mat-button (click)="matDialog.close()">
                 <span class="mat-button-wrapper">
                     <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">close</mat-icon>
                 </span>
-            </button>
+            </button> -->
         </div>
     </mat-toolbar>
-    <mat-divider class="mt-10"></mat-divider>
     <div class="content p-20 mt-20" fxLayout="column">
         <form [formGroup]="slideForm" fx-layout="column">
             <div fxLayout="column" fxLayout.gt-xs="row" [class.form-div]="!isViewOnly" [class.mt-30]="isViewOnly">
                 <div fxLayout="column" fxLayout.gt-xs="row">
+                    <mat-label>Slide Name
+                    </mat-label>
                     <mat-form-field
                         [class.mb-10]="slideForm.controls['name'].touched && slideForm.controls['name'].hasError('required')"
                         fxFlex="100">
-                        <mat-label>Slide Name
-                        </mat-label>
+
                         <input type="text" matInput formControlName="name" trim autocomplete="off"
                             [errorStateMatcher]="matcher" maxlength="50" [readonly]="isViewOnly">
                         <mat-error *ngIf="slideForm.controls['name'].hasError('required')">Required
@@ -40,14 +39,24 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="column" fxLayout.gt-xs="row">
-                    <mat-form-field>
-                        <mat-label>Type</mat-label>
+                    <mat-label>Type</mat-label>
+                    <nav class="nav nav-pills nav-fill">
+                        <a class="nav-link " [class.active]="selectedType == 'text'"
+                            (click)="selectedType = 'text'">Text</a>
+                        <a class="nav-link" [class.active]="selectedType == 'video'"
+                            (click)="selectedType = 'video'">Video</a>
+                        <a class="nav-link" [class.active]="selectedType == 'audio'"
+                            (click)="selectedType = 'audio'">Audio</a>
+                        <a class="nav-link " [class.active]="selectedType == 'pdf'"
+                            (click)="selectedType = 'pdf'">Pdf</a>
+                    </nav>
+                    <!-- <mat-form-field>
                         <mat-select formControlName="type">
                             <mat-option *ngFor="let type of types" [value]="type">
                                 {{type | titlecase}}
                             </mat-option>
                         </mat-select>
-                    </mat-form-field>
+                    </mat-form-field> -->
                 </div>
                 <!-- <div fxLayout="column" fxLayout.gt-xs="row">
                     <mat-checkbox formControlName="isPublished">
@@ -57,35 +66,38 @@
 
                 <div fxLayout="column" fxLayout.gt-xs="row" class="uploadImage"
                     *ngIf="(selectedType == 'video' || selectedType == 'audio'|| selectedType == 'pdf') && !isViewOnly">
-                    <mat-label>{{selectedFileSettings.name|titlecase }} *
+                    <!-- <mat-label>{{selectedFileSettings.name|titlecase }} *
                         <mat-icon
                             matTooltip="Please select an {{selectedFileSettings.name}}. Max size: {{selectedFileSettings.maxSize}}MB"
                             [matTooltipPosition]="'after'" class="mat-icon material-icons info" role="img"
                             aria-hidden="true">
                             info
                         </mat-icon>
-                    </mat-label>
+                    </mat-label> -->
                     <div id="file-upload-form" class="uploader">
-                        <input id="file-upload" type="file" name="fileUpload" accept="{{selectedFileSettings.mimeTypes}}"
-                            (change)="uploadFiles($event)" />
-                        <label for="file-upload" id="file-drag">
-                            <div id="start"
+                        <input id="file-upload" type="file" name="fileUpload"
+                            accept="{{selectedFileSettings.mimeTypes}}" (change)="uploadFiles($event)" />
+                        <label for="file-upload" id="file-drag" class="c-label"
+                            [class.h-50]="!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value)">
+                            <div
                                 *ngIf="!uploadingInProgess && (!attachment && !slideForm.controls[selectedFileSettings.key]?.value)">
                                 <i class="fa fa-download" aria-hidden="true"></i>
-                                <div></div>
-                                <div id="notimage">Please select {{selectedFileSettings.name}} file.<br>
-                                    <span  *ngIf="selectedType != 'pdf'"> The allowed extensions are {{selectedFileSettings.extensions}}.<br> </span>
-                                     Max size: {{selectedFileSettings.maxSize}}MB</div>
-                                <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
+                                <span class="c-btn ">Select a file</span>
+
+                                <div class="info">Please select {{selectedFileSettings.name}} file.<br>
+                                    <span *ngIf="selectedType != 'pdf'"> The allowed extensions are
+                                        {{selectedFileSettings.extensions}}.<br> </span>
+                                    Max size: {{selectedFileSettings.maxSize}}MB
+                                </div>
                             </div>
-                            <div id="start"
+                            <div
                                 *ngIf="!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value)">
-                                <span id="file-upload-btn" class="btn btn-primary">Select another</span>
+                                <span class="c-btn ">Select another</span>
                             </div>
                             <div id="response" *ngIf="uploadingInProgess">
                                 <div id="messages">Uploading... {{uploadingProgress ?
                                     (uploadingProgress- 1)+'%' : '0%' }}</div>
-                                <progress class="progress" value="{{uploadingProgress}}" max="100">
+                                <progress class="progress" value="50" max="100">
                                 </progress>
                             </div>
                         </label>
@@ -104,37 +116,33 @@
                         </mat-error>
                     </div>
                 </div>
-                <video controls
+
+                <video
                     *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value) && selectedType == 'video') || (isViewOnly && selectedSlideDetails.type == 'video')"
+                    controls
                     src="{{slideForm.controls['file'].value? environment.baseUrl + slideForm.controls['file'].value:''}}"
                     width="100%">
                     Sorry, your browser doesn't support embedded videos.
                 </video>
-                <div style="text-align: center;width: 100%;"
-                    *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value) && selectedType == 'audio') || (isViewOnly && selectedSlideDetails.type == 'audio')">
+
+                <div *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value) && selectedType == 'audio') || (isViewOnly && selectedSlideDetails.type == 'audio')"
+                    style="text-align: center;width: 100%;">
                     <audio controls>
                         <source
                             src="{{slideForm.controls['file'].value? environment.baseUrl + slideForm.controls['file'].value:''}}">
                         Sorry, your browser does not support the audio element.
                     </audio>
                 </div>
-                <div style="text-align: center;width: 100%;"
-                    *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value) && selectedType == 'pdf') || (isViewOnly && selectedSlideDetails.type == 'pdf')">
-                    <p><span *ngIf="attachment.originalName" class="material-icons">picture_as_pdf</span>  {{attachment.originalName||'No file found'}}</p>
+                <div *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value) && selectedType == 'pdf') || (isViewOnly && selectedSlideDetails.type == 'pdf')"
+                    style="text-align: center;width: 100%;">
+                    <p><span *ngIf="attachment.originalName" class="material-icons">picture_as_pdf</span>
+                        {{attachment.originalName||'No file found'}}</p>
                 </div>
-                <div fxLayout="column" fxLayout.gt-xs="row"
+                <div fxLayout="column" fxLayout.gt-xs="row" class=" h-150"
                     *ngIf="selectedType == 'text'|| (isViewOnly && selectedSlideDetails.type == 'text')">
                     <mat-form-field class="mb-10" fxFlex="100">
-                        <mat-label>Text
-                        </mat-label>
                         <textarea matInput formControlName="text" trim autocomplete="off" [errorStateMatcher]="matcher"
-                            [rows]="isViewOnly?15:10" [readonly]="isViewOnly"></textarea>
-                        <!-- maxlength="2500"
-                            <mat-hint align="end" *ngIf="!isViewOnly">{{textMaxLength -
-                            slideForm.controls['text'].value.length}}
-                            {{textMaxLength -
-                            slideForm.controls['text'].value.length>1?'characters':'character'}}
-                            left.</mat-hint> -->
+                            [rows]="isViewOnly?8:5" [readonly]="isViewOnly"></textarea>
                         <mat-error *ngIf="slideForm.controls['text'].hasError('required')">Required
                         </mat-error>
                     </mat-form-field>

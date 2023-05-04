@@ -61,7 +61,7 @@ export class SlideListComponent implements OnInit {
   openAddSlideForm(isViewOnly: boolean, slide: any = {}): void {
     this.addSlideDialogRef = this.dialog.open(SlideFormComponent, {
       minWidth: '320px',
-      width: '585px',
+      width: '440px',
       disableClose: true,
       data: {
         isViewOnly,

@@ -1,5 +1,5 @@
 import { HttpClient, HttpEventType } from '@angular/common/http';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -16,11 +16,12 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-slide-form',
   templateUrl: './slide-form.component.html',
-  styleUrls: ['./slide-form.component.scss']
+  styleUrls: ['./slide-form.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class SlideFormComponent implements OnInit {
   environment = environment;
-  toggle: boolean = false
+  toggle: boolean = false;
   isViewOnly: any;
   slideId: any;
   slideForm: FormGroup;
@@ -33,7 +34,11 @@ export class SlideFormComponent implements OnInit {
   uploadingInProgess: boolean = false;
   uploadingProgress: any;
   attachment: any = null;
-  types: any[] = ['text', 'video', 'audio', 'pdf'
+  types: any[] = [
+    'text',
+    'video',
+    'audio',
+    'pdf',
     // { value: 'text', name: 'Public' },
     // { value: 'video', name: 'Private' },
     // { value: 'paid', name: 'Paid' },
@@ -41,45 +46,53 @@ export class SlideFormComponent implements OnInit {
   selectedSlideDetails: any;
   courseId: any;
   constructor(
-    public matDialog: MatDialogRef<SlideFormComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
-    private apiService: CommonAPIService, private errorHandlingService: ErrorHandlingService,
-    public matcher: ErrorStateMatcherService, private fb: FormBuilder, private http: HttpClient,
+    public matDialog: MatDialogRef<SlideFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private apiService: CommonAPIService,
+    private errorHandlingService: ErrorHandlingService,
+    public matcher: ErrorStateMatcherService,
+    private fb: FormBuilder,
+    private http: HttpClient,
     private alertService: AlertService,
-    private activeRoute: ActivatedRoute,) {
-
+    private activeRoute: ActivatedRoute
+  ) {
     this.isViewOnly = data.isViewOnly;
     this.slideForm = this.fb.group({
-      name: [data.name || '', [Validators.required, Validators.pattern('^[a-zA-Z0-9 \s]*$')]],
+      name: [
+        data.name || '',
+        [Validators.required, Validators.pattern('^[a-zA-Z0-9 s]*$')],
+      ],
       type: [data.type || 'text', Validators.required],
       text: [data.text || ''],
       file: [''],
       // isPublished: [data.isPublished]
     });
     this.selectedSlideDetails = data;
-    this.courseId = data.courseId
+    this.courseId = data.courseId;
     this.selectedType = data.type || 'text';
     if (data._id) {
       this.slideId = data._id || null;
       this.typeUpdated(data.type);
       if (data.file) {
-        this.attachment = data.file ? { ...data.file } : {}
-        this.slideForm.controls['file'].setValue([this.attachment.destination, this.attachment.name].join('/'))
-        
+        this.attachment = data.file ? { ...data.file } : {};
+        this.slideForm.controls['file'].setValue(
+          [this.attachment.destination, this.attachment.name].join('/')
+        );
       }
-     
     }
 
-    this.slideForm['controls']['name'].valueChanges.pipe(debounceTime(500)).subscribe({
-      next: (value: any) => {
-        this.checkSlideUniqueness()
-      }
-    })
+    this.slideForm['controls']['name'].valueChanges
+      .pipe(debounceTime(500))
+      .subscribe({
+        next: (value: any) => {
+          this.checkSlideUniqueness();
+        },
+      });
     this.slideForm['controls']['type'].valueChanges.subscribe({
       next: (value: any) => {
-        this.typeUpdated(value)
-      }
-    })
-
+        this.typeUpdated(value);
+      },
+    });
   }
 
   checkSlideUniqueness() {
@@ -105,7 +118,7 @@ export class SlideFormComponent implements OnInit {
     // }
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
   saveSlide(): void {
     if (this.slideForm.valid) {
       this.apiCallActive = true;
@@ -113,19 +126,21 @@ export class SlideFormComponent implements OnInit {
         type: this.slideForm.value.type,
         name: this.slideForm.value.name.trim().toLowerCase(),
         // isPublished: this.slideForm.value.isPublished,
-        position: this.selectedSlideDetails.position || this.selectedSlideDetails.totalSlides + 1
-      }
+        position:
+          this.selectedSlideDetails.position ||
+          this.selectedSlideDetails.totalSlides + 1,
+      };
       if (payload.type == 'text') {
-        payload.text = this.slideForm.value.text
+        payload.text = this.slideForm.value.text;
       } else {
-        payload.file = this.attachment._id
+        payload.file = this.attachment._id;
       }
       let apiUrl = apiConstants.createSlide.replace(':id', this.courseId);
       let apiCall = this.apiService.post(apiUrl, payload);
 
       if (this.slideId) {
-        apiUrl += "/" + this.slideId;
-        apiCall = this.apiService.put(apiUrl, payload)
+        apiUrl += '/' + this.slideId;
+        apiCall = this.apiService.put(apiUrl, payload);
       }
       apiCall.subscribe({
         next: (data: any) => {
@@ -141,17 +156,15 @@ export class SlideFormComponent implements OnInit {
         },
         complete: () => {
           this.apiCallActive = false;
-        }
-
+        },
       });
     }
   }
 
   clearOthers(key: any) {
-
     if (this.selectedSlideDetails[key]) {
       this.slideForm['controls'][key].setValue(this.selectedSlideDetails[key]);
-      this.slideForm['controls'][key].updateValueAndValidity()
+      this.slideForm['controls'][key].updateValueAndValidity();
     }
     // this.types.forEach(type => {
     if (key != 'text') {
@@ -161,32 +174,34 @@ export class SlideFormComponent implements OnInit {
       this.attachment = null;
       this.slideForm['controls']['file'].setValue('');
       this.slideForm['controls']['file'].setValidators([]);
-      this.slideForm['controls']['file'].updateValueAndValidity()
+      this.slideForm['controls']['file'].updateValueAndValidity();
     } else {
       this.slideForm['controls']['text'].setValue('');
       this.slideForm['controls']['text'].setValidators([]);
-      this.slideForm['controls']['text'].updateValueAndValidity()
+      this.slideForm['controls']['text'].updateValueAndValidity();
     }
     // })
-  };
-  selectedType: any = 1
-  selectedFileSettings: any = {}
+  }
+  selectedType: any = 1;
+  selectedFileSettings: any = {};
   setValidators(key: any, validators: any) {
     this.slideForm['controls'][key].setValidators(validators);
-    this.slideForm['controls'][key].updateValueAndValidity()
+    this.slideForm['controls'][key].updateValueAndValidity();
     this.clearOthers(key);
   }
   typeUpdated(value: any) {
-    this.selectedType = value
+    this.selectedType = value;
     switch (value) {
       case 'text':
-        this.selectedFileSettings = {}
+        this.selectedFileSettings = {};
         this.setValidators(value, [Validators.required]);
         break;
       default:
-        this.selectedFileSettings = this.fileSettings.filter((config: any) => config.name === value)
-        this.selectedFileSettings = this.selectedFileSettings[0]
-        this.setValidators('file', [Validators.required])
+        this.selectedFileSettings = this.fileSettings.filter(
+          (config: any) => config.name === value
+        );
+        this.selectedFileSettings = this.selectedFileSettings[0];
+        this.setValidators('file', [Validators.required]);
         break;
     }
   }
@@ -197,7 +212,7 @@ export class SlideFormComponent implements OnInit {
       mimeTypes: 'video/mp4,video/webm,video/ogg',
       extensions: ['mp4', 'ogg', 'webm'],
       fileType: 'MP4, WebM or OGG',
-      key: 'file'
+      key: 'file',
     },
     {
       name: 'audio',
@@ -213,20 +228,33 @@ export class SlideFormComponent implements OnInit {
       extensions: ['pdf'],
       fileType: 'PDF',
     },
-  ]
-
+  ];
 
   uploadFiles($event: any): void {
     if ($event.target.value) {
       const file = $event.target.files[0];
       this.fileObject.fileName = file.name;
-      this.fileObject.fileExtension = file.name.split('.')[file.name.split('.').length - 1].toLowerCase();
+      this.fileObject.fileExtension = file.name
+        .split('.')
+        [file.name.split('.').length - 1].toLowerCase();
       this.fileObject.fileSize = file.size;
       const allowedFileExtentions = this.selectedFileSettings.extensions;
-      if (!allowedFileExtentions.find((format: any) => format === this.fileObject.fileExtension)) {
-        this.alertService.notify('Please make sure your file is in one of these formats: ' + allowedFileExtentions);
-      } else if (this.fileObject.fileSize > (this.selectedFileSettings.maxSize * 1000000)) {
-        this.alertService.notify(`Please make sure your file is less than ${this.selectedFileSettings.maxSize} MB in size.`);
+      if (
+        !allowedFileExtentions.find(
+          (format: any) => format === this.fileObject.fileExtension
+        )
+      ) {
+        this.alertService.notify(
+          'Please make sure your file is in one of these formats: ' +
+            allowedFileExtentions
+        );
+      } else if (
+        this.fileObject.fileSize >
+        this.selectedFileSettings.maxSize * 1000000
+      ) {
+        this.alertService.notify(
+          `Please make sure your file is less than ${this.selectedFileSettings.maxSize} MB in size.`
+        );
       } else {
         const formData = new FormData();
         formData.append('file', file);
@@ -237,12 +265,18 @@ export class SlideFormComponent implements OnInit {
   uploadFile(formData: any): any {
     this.uploadingInProgess = true;
     this.apiCallActive = true;
-    this.attachment = null
+    this.attachment = null;
     this.http
-      .post(environment.baseUrl + apiConstants.uploadFile + this.selectedFileSettings.name, formData, {
-        reportProgress: true,
-        observe: 'events',
-      })
+      .post(
+        environment.baseUrl +
+          apiConstants.uploadFile +
+          this.selectedFileSettings.name,
+        formData,
+        {
+          reportProgress: true,
+          observe: 'events',
+        }
+      )
       .pipe(
         map((event: any) => {
           switch (event.type) {
@@ -264,9 +298,11 @@ export class SlideFormComponent implements OnInit {
               console.log(file);
 
               this.attachment = {
-                ...file
+                ...file,
               };
-              this.slideForm.controls['file'].setValue([this.attachment.destination, this.attachment.name].join('/'))
+              this.slideForm.controls['file'].setValue(
+                [this.attachment.destination, this.attachment.name].join('/')
+              );
               // } else {
               //   this.errorHandlingService.handle(event.body);
               // }
@@ -279,14 +315,21 @@ export class SlideFormComponent implements OnInit {
       .subscribe();
   }
   formatBytes(bytes: any, decimals = 2): any {
-    if (bytes === 0) { return '0 Bytes'; }
+    if (bytes === 0) {
+      return '0 Bytes';
+    }
     const k = 1024,
       dm = decimals <= 0 ? 0 : decimals || 2,
       sizes = ['Bytes', 'KB', 'MB'],
       i = Math.floor(Math.log(bytes) / Math.log(k));
-    return '(' + parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i] + ')';
+    return (
+      '(' +
+      parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) +
+      ' ' +
+      sizes[i] +
+      ')'
+    );
   }
-
 
   // /file/upload/:type
 }

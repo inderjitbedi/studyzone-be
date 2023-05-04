@@ -3,44 +3,43 @@
 
     <mat-toolbar class="mat-accent-bg m-0" fxLayoutAlign="end flex-end">
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between flex-end" class="mat-toolbar-header">
-            <span class="title dialog-title">{{!userDetails?.isSignedUp?(userDetails?._id?'Reinvite User':'Invite User'):'User Details'}}</span>
-            <button class="mat-icon-button mat-button" aria-label="Close dialog" mat-button (click)="matDialog.close()">
-                <span class="mat-button-wrapper">
-                    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">close</mat-icon>
-                </span>
-            </button>
+            <span class="title dialog-title">{{!userDetails?.isSignedUp?(userDetails?._id?'Reinvite User':'Invite User')
+                :'User Details'}}</span>
+            <span class="mat-button-wrapper cursor-pointer" (click)="matDialog.close()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="#8F8F8F" stroke-width="1.5" />
+                    <path d="M14.5 9.49999L9.5 14.5M9.49998 9.49997L14.5 14.4999" stroke="#8F8F8F" stroke-width="1.5"
+                        stroke-linecap="round" />
+                </svg>
+
+            </span>
         </div>
     </mat-toolbar>
-    <mat-divider class="mt-10"></mat-divider>
-    <div class="content p-20 mt-20" fxLayout="column">
+    <!-- <mat-divider class="mt-10"></mat-divider> -->
+    <div class="content  mt-15" fxLayout="column">
 
 
         <form [formGroup]="inviteUserForm" fx-layout="column">
-            <div fxLayout="column" fxLayout.gt-xs="row" [class.form-div]="!isViewOnly" [class.mt-30]="isViewOnly">
-                <!-- <mat-card>
-                    <mat-card-header>
-                        <mat-card-title>User Details</mat-card-title>
-                    </mat-card-header>
-                    <mat-card-content> -->
-                        <mat-form-field *ngIf="userDetails.fullName">
-                            <input type="text" matInput placeholder="Name"
-                                [value]="userDetails?.fullName" readonly>
-                        </mat-form-field>
-                        <!-- <mat-form-field>
-                            <input type="text" matInput placeholder="Email" [value]="userDetails.email" readonly>
-                        </mat-form-field> -->
-                        <mat-form-field  *ngIf="userDetails.role">
-                            <input type="text" matInput placeholder="Role" [value]="userDetails?.role" readonly>
-                        </mat-form-field>
-                    <!-- </mat-card-content>
-                </mat-card> -->
+            <!-- [class.form-div]="!isViewOnly" [class.mt-30]="isViewOnly" -->
+            <div fxLayout="column" fxLayout.gt-xs="row">
 
-                <div fxLayout="column" fxLayout.gt-xs="row">
+                <mat-label *ngIf="userDetails.fullName">Name</mat-label>
+                <mat-form-field *ngIf="userDetails.fullName">
+                    <input type="text" matInput placeholder="Name" [value]="userDetails?.fullName" readonly>
+                </mat-form-field>
+
+
+                <mat-label *ngIf="userDetails.role">Role</mat-label>
+                <mat-form-field *ngIf="userDetails.role">
+                    <input type="text" matInput [value]="userDetails?.role" readonly>
+                </mat-form-field>
+
+                <div fxLayout="column" fxLayout.gt-xs="row"> <mat-label>Email
+                    </mat-label>
                     <mat-form-field
                         [class.mb-10]="inviteUserForm.controls['email'].touched && inviteUserForm.controls['email'].hasError('required')"
                         fxFlex="100">
-                        <mat-label>Email
-                        </mat-label>
+
                         <input type="text" matInput formControlName="email" trim autocomplete="off"
                             [errorStateMatcher]="matcher" [readonly]="userDetails?.isSignedUp">
                         <mat-error *ngIf="inviteUserForm.controls['email'].hasError('required')">Required
@@ -63,11 +62,11 @@
             </div>
         </form>
     </div>
-    <mat-toolbar class="mat-accent-bg m-0 mt-12" fxLayoutAlign="center" *ngIf="!isViewOnly">
+    <mat-toolbar class="mat-accent-bg m-0" fxLayoutAlign="center" *ngIf="!isViewOnly">
         <div fxlayout="row" fxLayoutAlign="flex-end" class="mt-12" fxFlex="100"
             class="mat-toolbar-footer action-buttons">
-            <button mat-raised-button color="primary" type="submit" *ngIf="!userDetails.isSignedUp" [disabled]="inviteUserForm.invalid || apiCallActive"
-                (click)="inviteUser()">
+            <button mat-raised-button color="primary" type="submit" *ngIf="!userDetails.isSignedUp"
+                [disabled]="inviteUserForm.invalid || apiCallActive" (click)="inviteUser()">
                 <span *ngIf="apiCallActive" class="spinner-border spinner-border-sm" role="status"
                     aria-hidden="true"></span>
                 <span *ngIf="apiCallActive" class="sr-only">Loading...</span>
@@ -75,7 +74,7 @@
             </button>
             <!-- <button type="submit" mat-raised-button color="primary" [disabled]="inviteUserForm.invalid || apiCallActive"
                 (click)="inviteUser()">{{userDetails?._id?'Reinvite':'Invite'}}</button> -->
-            <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button>
+            <!-- <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button> -->
         </div>
     </mat-toolbar>
 </div>
