@@ -1,6 +1,15 @@
 mat-toolbar {
-    background: #002b5c;
-    color: white;
+    background: white;
+    height: 60px;
+    padding: 16px 24px;
+
+    .logo {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 800;
+        font-size: 20px;
+        line-height: 18px;
+    }
 }
 
 mat-sidenav {
@@ -12,6 +21,7 @@ mat-sidenav {
     padding: 16px 24px;
     text-align: center;
     font-size: 13px;
+    line-height: 16px;
     box-shadow: none;
 }
 

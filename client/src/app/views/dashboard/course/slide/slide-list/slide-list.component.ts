@@ -36,7 +36,9 @@ export class SlideListComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.openAddSlideForm(false);
+  }
   getSlides() {
     let apiUrl = apiConstants.slide.replace(':id', this.courseId);
     this.apiCallActive = true;
@@ -87,7 +89,11 @@ export class SlideListComponent implements OnInit {
       minWidth: '320px',
       width: '585px',
       disableClose: true,
-      data: { slide: this.slides[index], heading: "Delete slide", message: "Are you sure you want to delete this slide?" },
+      data: {
+        slide: this.slides[index],
+        heading: 'Delete slide',
+        message: 'Are you sure you want to delete this slide?',
+      },
     });
     this.confirmDialogRef.afterClosed().subscribe({
       next: (data: any) => {
@@ -98,18 +104,26 @@ export class SlideListComponent implements OnInit {
     });
   }
   deleteSlide(slideId: any) {
-
-    this.apiService.put(apiConstants.updateSlide.replace(':id', this.courseId).replace(':slideid', slideId), { isDeleted: true }).subscribe({
-      next: (data) => {
-        // if (data.statusCode === 201 || data.statusCode === 200) {
-        this.slides = this.slides.filter((slide: any) => slide._id != slideId);
-        this.alertService.notify("Slide deleted successfully");
-        // } else {
-        //   this.errorHandlingService.handle(data);
-        // }
-      },
-      error: (e) => this.errorHandlingService.handle(e),
-    });
+    this.apiService
+      .put(
+        apiConstants.updateSlide
+          .replace(':id', this.courseId)
+          .replace(':slideid', slideId),
+        { isDeleted: true }
+      )
+      .subscribe({
+        next: (data) => {
+          // if (data.statusCode === 201 || data.statusCode === 200) {
+          this.slides = this.slides.filter(
+            (slide: any) => slide._id != slideId
+          );
+          this.alertService.notify('Slide deleted successfully');
+          // } else {
+          //   this.errorHandlingService.handle(data);
+          // }
+        },
+        error: (e) => this.errorHandlingService.handle(e),
+      });
   }
   reorderMode: boolean = false;
   reorderSlides() {

@@ -15,7 +15,7 @@ import { CourseFormComponent } from '../course-form/course-form.component';
   selector: 'app-course-list',
   templateUrl: './course-list.component.html',
   styleUrls: ['./course-list.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
 })
 export class CourseListComponent implements OnInit {
   baseUrl: any = environment.baseUrl;

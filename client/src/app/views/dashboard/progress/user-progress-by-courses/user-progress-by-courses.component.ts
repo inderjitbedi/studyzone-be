@@ -13,7 +13,8 @@ import { ConfirmDialogComponent } from 'src/app/views/common/confirm-dialog/conf
 @Component({
   selector: 'app-user-progress-by-courses',
   templateUrl: './user-progress-by-courses.component.html',
-  styleUrls: ['./user-progress-by-courses.component.scss']
+  styleUrls: ['./user-progress-by-courses.component.scss'],
+  // encapsulation: ViewEncapsulation.None,
 })
 export class UserProgressByCoursesComponent implements OnInit {
   addCourseDialogRef: any;
@@ -26,63 +27,74 @@ export class UserProgressByCoursesComponent implements OnInit {
     private errorHandlingService: ErrorHandlingService,
     private alertService: AlertService,
     private activeRoute: ActivatedRoute,
-    public router: Router, private _location: Location
+    public router: Router,
+    private _location: Location
   ) {
-    this.displayedColumns = ['id', 'coursename', 'username', 'email', 'enrolledOn', 'progress', 'lastActivity'];
+    this.displayedColumns = [
+      'id',
+      'coursename',
+      'username',
+      'email',
+      'enrolledOn',
+      'progress',
+      'lastActivity',
+    ];
     this.activeRoute.params.subscribe({
       next: ({ type }) => {
-        this.currentUrl = this.router.url
+        this.currentUrl = this.router.url;
         this.getProgress(type);
-      }
-    })
+      },
+    });
     this.navLinks = [
       {
         label: 'Public',
         link: '/dashboard/progress/course/public',
-        index: 0
-      }, {
+        index: 0,
+      },
+      {
         label: 'Private',
         link: '/dashboard/progress/course/private',
-        index: 1
-      }, {
+        index: 1,
+      },
+      {
         label: 'Paid',
         link: '/dashboard/progress/course/paid',
-        index: 2
+        index: 2,
       },
     ];
   }
-  currentUrl: any = ''
+  currentUrl: any = '';
   updateUrl(navLink: any) {
     this._location.go(navLink.link);
-    this.currentUrl = navLink.link
+    this.currentUrl = navLink.link;
     this.getProgress(navLink.label.toLowerCase());
   }
   navLinks: any[];
   activeLinkIndex = -1;
   ngOnInit(): void {
-    // for reloading current page 
+    // for reloading current page
     this.router.routeReuseStrategy.shouldReuseRoute = () => {
-      return false
-    }
+      return false;
+    };
   }
 
-
   getProgress(courseType: string = 'public') {
-
     this.apiCallActive = true;
-    this.apiService.get(apiConstants.analytics.replace(':type', courseType)).subscribe({
-      next: (data) => {
-        this.apiCallActive = false;
-        // if (data.statusCode === 200) {
-        this.dataSource = new MatTableDataSource<any>(data.courses || []);
-        // } else {
-        //   this.errorHandlingService.handle(data);
-        // }
-      },
-      error: (e) => {
-        this.apiCallActive = false;
-        this.errorHandlingService.handle(e);
-      },
-    });
+    this.apiService
+      .get(apiConstants.analytics.replace(':type', courseType))
+      .subscribe({
+        next: (data) => {
+          this.apiCallActive = false;
+          // if (data.statusCode === 200) {
+          this.dataSource = new MatTableDataSource<any>(data.courses || []);
+          // } else {
+          //   this.errorHandlingService.handle(data);
+          // }
+        },
+        error: (e) => {
+          this.apiCallActive = false;
+          this.errorHandlingService.handle(e);
+        },
+      });
   }
 }

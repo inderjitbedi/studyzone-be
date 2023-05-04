@@ -1,5 +1,18 @@
 <mat-toolbar>
-    Admin Dashboard
+    <div class="brand navbar-brand cursor-pointer" routerLink="/dashboard/courses/all">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_6_132)">
+                <path d="M11.9098 7.22485H22.4423L14.6988 18.7023H4.16626L11.9098 7.22485Z" fill="#007AFF" />
+                <path d="M12.3713 19.7663L9.37207 24.2118H20.4042L28.1477 12.7344H20.0053L15.261 19.7663H12.3713Z"
+                    fill="#312ECB" />
+            </g>
+            <defs>
+                <clipPath id="clip0_6_132">
+                    <rect width="24.9804" height="19.4847" fill="white" transform="translate(3.66699 6.22559)" />
+                </clipPath>
+            </defs>
+        </svg><span class="logo">Study Zone</span>
+    </div>
 </mat-toolbar>
 
 <mat-sidenav-container>
@@ -14,7 +27,7 @@
             <span>Users</span>
         </button>
         <button mat-button class="menu-button " routerLink="/dashboard/course/list/public" routerLinkActive="active"
-            [ngClass]="{'active': currentUrl.indexOf('course')>-1}">
+            [ngClass]="{'active': currentUrl.indexOf('dashboard/course')>-1}">
             <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M9.66667 9.16663H4.66667M6.33334 12.5H4.66667M11.3333 5.83329H4.66667M14.6667 5.66663V14.3333C14.6667 15.7334 14.6667 16.4335 14.3942 16.9683C14.1545 17.4387 13.7721 17.8211 13.3016 18.0608C12.7669 18.3333 12.0668 18.3333 10.6667 18.3333H5.33334C3.9332 18.3333 3.23314 18.3333 2.69836 18.0608C2.22795 17.8211 1.8455 17.4387 1.60582 16.9683C1.33334 16.4335 1.33334 15.7334 1.33334 14.3333V5.66663C1.33334 4.26649 1.33334 3.56643 1.60582 3.03165C1.8455 2.56124 2.22795 2.17879 2.69836 1.93911C3.23314 1.66663 3.9332 1.66663 5.33334 1.66663H10.6667C12.0668 1.66663 12.7669 1.66663 13.3016 1.93911C13.7721 2.17879 14.1545 2.56124 14.3942 3.03165C14.6667 3.56643 14.6667 4.26649 14.6667 5.66663Z"

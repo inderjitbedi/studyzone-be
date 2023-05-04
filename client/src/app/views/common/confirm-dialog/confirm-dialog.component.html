@@ -3,28 +3,32 @@
     <mat-toolbar class="mat-accent-bg m-0" fxLayoutAlign="end flex-end">
         <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between flex-end" class="mat-toolbar-header">
             <span class="title dialog-title">{{data.heading}}</span>
-            <button class="mat-icon-button mat-button" aria-label="Close dialog" mat-button (click)="matDialog.close()">
-                <span class="mat-button-wrapper">
-                    <mat-icon class="mat-icon material-icons" role="img" aria-hidden="true">close</mat-icon>
-                </span>
-            </button>
+            <!-- <button class="mat-icon-button mat-button" aria-label="Close dialog" mat-button (click)="matDialog.close()"> -->
+            <span class="mat-button-wrapper cursor-pointer" (click)="matDialog.close()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="#8F8F8F" stroke-width="1.5" />
+                    <path d="M14.5 9.49999L9.5 14.5M9.49998 9.49997L14.5 14.4999" stroke="#8F8F8F" stroke-width="1.5"
+                        stroke-linecap="round" />
+                </svg>
+
+            </span>
+            <!-- </button> -->
         </div>
     </mat-toolbar>
-    <mat-divider class="mt-10"></mat-divider>
-    <div class="content p-20 mt-20" fxLayout="column">
+    <!-- <mat-divider class="mt-10"></mat-divider> -->
+    <div class="content mb-30 mt-15" fxLayout="column">
         <div fx-layout="column">
-            <div fxLayout="column" fxLayout.gt-xs="row" class="mt-30 form-div" >
+            <div fxLayout="column" fxLayout.gt-xs="row" class="">
                 <div fxLayout="column" fxLayout.gt-xs="row">
                     <p>{{data.message}}</p>
                 </div>
             </div>
         </div>
     </div>
-    <mat-toolbar class="mat-accent-bg m-0 mt-12" fxLayoutAlign="center" >
-        <div fxlayout="row" fxLayoutAlign="flex-end" class="mt-12" fxFlex="100"
-            class="mat-toolbar-footer action-buttons">
+    <mat-toolbar class="mat-accent-bg m-0 mt-12" fxLayoutAlign="center">
+        <div fxlayout="row" fxLayoutAlign="flex-start" class="mt-12" fxFlex="100" class="mat-toolbar-footer ">
             <button type="submit" mat-raised-button color="primary" (click)="matDialog.close(true)">Yes</button>
-            <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button>
+            <!-- <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button> -->
         </div>
     </mat-toolbar>
 </div>

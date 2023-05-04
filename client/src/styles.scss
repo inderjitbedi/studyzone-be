@@ -111,6 +111,10 @@ body,
     margin-bottom: 10px !important;
 }
 
+.mb-30 {
+    margin-bottom: 30px !important;
+}
+
 .mat-toolbar-header {
     display: flex;
     flex-direction: row;
@@ -125,6 +129,10 @@ body,
 .mt-30 {
 
     margin-top: 30px;
+}
+
+.mt-15 {
+    margin-top: 15px;
 }
 
 .mb-10 {
@@ -978,6 +986,36 @@ nav {
         }
     }
 }
+
+.mat-tab-nav-bar {
+    border: 0;
+    background: #F8F8F8;
+
+    .mat-ink-bar {
+        display: none;
+    }
+
+    .mat-tab-links {
+        .mat-tab-link {
+            font-size: 14px;
+            font-weight: 700;
+            color: #8F8F8F;
+            padding: 8px 16px;
+            width: fit-content;
+            min-width: fit-content;
+            margin-right: 8px;
+
+            &.mat-tab-label-active {
+                background: #FFFFFF;
+                box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.05);
+                border-radius: 8px;
+                color: #1D1D1D;
+            }
+        }
+    }
+}
+
+
 
 @media (max-width:767px) {
     .card {
