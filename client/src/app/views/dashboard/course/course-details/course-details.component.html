@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col">
         <nav aria-label="breadcrumb" class="align-items-center">
-            <a class="back-button">
+            <a class="back-button cursor-pointer" routerLink="/dashboard/course/list/{{courseDetails?.type}}">
                 <svg width="7" height="12" viewBox="0 0 7 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M5.38247 10.9393L0.723485 6.37992C0.668185 6.32564 0.629107 6.26684 0.60625 6.20352C0.583024 6.14019 0.571411 6.07234 0.571411 5.99997C0.571411 5.9276 0.583024 5.85976 0.60625 5.79643C0.629107 5.73311 0.668185 5.6743 0.723485 5.62003L5.38247 1.04709C5.5115 0.920441 5.67279 0.857117 5.86634 0.857117C6.05989 0.857117 6.22579 0.924964 6.36404 1.06066C6.50229 1.19636 6.57141 1.35467 6.57141 1.53559C6.57141 1.71652 6.50229 1.87483 6.36404 2.01053L2.29952 5.99997L6.36404 9.98942C6.49307 10.1161 6.55759 10.272 6.55759 10.4573C6.55759 10.6429 6.48846 10.8036 6.35021 10.9393C6.21196 11.075 6.05067 11.1428 5.86634 11.1428C5.68201 11.1428 5.52072 11.075 5.38247 10.9393Z"
@@ -10,7 +10,7 @@
             </a>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a class="link" routerLink="/dashboard/course/list/{{courseDetails?.type}}">Course List</a>
+                    <a class="link">Course List</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">{{courseDetails.name | titlecase}}</li>
             </ol>
@@ -19,15 +19,7 @@
 
 
                 </mat-slide-toggle>
-                <a class=""><svg width="40" height="40" viewBox="0 0 40 40" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <rect x="39.5" y="0.5" width="39" height="39" rx="19.5" transform="rotate(90 39.5 0.5)"
-                            fill="white" stroke="#F3F3F3" />
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                            d="M20 10C21.1046 10 22 10.8954 22 12C22 13.1046 21.1046 14 20 14C18.8954 14 18 13.1046 18 12C18 10.8954 18.8954 10 20 10ZM20 18C21.1046 18 22 18.8954 22 20C22 21.1046 21.1046 22 20 22C18.8954 22 18 21.1046 18 20C18 18.8954 18.8954 18 20 18ZM22 28C22 26.8954 21.1046 26 20 26C18.8954 26 18 26.8954 18 28C18 29.1046 18.8954 30 20 30C21.1046 30 22 29.1046 22 28Z"
-                            fill="#BFBFBF" />
-                    </svg>
-                </a>
+
             </div>
         </nav>
     </div>
@@ -67,18 +59,15 @@
                 <slide-list></slide-list>
             </div>
             <div *ngIf="activeSlide == 2" class="bg-white">
-                <!-- <form [formGroup]="faqForm" fx-layout="column"> -->
-                <!-- formArrayName="faqs" -->
                 <div class="no-data flex-start" *ngIf="!rootComments?.length">No comments found</div>
                 <mat-card *ngFor="let comment of rootComments; let i= index">
-                    <comment [comment]="comment"></comment>
+                    <comment [courseId]="courseDetails._id"></comment>
                 </mat-card>
-                <!-- </form> -->
             </div>
-            <div *ngIf="activeSlide ==3" class="bg-white">
+            <div *ngIf="activeSlide == 3" class="bg-white">
                 <manage-enrollment [courseDetails]="courseDetails"></manage-enrollment>
             </div>
-            <div *ngIf="activeSlide ==4  && courseDetails?.type == 'paid'" class="bg-white">
+            <div *ngIf="activeSlide == 4  && courseDetails?.type == 'paid'" class="bg-white">
                 <manage-enrollment-requests [courseDetails]="courseDetails"></manage-enrollment-requests>
             </div>
         </mat-card-content>

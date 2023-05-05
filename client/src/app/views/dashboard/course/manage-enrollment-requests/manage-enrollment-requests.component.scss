@@ -15,7 +15,7 @@
 
 .action-buttons {
     button {
-        width: 80px;
+        // width: 80px;
         margin-right: 20px;
     }
 
@@ -33,7 +33,8 @@ table {
         }
 
         &:last-child {
-            width: 220px !important
+            text-align: center;
+            width: 145px !important
         }
         align-content: flex-end;
 

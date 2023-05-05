@@ -3,7 +3,7 @@
         <h1 class="h1">
             <!-- <a class="link" routerLink="/dashboard/course">FAQ Category List</a> > <i>{{selectedCourseCategoryDoc?.name|titlecase}}</i> > -->
             Course List
-            <p class="line italic">7 courses</p>
+            <p class="line italic">{{courses.length}} courses</p>
         </h1>
     </div>
 
@@ -47,6 +47,8 @@
                                 <span class="badge badge-pill badge-danger" *ngIf="course.type =='paid'">Paid</span>
                                 <span class="badge badge-pill badge-light"
                                     *ngIf="course.type =='private'">Private</span>
+                                <a [routerLink]="['/dashboard/course/details/',course._id]" class="view-course">View
+                                    Course</a>
                             </div>
                         </div>
 
@@ -55,7 +57,7 @@
                             Published <mat-slide-toggle [(ngModel)]="course.isPublished"
                                 (click)="$event.preventDefault();manageCourseVisibility( i,course)"
                                 name="enablepublished"></mat-slide-toggle>
-                            <a class="">
+                            <a class="cursor-pointer" [matMenuTriggerFor]="menu">
                                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <rect x="39.5" y="0.5" width="39" height="39" rx="19.5"
@@ -65,6 +67,10 @@
                                         fill="#BFBFBF" />
                                 </svg>
                             </a>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="openAddCourseForm(false,course)">Edit</button>
+                                <button mat-menu-item (click)="delete(i,course)">Delete</button>
+                            </mat-menu>
                         </div>
                     </div>
                 </div>

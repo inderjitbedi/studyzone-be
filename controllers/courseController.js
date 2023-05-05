@@ -179,11 +179,45 @@ const courseController = {
     //     }
     // },
 
+    async getComments(req, res) {
+        console.log(req.params.id);
+        try {
+            let course = await Course.findOne({ _id: req.params.id, isDeleted: false }).populate({
+                path: 'rootComments',
+                populate: [
+                    {
+                        path: 'author',
+                        select: ['fullName']
+                    },
+                    {
+                        path: 'children',
+                        match: {
+                            isDeleted: false,
 
+                        }, populate: {
+                            path: 'author',
+                            select: ['fullName']
+                        }
+                    }],
+                match: { isDeleted: false }
+            });
+            res.json({ comments: course.rootComments, message: 'Comments fetched successfully' });
+        } catch (error) {
+            console.error("\n\nadminController:addComment:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
 
     async addComment(req, res) {
         try {
-            let comment = await Course.addComment({ course: req.params.id, author: req.user._id, ...req.body });
+            let comment = await Course.addComment({ course: req.params.id, author: req.user._id, ...req.body })
+
+
+
+                .populate({
+                    path: 'author',
+                    select: ['fullName']
+                });
             res.json({ comment, message: 'Comment added successfully' });
         } catch (error) {
             console.error("\n\nadminController:addComment:error -", error);
@@ -194,9 +228,10 @@ const courseController = {
     async deleteComment(req, res) {
         try {
             const comment = await Comment.findById(req.params.commentid);
-            for (const childCommentId of comment.children) {
-                await deleteComment(childCommentId);
-            }
+            if (comment.children && comment.children.length)
+                for (const childCommentId of comment.children) {
+                    await deleteComment(childCommentId);
+                }
             comment.isDeleted = true;
             await comment.save();
             res.json({ message: 'Comment deleted successfully' });
@@ -698,8 +733,8 @@ const courseController = {
                     const courseId = enrollment.course._id;
                     const totalSlides = await Slide.countDocuments({ course: courseId, isDeleted: false });
                     const completedSlides = await Progress.countDocuments({ course: courseId, user: enrollment.user ? enrollment.user?._id : enrollment.enrollmentRequestedBy?._id, isCompleted: true, isDeleted: false });
-                    const latestProgress = await Progress.findOne({ course: courseId, user: enrollment.user ? enrollment.user?._id : enrollment.enrollmentRequestedBy?._id, isDeleted: false }) .sort({ updatedAt: -1 })
-                    .limit(1);
+                    const latestProgress = await Progress.findOne({ course: courseId, user: enrollment.user ? enrollment.user?._id : enrollment.enrollmentRequestedBy?._id, isDeleted: false }).sort({ updatedAt: -1 })
+                        .limit(1);
                     const progress = totalSlides === 0 ? 0 : Math.round(completedSlides / totalSlides * 100);
                     coursesWithProgress.push({
                         course: enrollment.course,
@@ -734,7 +769,7 @@ const courseController = {
             // };
             // pagination,totalCourses: totalEnrolledCourses?.length, 
 
-            res.json({ courses: coursesWithProgress,  message: 'My courses fetched successfully' });
+            res.json({ courses: coursesWithProgress, message: 'My courses fetched successfully' });
 
         } catch (error) {
             console.error("\n\nadminController:addComment:error -", error);

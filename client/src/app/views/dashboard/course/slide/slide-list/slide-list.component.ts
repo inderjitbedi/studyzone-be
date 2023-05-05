@@ -37,7 +37,7 @@ export class SlideListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.openAddSlideForm(false);
+    // this.openAddSlideForm(false);
   }
   getSlides() {
     let apiUrl = apiConstants.slide.replace(':id', this.courseId);

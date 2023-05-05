@@ -17,9 +17,10 @@ import { LoaderModule } from './views/common/loader/loader.module';
 import { ConfirmDialogComponent } from './views/common/confirm-dialog/confirm-dialog.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InitialsPipe } from './providers/initials.pipe';
+import { AlertDialogComponent } from './views/common/alert-dialog/alert-dialog.component';
 
 @NgModule({
-  declarations: [AppComponent, ConfirmDialogComponent],
+  declarations: [AppComponent, ConfirmDialogComponent, AlertDialogComponent],
   imports: [
     MaterialModule,
     AppRoutingModule,

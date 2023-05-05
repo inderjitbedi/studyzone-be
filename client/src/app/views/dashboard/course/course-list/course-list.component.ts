@@ -10,6 +10,7 @@ import { ErrorHandlingService } from 'src/app/providers/error-handling.service';
 import { ConfirmDialogComponent } from 'src/app/views/common/confirm-dialog/confirm-dialog.component';
 import { environment } from 'src/environments/environment';
 import { CourseFormComponent } from '../course-form/course-form.component';
+import { AlertDialogComponent } from 'src/app/views/common/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-course-list',
@@ -93,6 +94,21 @@ export class CourseListComponent implements OnInit {
     });
   }
 
+
+  alert(): void {
+    this.addCourseDialogRef = this.dialog.open(AlertDialogComponent, {
+      minWidth: '261px',
+      width: '437px',
+      disableClose: true,
+      data: { message: "Success message", closeText: "Thanks", isSuccess: true, autoClose: 3000 }
+    });
+    this.addCourseDialogRef.afterClosed().subscribe({
+      next: (data: any) => {
+
+      },
+    });
+  }
+
   // manageCourseVisibility(element,$event.checked)
   openConfirmDialog(index: number, course: any, dialogData: any = {}): void {
     this.addCourseDialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -113,9 +129,9 @@ export class CourseListComponent implements OnInit {
   }
   openAddCourseForm(isViewOnly: boolean, course: any = {}): void {
     this.addCourseDialogRef = this.dialog.open(CourseFormComponent, {
-      minWidth: '320px',
+      minWidth: '520px',
       width: '585px',
-      disableClose: true,
+      disableClose: true, 
       data: { isViewOnly, ...course },
     });
     this.addCourseDialogRef.afterClosed().subscribe({

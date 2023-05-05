@@ -35,14 +35,25 @@
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let element; let i = index" class="action-buttons">
-                <button *ngIf="element.requestStatus === 'pending'" mat-icon-button color="primary" aria-label="view"
-                    (click)="manageRequest(i,element,'Accept')">
-                    Accept <mat-icon>check circle</mat-icon>
-                </button>
-                <button *ngIf="element.requestStatus === 'pending'" mat-icon-button color="warn" aria-label="delete"
-                    (click)="manageRequest(i,element,'Decline')">
-                    Decline <mat-icon>close circle</mat-icon>
-                </button>
+                <!-- <button mat-icon-button color="primary" aria-label="view"
+                    > -->
+                    <!-- Accept  -->
+                    <svg class="cursor-pointer" *ngIf="element.requestStatus === 'pending'" 
+                    (click)="manageRequest(i,element,'Accept')"
+                    width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.5 28.5L23.25 32.25L34.5 21" stroke="#06EF7F" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                <!-- </button> -->
+                <!-- <button  mat-icon-button color="warn" aria-label="delete"
+                    > -->
+                    <!-- Decline -->
+                     <svg class="cursor-pointer"
+                     *ngIf="element.requestStatus === 'pending'" (click)="manageRequest(i,element,'Decline')"
+                     width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <line x1="19.5" y1="19.5" x2="34.5" y2="34.5" stroke="#FF0000" stroke-width="2" />
+                        <line x1="34.5" y1="19.5" x2="19.5" y2="34.5" stroke="#FF0000" stroke-width="2" /> </svg>
+                <!-- </button> -->
                 <span *ngIf="element.requestStatus !== 'pending'">{{element.requestStatus|titlecase}}</span>
             </td>
         </ng-container>

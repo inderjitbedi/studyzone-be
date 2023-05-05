@@ -17,7 +17,10 @@ export const apiConstants = {
     manageCourseAccess: 'admin/course/manage-visibility/',
     checkCourseUniqueness: 'admin/check-uniqueness-course/',
     addComment: 'admin/course/:id/comment',
+    getComments: 'admin/course/:id/comment',
     deleteComment: 'admin/course/:id/comment/:commentId',
+
+    
     manageEnrollmentRequest:'admin/course/:id/manageEnrollmentRequest/:enrollmentId',
     manageEnrollment:'admin/course/:id/manageEnrollment/:enrollmentId',
 

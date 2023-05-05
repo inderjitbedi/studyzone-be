@@ -26,7 +26,7 @@ router.put('/course/:id/delete', verifyToken, courseController.deleteCourse)
 router.put('/course/manage-visibility/:id', verifyToken, courseController.editCourse)
 
 
-// router.get('/course/:id/comment/list', verifyToken, courseController.editCourse)
+router.get('/course/:id/comment', verifyToken, courseController.getComments)
 router.post('/course/:id/comment', verifyToken, courseController.addComment)
 router.put('/course/:id/comment/:commentid', verifyToken, courseController.deleteComment)
 

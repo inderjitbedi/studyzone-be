@@ -3,7 +3,7 @@
         <h1 class="h1">
             <!-- <a class="link" routerLink="/dashboard/user">FAQ Category List</a> > <i>{{selectedUserCategoryDoc?.name|titlecase}}</i> > -->
             User List
-            <p class="line italic">10 users</p>
+            <p class="line italic">{{users.length}} users</p>
         </h1>
     </div>
     <div class="title-buttons ">
@@ -17,7 +17,7 @@
     There is no User created yet!
 </p>
 <div class="flex flex-row space-between gap mt-10">
-    <mat-card class="example-card " *ngFor="let user of users">
+    <mat-card class="example-card " *ngFor="let user of users; let i=index">
         <mat-card-header>
             <mat-card-title>{{(user?.firstName?(user?.firstName+'
                 '+user?.lastName):user?.fullName)| titlecase}}</mat-card-title>
@@ -29,42 +29,20 @@
             <button class="disabled-chip" *ngIf="user.isActive && !user.isSignedUp">Invitation sent</button>
 
 
-            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g filter="url(#filter0_d_263_1997)">
-                        <rect x="27" y="1" width="24" height="24" rx="12" transform="rotate(90 27 1)" fill="white" />
-                        <rect x="26.5" y="1.5" width="23" height="23" rx="11.5" transform="rotate(90 26.5 1.5)"
-                            stroke="#F3F3F3" />
-                    </g>
+            <a class="cursor-pointer" [matMenuTriggerFor]="menu">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="39.5" y="0.5" width="39" height="39" rx="19.5" transform="rotate(90 39.5 0.5)" fill="white"
+                        stroke="#F3F3F3" />
                     <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M15 6.5C15.8284 6.5 16.5 7.17157 16.5 8C16.5 8.82843 15.8284 9.5 15 9.5C14.1716 9.5 13.5 8.82843 13.5 8C13.5 7.17157 14.1716 6.5 15 6.5ZM15 11.5C15.8284 11.5 16.5 12.1716 16.5 13C16.5 13.8284 15.8284 14.5 15 14.5C14.1716 14.5 13.5 13.8284 13.5 13C13.5 12.1716 14.1716 11.5 15 11.5ZM16.5 18C16.5 17.1716 15.8284 16.5 15 16.5C14.1716 16.5 13.5 17.1716 13.5 18C13.5 18.8284 14.1716 19.5 15 19.5C15.8284 19.5 16.5 18.8284 16.5 18Z"
-                        fill="#8F8F8F" />
-                    <defs>
-                        <filter id="filter0_d_263_1997" x="0" y="0" width="30" height="30" filterUnits="userSpaceOnUse"
-                            color-interpolation-filters="sRGB">
-                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
-                            <feColorMatrix in="SourceAlpha" type="matrix"
-                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-                            <feOffset dy="2" />
-                            <feGaussianBlur stdDeviation="1.5" />
-                            <feComposite in2="hardAlpha" operator="out" />
-                            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0" />
-                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_263_1997" />
-                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_263_1997"
-                                result="shape" />
-                        </filter>
-                    </defs>
+                        d="M20 10C21.1046 10 22 10.8954 22 12C22 13.1046 21.1046 14 20 14C18.8954 14 18 13.1046 18 12C18 10.8954 18.8954 10 20 10ZM20 18C21.1046 18 22 18.8954 22 20C22 21.1046 21.1046 22 20 22C18.8954 22 18 21.1046 18 20C18 18.8954 18.8954 18 20 18ZM22 28C22 26.8954 21.1046 26 20 26C18.8954 26 18 26.8954 18 28C18 29.1046 18.8954 30 20 30C21.1046 30 22 29.1046 22 28Z"
+                        fill="#BFBFBF" />
                 </svg>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Separated link</a></li>
-            </ul>
+            </a>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="openUserInviteForm(true,user)">{{user.isActive && !user.isSignedUp?
+                    'Reinvite':'View'}}</button>
+                <button mat-menu-item (click)="openConfirmDialog(i,user)" *ngIf="user.isSignedUp">{{(user.isActive?'Deactivate':'Activate')+' user'}}</button>
+            </mat-menu>
         </mat-card-actions>
     </mat-card>
 </div>
