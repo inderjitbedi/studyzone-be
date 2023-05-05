@@ -10,7 +10,6 @@ import { ErrorHandlingService } from 'src/app/providers/error-handling.service';
 import { ConfirmDialogComponent } from 'src/app/views/common/confirm-dialog/confirm-dialog.component';
 import { environment } from 'src/environments/environment';
 import { CourseFormComponent } from '../course-form/course-form.component';
-import { AlertDialogComponent } from 'src/app/views/common/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-course-list',
@@ -91,21 +90,6 @@ export class CourseListComponent implements OnInit {
         'Are you sure you want to ' +
         (course.isPublished ? 'un' : '') +
         'publish this course?',
-    });
-  }
-
-
-  alert(): void {
-    this.addCourseDialogRef = this.dialog.open(AlertDialogComponent, {
-      minWidth: '261px',
-      width: '437px',
-      disableClose: true,
-      data: { message: "Success message", closeText: "Thanks", isSuccess: true, autoClose: 3000 }
-    });
-    this.addCourseDialogRef.afterClosed().subscribe({
-      next: (data: any) => {
-
-      },
     });
   }
 
