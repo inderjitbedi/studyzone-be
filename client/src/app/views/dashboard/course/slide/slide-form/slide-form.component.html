@@ -120,6 +120,7 @@
                     <p><span *ngIf="attachment.originalName" class="material-icons">picture_as_pdf</span>
                         {{attachment.originalName||'No file found'}}</p>
                 </div>
+                <!-- {{slideForm.value|json}}
                 <div fxLayout="column" fxLayout.gt-xs="row" class=" h-150"
                     *ngIf="selectedType == 'text'|| (isViewOnly && selectedSlideDetails.type == 'text')">
                     <mat-form-field class="mb-10" fxFlex="100">
@@ -128,6 +129,10 @@
                         <mat-error *ngIf="slideForm.controls['text'].hasError('required')">Required
                         </mat-error>
                     </mat-form-field>
+                </div> -->
+                <div class="tiny-editor">
+                    <editor [apiKey]="apiKey" cloudChannel="6" formControlName="text" [disabled]="false" id=""
+                        [init]="setting" initialValue="" [inline]="false" tagName="div"></editor>
                 </div>
             </div>
         </form>

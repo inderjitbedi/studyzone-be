@@ -20,6 +20,14 @@ import { environment } from 'src/environments/environment';
   encapsulation: ViewEncapsulation.None,
 })
 export class SlideFormComponent implements OnInit {
+  apiKey: any = '2s5r3no6j3vom8zxctikpv6sh6s2j7qe8p277t61yl1h7boh';
+  setting: any = {
+    plugins:
+      'anchor autolink emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+    // toolbar:
+    //   'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    tinycomments_mode: 'embedded',
+  };
   environment = environment;
   toggle: boolean = false;
   isViewOnly: any;
@@ -57,6 +65,8 @@ export class SlideFormComponent implements OnInit {
     private activeRoute: ActivatedRoute
   ) {
     this.isViewOnly = data.isViewOnly;
+    console.log(data);
+
     this.slideForm = this.fb.group({
       name: [
         data.name || '',
@@ -67,6 +77,8 @@ export class SlideFormComponent implements OnInit {
       file: [''],
       // isPublished: [data.isPublished]
     });
+    console.log(this.slideForm.value);
+
     this.selectedSlideDetails = data;
     this.courseId = data.courseId;
     this.selectedType = data.type || 'text';
@@ -176,7 +188,8 @@ export class SlideFormComponent implements OnInit {
       this.slideForm['controls']['file'].setValidators([]);
       this.slideForm['controls']['file'].updateValueAndValidity();
     } else {
-      this.slideForm['controls']['text'].setValue('');
+      if (!this.selectedSlideDetails?.text)
+        this.slideForm['controls']['text'].setValue('');
       this.slideForm['controls']['text'].setValidators([]);
       this.slideForm['controls']['text'].updateValueAndValidity();
     }
