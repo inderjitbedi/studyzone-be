@@ -259,14 +259,16 @@ export class SlideFormComponent implements OnInit {
       ) {
         this.alertService.notify(
           'Please make sure your file is in one of these formats: ' +
-            allowedFileExtentions
+            allowedFileExtentions,
+          'info'
         );
       } else if (
         this.fileObject.fileSize >
         this.selectedFileSettings.maxSize * 1000000
       ) {
         this.alertService.notify(
-          `Please make sure your file is less than ${this.selectedFileSettings.maxSize} MB in size.`
+          `Please make sure your file is less than ${this.selectedFileSettings.maxSize} MB in size.`,
+          'info'
         );
       } else {
         const formData = new FormData();

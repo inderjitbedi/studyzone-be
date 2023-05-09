@@ -12,10 +12,7 @@ import { AlertService } from './alert.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
-  constructor(
-    private router: Router,
-    public alertService: AlertService
-  ) { }
+  constructor(private router: Router, public alertService: AlertService) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -30,7 +27,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     console.log(route);
-    
+
     return this.canActivate(route, state);
   }
 
@@ -58,14 +55,16 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       this.router.navigate([Constants.Pages.LOGIN]);
     }
   }
-
   logout(): void {
     this.clearAll();
   }
 
   sessionExpired(message: string): void {
     this.clearAll();
-    this.alertService.notify(message || Constants.ErrorMessages.sessionExpired);
+    this.alertService.notify(
+      message || Constants.ErrorMessages.sessionExpired,
+      'error'
+    );
   }
 
   clearAll(): void {

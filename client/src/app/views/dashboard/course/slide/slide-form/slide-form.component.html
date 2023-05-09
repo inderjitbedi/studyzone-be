@@ -47,21 +47,22 @@
                         <a class="nav-link " *ngFor="let type of types" [class.active]="selectedType == type"
                             (click)=" slideForm.controls['type'].setValue(type);selectedType = type"> {{type |
                             titlecase}}</a>
-                    
+
                     </nav>
-                   
+
                 </div>
-            
+
 
                 <div fxLayout="column" fxLayout.gt-xs="row" class="uploadImage"
                     *ngIf="(selectedType == 'video' || selectedType == 'audio'|| selectedType == 'pdf') && !isViewOnly">
-                    
+
                     <div id="file-upload-form" class="uploader">
                         <input id="file-upload" type="file" name="fileUpload"
                             accept="{{selectedFileSettings.mimeTypes}}" (change)="uploadFiles($event)" />
                         <label for="file-upload" id="file-drag" class="c-label"
                             [class.h-50]="!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value)">
-                            <div *ngIf="!uploadingInProgess && (!attachment && !slideForm.controls[selectedFileSettings.key]?.value)">
+                            <div
+                                *ngIf="!uploadingInProgess && (!attachment && !slideForm.controls[selectedFileSettings.key]?.value)">
                                 <i class="fa fa-download" aria-hidden="true"></i>
                                 <span class="c-btn ">Select {{selectedFileSettings.name}} file</span>
 
@@ -130,7 +131,8 @@
                         </mat-error>
                     </mat-form-field>
                 </div> -->
-                <div class="tiny-editor">
+                <div class="tiny-editor"
+                    *ngIf="selectedType == 'text'|| (isViewOnly && selectedSlideDetails.type == 'text')">
                     <editor [apiKey]="apiKey" cloudChannel="6" formControlName="text" [disabled]="false" id=""
                         [init]="setting" initialValue="" [inline]="false" tagName="div"></editor>
                 </div>
