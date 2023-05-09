@@ -1,5 +1,5 @@
 .mat-dialog-container {
-    max-width: 437px;
+    // max-width: 437px;
     width: 100%;
     padding: 24px 32px;
 }
@@ -85,4 +85,8 @@ progress {
 
 progress::-moz-progress-bar {
     background: #007AFF;
+}
+
+.tiny-editor ::ng-deep .tox-tinymce {
+    border: 1px solid #8F8F8F !important
 }
