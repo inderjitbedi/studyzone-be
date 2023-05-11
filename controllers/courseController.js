@@ -438,7 +438,12 @@ const courseController = {
             let filters = {
                 isDeleted: false,
                 isPublished: true,
-                $or: [
+
+            }
+            if (req.query.type) {
+                filters.type = req.query.type
+            } else {
+                filters.$or = [
                     { type: "public" },
                     { type: "paid" },
                     {
@@ -447,27 +452,23 @@ const courseController = {
                             $in: await CourseEnrollment.distinct("course", { user: currentUser._id })
                         }
                     },
-                    // {
-                    //     type: "paid",
-                    //     _id: {
-                    //       $in: await CourseEnrollment.distinct("course", {
-                    //         enrollmentRequestedBy: currentUser._id,
-                    //         requestStatus: "approved",
-                    //         isEnrolled: true
-                    //       })
-                    //     }
-                    //   }
+
                 ]
-            }
-            if (req.query.type) {
-                filters.type = req.query.type
             }
             if (req.query.searchKey) {
-                filters.$or = [
-                    ...filters.$or,
-                    { name: { $regex: req.query.searchKey, $options: 'i' } },
-                    { description: { $regex: req.query.searchKey, $options: 'i' } },
-                ]
+                if (filters.$or) {
+                    filters.$or = [
+                        ...filters.$or,
+                        { name: { $regex: req.query.searchKey, $options: 'i' } },
+                        { description: { $regex: req.query.searchKey, $options: 'i' } },
+                    ]
+                } else {
+                    filters.$or = [
+                        { name: { $regex: req.query.searchKey, $options: 'i' } },
+                        { description: { $regex: req.query.searchKey, $options: 'i' } },
+                    ]
+                }
+
             }
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 6;
