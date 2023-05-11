@@ -452,22 +452,21 @@ const courseController = {
                             $in: await CourseEnrollment.distinct("course", { user: currentUser._id })
                         }
                     },
-
                 ]
             }
             if (req.query.searchKey) {
-                if (filters.$or) {
-                    filters.$or = [
-                        ...filters.$or,
-                        { name: { $regex: req.query.searchKey, $options: 'i' } },
-                        { description: { $regex: req.query.searchKey, $options: 'i' } },
-                    ]
-                } else {
-                    filters.$or = [
-                        { name: { $regex: req.query.searchKey, $options: 'i' } },
-                        { description: { $regex: req.query.searchKey, $options: 'i' } },
-                    ]
-                }
+                // if (filters.$or) {
+                //     filters.$or = [
+                //         ...filters.$or,
+                //         { name: { $regex: req.query.searchKey, $options: 'i' } },
+                //         { description: { $regex: req.query.searchKey, $options: 'i' } },
+                //     ]
+                // } else {
+                filters.$or = [
+                    { name: { $regex: req.query.searchKey, $options: 'i' } },
+                    { description: { $regex: req.query.searchKey, $options: 'i' } },
+                ]
+                // }
 
             }
             const page = parseInt(req.query.page) || 1;
