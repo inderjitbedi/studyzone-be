@@ -51,8 +51,9 @@ export class InviteUserFormComponent implements OnInit {
       this.apiService.post(apiUrl, payload).subscribe({
         next: (data: any) => {
           // if (data && (data.statusCode === 200 || data.statusCode === 201)) {
+          this.matDialog.close(data); 
           this.alertService.notify(data.message);
-          this.matDialog.close(data);
+         
           // } else {
           //   this.errorHandlingService.handle(data);
           // }

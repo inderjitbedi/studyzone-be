@@ -4,7 +4,7 @@ const emailTemplates = {
 
         return {
             subject: 'Password Reset',
-            html: getFullTemplate(data,`
+            html: getFullTemplate(data, `
                 <div class="f-fallback">
                     <h1>Hi ${data.req.body.email},</h1>
                     <p>You are receiving this email because you (or someone else) has requested
@@ -53,7 +53,7 @@ const emailTemplates = {
     inviteUser(data) {
         return {
             subject: 'Invitation to signup',
-            html: getFullTemplate(data,`
+            html: getFullTemplate(data, `
                     <div class="f-fallback">
                         <h1>Hi ${data.req.body.email},</h1>
                         <p>We are excited to invite you to join our online portal! Our portal offers
@@ -106,7 +106,7 @@ const emailTemplates = {
 
 }
 
-const getFullTemplate = (data,body) => {
+const getFullTemplate = (data, body) => {
     console.log(data.req.headers.host);
     return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
    <html xmlns="www.w3.org/1999/xhtml">
@@ -399,8 +399,8 @@ const getFullTemplate = (data,body) => {
            }
    
            .body-action,
-           .email-footer,
-           .email-masthead {
+           .email-footer
+            {
                text-align: center
            }
    
@@ -430,8 +430,8 @@ const getFullTemplate = (data,body) => {
            .email-masthead {
                padding: 25px 0;
                display: flex;
-               align-items: center;
-               justify-content: center;
+               align-items: center !important;
+               justify-content: center !important;
            }
    
            .email-masthead_logo {

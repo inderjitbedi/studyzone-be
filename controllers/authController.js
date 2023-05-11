@@ -16,9 +16,13 @@ const authController = {
         try {
             let { token } = req.params;
 
-            let user = await User.findOne({ inviteToken: token, email: req.body.email });
+            let user = await User.findOne({ email: req.body.email });
             if (!user) {
-                return res.status(400).json({ message: 'Invalid invite token' });
+                return res.status(400).json({ message: 'No invitation found for this email.' });
+            }
+            user = await User.findOne({ inviteToken: token, email: req.body.email });
+            if (!user) {
+                return res.status(400).json({ message: 'Invalid invititation token.' });
             }
             let reqBody = req.body;
             Object.keys(reqBody).forEach(key => {
@@ -28,7 +32,7 @@ const authController = {
             user.isVerified = true;
             // user.inviteToken = null;
             user = await user.save();
-            token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
+            token = jwt.sign({ email:  req.body.email }, process.env.JWT_SECRET);
             user = user.toObject();
             delete user.password;
             res.json({ user, token, message: 'User signed up successfully' });

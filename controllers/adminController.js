@@ -19,7 +19,7 @@ const adminController = {
             const user = new User({ email, token });
             await user.save();
 
-            sendGrid.send(email, 'inviteUser', { req, token })
+            sendGrid.send(email, 'inviteUser', { req, token, email })
 
             res.json({ message: 'User invited successfully' });
         } catch (error) {
