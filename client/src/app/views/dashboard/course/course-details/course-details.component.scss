@@ -128,7 +128,7 @@
     color: #6D6D6D;
 }
 
-.mat-tab-nav-bar {
+.mat-tab-nav-bar.details-tabs {
     background-color: #fff;
 
     .mat-tab-link {
@@ -139,7 +139,7 @@
         color: #8F8F8F;
 
         &.mat-tab-label-active {
-            color: #00CD83;
+            color: #00CD83 !important;
         }
     }
 }

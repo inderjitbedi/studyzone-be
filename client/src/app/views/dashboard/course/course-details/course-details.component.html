@@ -1,4 +1,4 @@
-<div class="row"  *ngIf="courseDetails && courseDetails?._id">
+<div class="row" *ngIf="courseDetails && courseDetails?._id">
     <div class="col">
         <nav aria-label="breadcrumb" class="align-items-center">
             <a class="back-button cursor-pointer" routerLink="/dashboard/course/list/{{courseDetails?.type}}">
@@ -15,7 +15,7 @@
                 <li class="breadcrumb-item active" aria-current="page">{{courseDetails?.name | titlecase}}</li>
             </ol>
             <div class="flex flex-row published ml-auto border-0 align-items-center">
-                Published 
+                Published
                 <mat-slide-toggle [(ngModel)]="courseDetails.isPublished" disabled="" name="enablepublished">
                 </mat-slide-toggle>
 
@@ -42,7 +42,7 @@
             </div>
 
 
-            <nav mat-tab-nav-bar class="tab-view">
+            <nav mat-tab-nav-bar class="tab-view details-tabs">
                 <a mat-tab-link (click)="activeSlide=1" [active]="activeSlide==1"> Slides
                 </a>
                 <a mat-tab-link (click)="activeSlide=2" [active]="activeSlide==2"> Comments
