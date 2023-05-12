@@ -100,7 +100,7 @@ export class ManageEnrollmentComponent implements OnInit {
       minWidth: '320px',
       width: '585px',
       disableClose: true,
-      data: { enrollmentId: this.selectedCourseId },
+      data: { courseId: this.selectedCourseId },
     });
     this.addEnrollmentDialogRef.afterClosed().subscribe({
       next: (data: any) => {

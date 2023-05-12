@@ -29,6 +29,8 @@ export class NewEnrollmentComponent implements OnInit {
     public matcher: ErrorStateMatcherService, private fb: FormBuilder, private http: HttpClient,
     private alertService: AlertService,
     private activeRoute: ActivatedRoute,) {
+      console.log(data);
+      
     this.courseId = data.courseId;
     this.enrollForm = this.fb.group({
       user: ['', Validators.required],

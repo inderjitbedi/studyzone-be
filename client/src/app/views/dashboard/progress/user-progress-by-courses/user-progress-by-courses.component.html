@@ -24,36 +24,35 @@
         </ng-container>
         <ng-container matColumnDef="coursename">
             <th mat-header-cell *matHeaderCellDef> Course Name </th>
-            <td mat-cell *matCellDef="let element"> {{element?.course.name | titlecase }} </td>
+            <td mat-cell *matCellDef="let element"> {{element?.course?.name | titlecase }} </td>
         </ng-container>
         <ng-container matColumnDef="username">
             <th mat-header-cell *matHeaderCellDef> User's Name </th>
-            <td mat-cell *matCellDef="let element"> {{element?.user.fullName|| '-' }} </td>
+            <td mat-cell *matCellDef="let element"> {{element?.user?.fullName|| '-' }} </td>
         </ng-container>
         <ng-container matColumnDef="email">
             <th mat-header-cell *matHeaderCellDef> User's Email </th>
-            <td mat-cell *matCellDef="let element"> {{element?.user.email }} </td>
+            <td mat-cell *matCellDef="let element"> {{element?.user?.email }} </td>
         </ng-container>
         <ng-container matColumnDef="enrolledOn">
             <th mat-header-cell *matHeaderCellDef> Enrolled On </th>
-            <td mat-cell *matCellDef="let element"> {{element?.enrollment.enrolledOn | date:'dd MMM yyyy hh:mm a'}}
+            <td mat-cell *matCellDef="let element"> {{element?.enrollment?.enrolledOn | date:'dd MMM yyyy hh:mm a'}}
             </td>
         </ng-container>
 
         <ng-container matColumnDef="progress">
             <th mat-header-cell *matHeaderCellDef> Progress </th>
             <td mat-cell *matCellDef="let element">
-                <span *ngIf="element.progress && element.progress !=100">{{element.progress}}%
+                <span *ngIf="element.progress && element.progress < 100">{{element.progress}}%
                     Slides
                     Completed</span>
                 <span *ngIf="!element.progress">Not started yet</span>
-                <span *ngIf="element.progress && element.progress ==100">All Slides Completed</span>
+                <span *ngIf="element.progress && element.progress >=100">All Slides Completed</span>
             </td>
         </ng-container>
         <ng-container matColumnDef="lastActivity">
             <th mat-header-cell *matHeaderCellDef> Last Activity </th>
-            <td mat-cell *matCellDef="let element"> {{(element?.latestProgress?.updatedAt | date:'dd MMM yyyy hh:mm
-                a')||'-' }}
+            <td mat-cell *matCellDef="let element"> {{(element?.latestProgress?.updatedAt | date:'dd MMM yyyy hh:mm a')||'-' }}
             </td>
         </ng-container>
 
