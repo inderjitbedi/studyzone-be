@@ -476,14 +476,7 @@ const getFullTemplate = (data, body) => {
                background-color: #f2f4f6
            }
    
-           .email-masthead {
-               padding: 25px 0;
-               text-align: center; 
-           }
-   
-           .email-masthead_logo {
-               width: 94px;
-           }
+          
    
            .email-body_inner,
            .email-footer {
@@ -528,6 +521,15 @@ const getFullTemplate = (data, body) => {
            .content-cell {
                padding: 45px
            }
+
+           .email-masthead {
+            padding: 25px 0;
+            text-align: center; 
+        }
+
+        .email-masthead_logo {
+            height: 25px;
+        }
    
            @media only screen and (max-width:600px) {
    
@@ -586,9 +588,20 @@ const getFullTemplate = (data, body) => {
                <td align="center">
                    <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                        <tr>
-                           <td class="email-masthead">
-                            <img src="https://${data.req.headers.host}/api/media/studyzone.svg" >Study Zone
-                           </td>
+                       <td style="
+                       text-align: center;
+                       vertical-align: middle;
+                   ">
+                       <img src="https://elearningapi.chantsit.com/api/media/studyzone.svg" style="
+                           height: 25px;
+                           vertical-align: middle;
+                       ">
+                       <p style="
+                           display: inline-block;
+                           vertical-align: middle;
+                           margin: 0;
+                       ">Study Zone</p>
+                   </td>
                        </tr>
                        <!-- Email Body -->
                        <tr>
@@ -598,7 +611,6 @@ const getFullTemplate = (data, body) => {
                                    <!-- Body content -->
                                    <tr>
                                        <td class="content-cell">
-                                        https://${data.req.headers.host}/api/media/studyzone.svg
                                        ${body}
                                        
                                        </td>
