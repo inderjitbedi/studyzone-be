@@ -1,5 +1,54 @@
 
 const emailTemplates = {
+    accountVerified(data) {
+
+        return {
+            subject: 'Account Verified',
+            html: getFullTemplate(data, `
+                <div class="f-fallback">
+                    <h1>Hi ${data.email},</h1>
+                    <p>We are thrilled to inform you that your account has been successfully 
+                    verified by our administrators. You can now log in using your credentials and access all the features
+                     of our platform.
+
+                    </p>
+                    <table class="body-action" align="center" width="100%" cellpadding="0"
+                        cellspacing="0" role="presentation">
+                        <tr>
+                            <td align="center">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0"
+                                    role="presentation">
+                                    <tr>
+                                        <td align="center">
+                                            <a href="${process.env.FRONTEND_URL}auth/login"
+                                                class="f-fallback button " target="_blank">Login Now</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                   
+                    <p>Thanks,
+                        <br>The Studyzone team
+                    </p>
+                    <!-- Sub copy -->
+                    <table class="body-sub" role="presentation">
+                        <tr>
+                            <td>
+                                <p class="f-fallback sub">If you’re having trouble with the
+                                    button above, copy and paste the URL below into your web
+                                    browser.</p>
+                                <p class="f-fallback sub">
+                                    ${process.env.FRONTEND_URL}auth/login
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            `)
+        }
+    },
     forgotPassword(data) {
 
         return {
@@ -429,9 +478,7 @@ const getFullTemplate = (data, body) => {
    
            .email-masthead {
                padding: 25px 0;
-               display: flex;
-               align-items: center !important;
-               justify-content: center !important;
+               text-align: center; 
            }
    
            .email-masthead_logo {
@@ -540,7 +587,7 @@ const getFullTemplate = (data, body) => {
                    <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                        <tr>
                            <td class="email-masthead">
-                            <img src="https://${data.req.headers.host}/api/media/logo/studyzone.svg" >Study Zone
+                            <img src="https://${data.req.headers.host}/api/media/studyzone.svg" >Study Zone
                            </td>
                        </tr>
                        <!-- Email Body -->
@@ -551,7 +598,7 @@ const getFullTemplate = (data, body) => {
                                    <!-- Body content -->
                                    <tr>
                                        <td class="content-cell">
-   
+                                        https://${data.req.headers.host}/api/media/studyzone.svg
                                        ${body}
                                        
                                        </td>

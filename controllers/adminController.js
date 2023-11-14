@@ -71,7 +71,6 @@ const adminController = {
     async manageUserAccess(req, res) {
         try {
             const { email } = req.body;
-
             // Check if user already exists
             const existingUser = await User.findOne({ email });
             if (!existingUser) {
@@ -79,12 +78,20 @@ const adminController = {
             }
             if (req.body.isDeleted != null || req.body.isDeleted != undefined) {
                 existingUser.isDeleted = req.body.isDeleted;
+                existingUser.isActive = false;
+            }
+            if (req.body.isVerified != null || req.body.isVerified != undefined) {
+                existingUser.isVerified = req.body.isVerified;
+                existingUser.isActive = true;
             }
             if (req.body.isActive != null || req.body.isActive != undefined) {
                 existingUser.isActive = req.body.isActive;
             }
-            await existingUser.save();
 
+            await existingUser.save();
+            if (req.body.isVerified) {
+                await sendGrid.send(email, 'accountVerified', { req, email: existingUser.email })
+            }
             res.json({ message: 'User updated successfully' });
         } catch (error) {
             console.error("\n\nadminController:manegeUserAccess:error -", error);
@@ -107,7 +114,7 @@ const adminController = {
                 isDeleted: false,
                 role: 'user',
                 ...searchCriteria
-            },);
+            }).sort({ isSignedUp: -1, 'isActive': -1, });
 
             res.json({ users, message: 'Users fetched successfully' });
         } catch (error) {

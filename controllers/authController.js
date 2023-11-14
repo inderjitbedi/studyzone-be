@@ -5,10 +5,15 @@ const sendGrid = require('./../providers/sendGrid')
 const authController = {
     async register(req, res) {
         try {
-            const user = new User(req.body);
+            user = await User.findOne({ email: req.body.email });
+            if (user) {
+                return res.status(400).json({ message: 'Email already registered.' });
+            }
+            user = new User({ ...req.body, isSignedUp: true, isVerified: false, isActive: false });
             await user.save();
             res.status(201).json(user);
         } catch (error) {
+            console.log(error);
             res.status(400).json(error);
         }
     },
@@ -32,7 +37,7 @@ const authController = {
             user.isVerified = true;
             // user.inviteToken = null;
             user = await user.save();
-            token = jwt.sign({ email:  req.body.email }, process.env.JWT_SECRET);
+            token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET);
             user = user.toObject();
             delete user.password;
             res.json({ user, token, message: 'User signed up successfully' });
@@ -117,7 +122,7 @@ const authController = {
             next(err);
         }
     },
-   
+
 
 };
 

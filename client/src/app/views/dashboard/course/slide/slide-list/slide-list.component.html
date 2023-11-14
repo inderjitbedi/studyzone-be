@@ -1,8 +1,8 @@
 <div class="slide-list-wrapper">
-    <div class="no-data" *ngIf="!slides?.length">No slides found</div>
-    <div class="reorder-wrapper" *ngIf="slides?.length">
+    <div class="no-data w-100" *ngIf="!slides?.length">No slides found</div>
+    <div class="reorder-wrapper">
         <div class="ml-auto my-10">
-            <button mat-raised-button color="primary"  [class.reorder-link]="!reorderMode" *ngIf="slides?.length>=2"
+            <button mat-raised-button color="primary" [class.reorder-link]="!reorderMode" *ngIf="slides?.length>=2"
                 (click)="!reorderMode?reorderSlides():saveOrder()">
                 {{!reorderMode?"Reorder":"Save"}}
             </button>

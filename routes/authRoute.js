@@ -4,7 +4,7 @@ const authController = require('../controllers/authController');
 const makeExpressCallback = require('./../providers/expressCallback')
 
 router.post('/login', authController.login);
-// router.post('/register', authController.register);
+router.post('/signup', authController.register);
 router.put('/complete-signup/:token', authController.registerUser)
 router.get('/check-uniqueness-email/:email', authController.checkEmailUniqueness)
 

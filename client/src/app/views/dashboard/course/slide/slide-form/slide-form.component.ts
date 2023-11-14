@@ -23,7 +23,7 @@ export class SlideFormComponent implements OnInit {
   apiKey: any = '2s5r3no6j3vom8zxctikpv6sh6s2j7qe8p277t61yl1h7boh';
   setting: any = {
     plugins:
-      'anchor autolink emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+      'anchor autolink image link lists media searchreplace table visualblocks wordcount',
     // toolbar:
     //   'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
     tinycomments_mode: 'embedded',
@@ -70,7 +70,7 @@ export class SlideFormComponent implements OnInit {
     this.slideForm = this.fb.group({
       name: [
         data.name || '',
-        [Validators.required, Validators.pattern('^[a-zA-Z0-9 s]*$')],
+        [Validators.required, Validators.pattern('^[a-zA-Z0-9& -]*$')],
       ],
       type: [data.type || 'text', Validators.required],
       text: [data.text || ''],

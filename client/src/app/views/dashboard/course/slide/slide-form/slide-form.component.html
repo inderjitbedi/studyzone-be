@@ -32,7 +32,8 @@
                         </mat-error>
                         <mat-error
                             *ngIf="!slideForm.controls['name'].hasError('required') && slideForm.controls['name'].hasError('pattern')">
-                            Slide name can only be alpha-numeric.
+                            Slide name can only contain alpha-numeric, as well as the special characters '&'
+                            and '-'..
                         </mat-error>
                         <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
                             slideForm.controls['name'].value.length}}
@@ -60,9 +61,9 @@
                         <input id="file-upload" type="file" name="fileUpload"
                             accept="{{selectedFileSettings.mimeTypes}}" (change)="uploadFiles($event)" />
                         <label for="file-upload" id="file-drag" class="c-label"
-                            [class.h-50]="!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value)">
+                            [class.h-50]="!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key].value)">
                             <div
-                                *ngIf="!uploadingInProgess && (!attachment && !slideForm.controls[selectedFileSettings.key]?.value)">
+                                *ngIf="!uploadingInProgess && (!attachment && !slideForm.controls[selectedFileSettings.key].value)">
                                 <i class="fa fa-download" aria-hidden="true"></i>
                                 <span class="c-btn ">Select {{selectedFileSettings.name}} file</span>
 
@@ -74,7 +75,7 @@
                                 </div>
                             </div>
                             <div
-                                *ngIf="!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value)">
+                                *ngIf="!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key].value)">
                                 <span class="c-btn ">Select another</span>
                             </div>
                             <div id="response" *ngIf="uploadingInProgess">
@@ -85,7 +86,7 @@
                             </div>
                         </label>
                     </div>
-                    <div *ngIf="!attachment && !slideForm.controls[selectedFileSettings.key]?.value">
+                    <div *ngIf="!attachment && !slideForm.controls[selectedFileSettings.key].value">
                         <mat-error *ngIf="slideForm.controls[selectedFileSettings.key]?.hasError('required')">Required
                         </mat-error>
                         <mat-error *ngIf="!slideForm.controls[selectedFileSettings.key]?.hasError('required') 
@@ -101,14 +102,14 @@
                 </div>
 
                 <video
-                    *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value) && selectedType == 'video') || (isViewOnly && selectedSlideDetails.type == 'video')"
+                    *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key].value) && selectedType == 'video') || (isViewOnly && selectedSlideDetails.type == 'video')"
                     controls
                     src="{{slideForm.controls['file'].value? environment.baseUrl + slideForm.controls['file'].value:''}}"
                     width="100%">
                     Sorry, your browser doesn't support embedded videos.
                 </video>
 
-                <div *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value) && selectedType == 'audio') || (isViewOnly && selectedSlideDetails.type == 'audio')"
+                <div *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key].value) && selectedType == 'audio') || (isViewOnly && selectedSlideDetails.type == 'audio')"
                     style="text-align: center;width: 100%;">
                     <audio controls>
                         <source
@@ -116,7 +117,7 @@
                         Sorry, your browser does not support the audio element.
                     </audio>
                 </div>
-                <div *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key]?.value) && selectedType == 'pdf') || (isViewOnly && selectedSlideDetails.type == 'pdf')"
+                <div *ngIf="(!uploadingInProgess &&  (attachment || slideForm.controls[selectedFileSettings.key].value) && selectedType == 'pdf') || (isViewOnly && selectedSlideDetails.type == 'pdf')"
                     style="text-align: center;width: 100%;">
                     <p><span *ngIf="attachment.originalName" class="material-icons">picture_as_pdf</span>
                         {{attachment.originalName||'No file found'}}</p>
@@ -144,9 +145,10 @@
     <mat-toolbar class="mat-accent-bg m-0 mt-12" fxLayoutAlign="center" *ngIf="!isViewOnly">
         <div fxlayout="row" fxLayoutAlign="flex-end" class="mt-12" fxFlex="100"
             class="mat-toolbar-footer action-buttons">
-            <button type="submit" mat-raised-button color="primary"
-                [disabled]="slideForm.invalid ||  (!slideForm.controls['text']?.value && slideForm.controls['type'].value == 'text')||(!attachment && !slideForm.controls[selectedFileSettings.key]?.value && slideForm.controls['type'].value != 'text')|| apiCallActive"
-                (click)="saveSlide()">Save</button>
+            <button type="submit" mat-raised-button color="primary" [disabled]="slideForm.invalid ||  (!slideForm.controls['text'].value 
+                && slideForm.controls['type'].value == 'text')||
+                (!attachment && !slideForm.controls[selectedFileSettings.key].value
+                 && slideForm.controls['type'].value != 'text')|| apiCallActive" (click)="saveSlide()">Save</button>
             <!-- <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button> -->
         </div>
     </mat-toolbar>

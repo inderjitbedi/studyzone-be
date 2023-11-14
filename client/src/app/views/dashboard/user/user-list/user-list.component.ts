@@ -38,24 +38,34 @@ export class UserListComponent implements OnInit {
     });
   }
   ngOnInit(): void {}
-  openConfirmDialog(index: number, user: any): void {
+  openConfirmDialog(index: number, user: any, actionData: any): void {
     this.addUserDialogRef = this.dialog.open(ConfirmDialogComponent, {
       minWidth: '320px',
       width: '585px',
       disableClose: true,
       data: {
+        actionData,
         user,
-        heading: (user.isActive ? 'Deactivate' : 'Activate') + ' User',
+        heading:
+          (actionData.isActive != undefined || actionData.isActive != null
+            ? user.isActive
+              ? 'Deactivate'
+              : 'Activate'
+            : 'Verify') + ' User',
         message:
           'Are you sure you want to ' +
-          (user.isActive ? 'de' : '') +
-          'activate this user?',
+          (actionData.isActive != undefined || actionData.isActive != null
+            ? user.isActive
+              ? 'deactivate'
+              : 'activate'
+            : 'verify') +
+          ' this user?',
       },
     });
     this.addUserDialogRef.afterClosed().subscribe({
       next: (data: any) => {
         if (data) {
-          this.manageUser(index, user);
+          this.manageUser(index, user, actionData);
         }
       },
     });
@@ -95,11 +105,12 @@ export class UserListComponent implements OnInit {
       },
     });
   }
-  manageUser(index: number, user: any) {
+  manageUser(index: number, user: any, actionData: any) {
+    console.log('manageUserAccess = ', actionData);
     this.apiService
       .put(apiConstants.manageUserAccess, {
         email: user.email,
-        isActive: !user.isActive,
+        ...actionData,
       })
       .subscribe({
         next: (data) => {

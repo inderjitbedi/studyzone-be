@@ -25,7 +25,10 @@
         </mat-card-header>
         <mat-card-actions>
             <button class="active-chip" *ngIf="user.isActive && user.isSignedUp">Active</button>
-            <button class="deactivated-chip" *ngIf="!user.isActive && user.isSignedUp">Deactivated</button>
+            <button class="deactivated-chip"
+                *ngIf="!user.isActive && user.isSignedUp  && user.isVerified">Deactivated</button>
+            <button class="deactivated-chip" *ngIf="!user.isActive && user.isSignedUp && !user.isVerified">Pending
+                Verification</button>
             <button class="disabled-chip" *ngIf="user.isActive && !user.isSignedUp">Invitation sent</button>
 
 
@@ -41,7 +44,11 @@
             <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="openUserInviteForm(true,user)">{{user.isActive && !user.isSignedUp?
                     'Reinvite':'View'}}</button>
-                <button mat-menu-item (click)="openConfirmDialog(i,user)" *ngIf="user.isSignedUp">{{(user.isActive?'Deactivate':'Activate')+' user'}}</button>
+                <button mat-menu-item (click)="openConfirmDialog(i,user,{isActive:!user.isActive})"
+                    *ngIf="user.isSignedUp && user.isVerified">{{(user.isActive?'Deactivate':'Activate')+'
+                    user'}}</button>
+                <button mat-menu-item (click)="openConfirmDialog(i,user,{isVerified:!user.isVerified})"
+                    *ngIf="user.isSignedUp&& !user.isVerified">{{'Verify user'}}</button>
             </mat-menu>
         </mat-card-actions>
     </mat-card>

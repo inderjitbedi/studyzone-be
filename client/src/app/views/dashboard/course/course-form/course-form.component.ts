@@ -52,7 +52,7 @@ export class CourseFormComponent implements OnInit {
     this.courseForm = this.fb.group({
       name: [
         data.name || '',
-        [Validators.required, Validators.pattern('^[a-zA-Z0-9 s]*$')],
+        [Validators.required, Validators.pattern('^[a-zA-Z0-9& -]*$')],
       ],
       type: [data.type || 'public', Validators.required],
       description: [data.description || '', Validators.required],
