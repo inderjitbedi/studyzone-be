@@ -54,7 +54,7 @@ const authController = {
             if (user.role != 'admin') {
                 if (!user.isActive) throw new Error('User account have been deactivated. Please contact the admin.');
                 if (!user.isSignedUp) throw new Error('Before you sign in, please complete your profile using the invitation link sent to you on your email address. If not received yet, please contact admin to resent the invite.');
-                if (!user.isVerified) throw new Error('Please verify your email before you sign in.');
+                if (!user.isVerified) throw new Error('Admin verification pending. You will be notified once the account is approved.');
             }
             const isMatch = await user.comparePassword(password);
             if (!isMatch) throw new Error('Invalid credentials');

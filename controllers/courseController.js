@@ -440,8 +440,17 @@ const courseController = {
                 isPublished: true,
 
             }
+
             if (req.query.type) {
                 filters.type = req.query.type
+                if (req.query.type === 'private') {
+                    filters.$and = [{
+                        type: "private",
+                        _id: {
+                            $in: await CourseEnrollment.distinct("course", { user: currentUser._id })
+                        }
+                    }]
+                }
             } else {
                 filters.$or = [
                     { type: "public" },
@@ -462,10 +471,18 @@ const courseController = {
                 //         { description: { $regex: req.query.searchKey, $options: 'i' } },
                 //     ]
                 // } else {
-                filters.$or = [
+                if (filters.$or && filters.$or.length)
+
+                    filters.$or = [...filters.$or,
                     { name: { $regex: req.query.searchKey, $options: 'i' } },
                     { description: { $regex: req.query.searchKey, $options: 'i' } },
-                ]
+                    ]
+                else
+
+                    filters.$or = [
+                        { name: { $regex: req.query.searchKey, $options: 'i' } },
+                        { description: { $regex: req.query.searchKey, $options: 'i' } },
+                    ]
                 // }
 
             }
