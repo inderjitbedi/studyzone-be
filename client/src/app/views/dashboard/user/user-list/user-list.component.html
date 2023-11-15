@@ -16,7 +16,7 @@
 <p class="no-data" *ngIf="!apiCallActive && users?.length <= 0">
     There is no User created yet!
 </p>
-<div class="flex flex-row space-between gap mt-10">
+<div class="flex flex-row gap mt-10">
     <mat-card class="example-card " *ngFor="let user of users; let i=index">
         <mat-card-header>
             <mat-card-title>{{(user?.firstName?(user?.firstName+'
@@ -48,7 +48,9 @@
                     *ngIf="user.isSignedUp && user.isVerified">{{(user.isActive?'Deactivate':'Activate')+'
                     user'}}</button>
                 <button mat-menu-item (click)="openConfirmDialog(i,user,{isVerified:!user.isVerified})"
-                    *ngIf="user.isSignedUp&& !user.isVerified">{{'Verify user'}}</button>
+                    *ngIf="user.isSignedUp&& !user.isVerified">Verify user</button>
+                <button mat-menu-item (click)="openConfirmDialog(i,user,{isDeleted:!user.isDeleted})">Delete
+                    user</button>
             </mat-menu>
         </mat-card-actions>
     </mat-card>

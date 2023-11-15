@@ -51,14 +51,20 @@ export class UserListComponent implements OnInit {
             ? user.isActive
               ? 'Deactivate'
               : 'Activate'
-            : 'Verify') + ' User',
+            : actionData.isVerified != undefined ||
+              actionData.isVerified != null
+            ? 'Verify'
+            : 'Delete') + ' User',
         message:
           'Are you sure you want to ' +
           (actionData.isActive != undefined || actionData.isActive != null
             ? user.isActive
               ? 'deactivate'
               : 'activate'
-            : 'verify') +
+            : actionData.isVerified != undefined ||
+              actionData.isVerified != null
+            ? 'verify'
+            : 'delete') +
           ' this user?',
       },
     });
@@ -115,8 +121,13 @@ export class UserListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           // if (data.statusCode === 201 || data.statusCode === 200) {
-          const isActive = this.users[index].isActive;
-          this.users[index].isActive = !isActive;
+
+          if (actionData.isDeleted) {
+            this.users.splice(index, 1);
+          } else {
+            const isActive = this.users[index].isActive;
+            this.users[index].isActive = !isActive;
+          }
           this.alertService.notify(data.message);
           // } else {
           //   this.errorHandlingService.handle(data);

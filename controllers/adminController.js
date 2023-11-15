@@ -7,7 +7,7 @@ const adminController = {
             const { email } = req.body;
 
             // Check if user already exists
-            const existingUser = await User.findOne({ email });
+            const existingUser = await User.findOne({ email, isDeleted: false }).sort({ createdAt: -1 });
             if (existingUser) {
                 return res.status(400).json({ message: 'User already exists' });
             }
@@ -26,11 +26,13 @@ const adminController = {
             console.error("\n\nadminController:inviteUser:error -", error);
             res.status(400).json({ message: error.toString() });;
         }
-    }, async checkEmailUniqueness(req, res) {
+    },
+    async checkEmailUniqueness(req, res) {
         try {
             const { email } = req.params;
             // Check if user already exists
-            const existingUser = await User.findOne({ email });
+            const existingUser = await User.findOne({ email, isDeleted: false }).sort({ createdAt: -1 });
+            console.log(existingUser);
             // if (existingUser) {
             //     return res.status(409).json({ isUnique: !existingUser, message: 'User already exists' });
             // }
@@ -72,27 +74,29 @@ const adminController = {
         try {
             const { email } = req.body;
             // Check if user already exists
-            const existingUser = await User.findOne({ email });
+            const existingUser = await User.findOne({ email }).sort({ createdAt: -1 });
             if (!existingUser) {
                 return res.status(400).json({ message: 'User not found.' });
             }
+
             if (req.body.isDeleted != null || req.body.isDeleted != undefined) {
                 existingUser.isDeleted = req.body.isDeleted;
                 existingUser.isActive = false;
             }
             if (req.body.isVerified != null || req.body.isVerified != undefined) {
-                existingUser.isVerified = req.body.isVerified;
-                existingUser.isActive = true;
+                if (req.body.isVerified) {
+                    existingUser.isVerified = req.body.isVerified;
+                    existingUser.isActive = true;
+                }
             }
             if (req.body.isActive != null || req.body.isActive != undefined) {
                 existingUser.isActive = req.body.isActive;
             }
-
             await existingUser.save();
             if (req.body.isVerified) {
                 await sendGrid.send(email, 'accountVerified', { req, email: existingUser.email })
             }
-            res.json({ message: 'User updated successfully' });
+            res.json({ existingUser, message: 'User account status updated successfully' });
         } catch (error) {
             console.error("\n\nadminController:manegeUserAccess:error -", error);
             res.status(400).json({ message: error.toString() });;

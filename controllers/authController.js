@@ -5,7 +5,7 @@ const sendGrid = require('./../providers/sendGrid')
 const authController = {
     async register(req, res) {
         try {
-            user = await User.findOne({ email: req.body.email });
+            user = await User.findOne({ email: req.body.email, isDeleted: false });
             if (user) {
                 return res.status(400).json({ message: 'Email already registered.' });
             }
@@ -21,11 +21,12 @@ const authController = {
         try {
             let { token } = req.params;
 
-            let user = await User.findOne({ email: req.body.email });
+            let user = await User.findOne({ email: req.body.email, isDeleted: false });
+            console.log(user);
             if (!user) {
                 return res.status(400).json({ message: 'No invitation found for this email.' });
             }
-            user = await User.findOne({ inviteToken: token, email: req.body.email });
+            user = await User.findOne({ inviteToken: token, email: req.body.email, isDeleted: false });
             if (!user) {
                 return res.status(400).json({ message: 'Invalid invititation token.' });
             }
@@ -49,12 +50,13 @@ const authController = {
     async login(req, res) {
         try {
             const { email, password } = req.body;
-            let user = await User.findOne({ email, isActive: true, isDeleted: false });
-            if (!user) throw new Error('User not registered');
+            let user = await User.findOne({ email, isDeleted: false });
+            if (!user) throw new Error('No matching user found. Please register for portal access.');
             if (user.role != 'admin') {
-                if (!user.isActive) throw new Error('User account have been deactivated. Please contact the admin.');
                 if (!user.isSignedUp) throw new Error('Before you sign in, please complete your profile using the invitation link sent to you on your email address. If not received yet, please contact admin to resent the invite.');
                 if (!user.isVerified) throw new Error('Admin verification pending. You will be notified once the account is approved.');
+                if (!user.isActive) throw new Error('User account have been deactivated. Please contact the admin.');
+
             }
             const isMatch = await user.comparePassword(password);
             if (!isMatch) throw new Error('Invalid credentials');
@@ -70,7 +72,7 @@ const authController = {
         try {
             const { email } = req.params;
             // Check if user already exists
-            const existingUser = await User.findOne({ email });
+            const existingUser = await User.findOne({ email, isDeleted: false });
             // if (existingUser) {
             //     return res.status(409).json({ isUnique: !existingUser, message: 'User already exists' });
             // }
@@ -83,12 +85,15 @@ const authController = {
     async forgotPassword(req, res, next) {
         try {
             const { email } = req.body;
-            const user = await User.findOne({ email });
+            const user = await User.findOne({ email, isDeleted: false });
             if (!user) {
                 return res.status(400).json({ message: 'User not found' });
             }
             if (!user.isSignedUp) {
-                return res.status(400).json({ message: 'User is not verified yet.' });
+                return res.status(400).json({ message: 'User is not signed up yet.' });
+            }
+            if (!user.isVerified) {
+                return res.status(400).json({ message: 'Admin verification pending. You will be notified once the account is approved.' });
             }
             const token = crypto.randomBytes(20).toString('hex');
             user.resetPasswordToken = token;
