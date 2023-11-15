@@ -65,7 +65,7 @@ export class SlideFormComponent implements OnInit {
     private activeRoute: ActivatedRoute
   ) {
     this.isViewOnly = data.isViewOnly;
-    console.log(data);
+    // console.log(data);
 
     this.slideForm = this.fb.group({
       name: [
@@ -77,7 +77,7 @@ export class SlideFormComponent implements OnInit {
       file: [''],
       // isPublished: [data.isPublished]
     });
-    console.log(this.slideForm.value);
+    // console.log(this.slideForm.value);
 
     this.selectedSlideDetails = data;
     this.courseId = data.courseId;
@@ -310,7 +310,7 @@ export class SlideFormComponent implements OnInit {
               this.apiCallActive = false;
               // if (event.body.statusCode === 200) {
               const file = event.body.file;
-              console.log(file);
+              // console.log(file);
 
               this.attachment = {
                 ...file,
