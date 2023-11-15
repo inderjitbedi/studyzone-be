@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const CommentModel = require('./commentModel');
 
 const courseSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true, lowercase: true },
+    name: { type: String, required: true, lowercase: true },
     type: { type: String, enum: ['public', 'private', 'paid'], default: 'public' },
     description: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
