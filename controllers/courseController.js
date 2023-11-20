@@ -111,6 +111,15 @@ const courseController = {
             res.status(400).json({ message: error.toString() });;
         }
     },
+    async listAll(req, res) {
+        try {
+            const courses = await Course.find({ isDeleted: false });
+            res.json({ courses, message: 'List of all courses fetched successfully' });
+        } catch (error) {
+            console.error("\n\nadminController:listCourses:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
     async getCourseDetails(req, res) {
         try {
             let course = await Course.findOne({ _id: req.params.id, isDeleted: false }).populate({

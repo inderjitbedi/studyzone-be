@@ -6,6 +6,7 @@ const slideController = require('../controllers/slideController');
 const verifyToken = require('../providers/jwtMiddleware');
 const upload = require('../providers/uploadFile');
 const progressController = require('../controllers/progressController');
+const couponController = require('../controllers/couponController');
 const router = express.Router();
 
 
@@ -19,11 +20,20 @@ router.get('/user/:id', verifyToken, adminController.getUserDetails)
 router.put('/user/:id', verifyToken, adminController.updateUser)
 
 router.get('/course/list/:type', verifyToken, courseController.listCourses)
+router.get('/course/all', verifyToken, courseController.listAll)
 router.post('/course', verifyToken, courseController.addCourse)
 router.put('/course/:id', verifyToken, courseController.editCourse)
 router.get('/course/:id', verifyToken, courseController.getCourseDetails)
 router.put('/course/:id/delete', verifyToken, courseController.deleteCourse)
 router.put('/course/manage-visibility/:id', verifyToken, courseController.editCourse)
+
+
+router.get('/coupon/list/:type', verifyToken, couponController.list)
+router.post('/coupon', verifyToken, couponController.add)
+router.put('/coupon/:id', verifyToken, couponController.edit)
+router.get('/coupon/:id', verifyToken, couponController.details)
+router.put('/coupon/:id/delete', verifyToken, couponController.delete)
+// router.put('/coupon/manage-visibility/:id', verifyToken, couponController.editCourse)
 
 
 router.get('/course/:id/comment', verifyToken, courseController.getComments)

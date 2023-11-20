@@ -4,19 +4,13 @@ import { UserProgressByCoursesComponent } from './user-progress-by-courses/user-
 import { MaterialModule } from 'src/app/material/material.module';
 import { RouterModule } from '@angular/router';
 
-
 const routes = [
   { path: 'course/:type', component: UserProgressByCoursesComponent },
   { path: '**', redirectTo: 'user-progress/public' },
 ];
 
 @NgModule({
-  declarations: [
-    UserProgressByCoursesComponent
-  ],
-  imports: [
-    CommonModule, RouterModule.forChild(routes),
-    MaterialModule
-  ]
+  declarations: [UserProgressByCoursesComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), MaterialModule],
 })
-export class ProgressModule { }
+export class ProgressModule {}

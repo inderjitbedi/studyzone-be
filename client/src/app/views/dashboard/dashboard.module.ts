@@ -13,24 +13,36 @@ const routes = [
       {
         path: 'user',
         loadChildren: () =>
-          import('../../views/dashboard/user/user.module').then((m) => m.UserModule),
+          import('../../views/dashboard/user/user.module').then(
+            (m) => m.UserModule
+          ),
         canActivate: [AuthGuard],
       },
       {
         path: 'course',
         loadChildren: () =>
-          import('../../views/dashboard/course/course.module').then((m) => m.CourseModule),
+          import('../../views/dashboard/course/course.module').then(
+            (m) => m.CourseModule
+          ),
         canActivate: [AuthGuard],
       },
       {
         path: 'progress',
         loadChildren: () =>
-          import('../../views/dashboard/progress/progress.module').then((m) => m.ProgressModule),
+          import('../../views/dashboard/progress/progress.module').then(
+            (m) => m.ProgressModule
+          ),
         canActivate: [AuthGuard],
       },
-      
+      {
+        path: 'payment',
+        loadChildren: () =>
+          import('../../views/dashboard/payment/payment.module').then(
+            (m) => m.PaymentModule
+          ),
+        canActivate: [AuthGuard],
+      },
       { path: '**', redirectTo: 'user' },
-
     ],
   },
   { path: '**', redirectTo: 'dashboard' },
@@ -40,4 +52,4 @@ const routes = [
   declarations: [DashboardComponent],
   imports: [RouterModule.forChild(routes), CommonModule, MaterialModule],
 })
-export class DashboardModule { }
+export class DashboardModule {}

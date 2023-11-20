@@ -41,6 +41,11 @@
             <mat-icon>signal_cellular_alt</mat-icon>
             <span>Progress </span>
         </button>
+        <button mat-button class="menu-button " routerLink="/dashboard/payment" routerLinkActive="active"
+            [ngClass]="{'active': currentUrl.indexOf('promo-codes')>-1}">
+            <mat-icon>signal_cellular_alt</mat-icon>
+            <span>Promo Codes </span>
+        </button>
         <!-- <button mat-button class="menu-button" routerLink="/dashboard/reminders"  routerLinkActive="active"
             [ngClass]="{'active': currentUrl.indexOf('reminder')>-1}">
             <mat-icon>event</mat-icon>
