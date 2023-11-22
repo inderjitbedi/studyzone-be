@@ -23,6 +23,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const modules = [
   MatCardModule,
@@ -53,11 +54,12 @@ const modules = [
   MatRadioModule,
   MatTabsModule,
   MatSlideToggleModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatPaginatorModule,
 ];
 @NgModule({
   imports: [modules],
   providers: [MatDialog],
   exports: [modules],
 })
-export class MaterialModule { }
+export class MaterialModule {}

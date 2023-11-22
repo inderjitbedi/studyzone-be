@@ -10,6 +10,7 @@ const courseSchema = new mongoose.Schema({
     cover: {
         type: mongoose.Schema.Types.ObjectId, ref: 'File', required: true
     },
+    price: { type: Number, default: 0 },
     rootComments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
 }, { timestamps: true });
 

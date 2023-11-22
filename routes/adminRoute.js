@@ -30,9 +30,9 @@ router.put('/course/manage-visibility/:id', verifyToken, courseController.editCo
 
 router.get('/coupon/list/:type', verifyToken, couponController.list)
 router.post('/coupon', verifyToken, couponController.add)
-router.put('/coupon/:id', verifyToken, couponController.edit)
-router.get('/coupon/:id', verifyToken, couponController.details)
-router.put('/coupon/:id/delete', verifyToken, couponController.delete)
+router.put('/coupon/:couponid', verifyToken, couponController.edit)
+router.get('/coupon/:couponid', verifyToken, couponController.details)
+router.put('/coupon/:couponid/delete', verifyToken, couponController.delete)
 // router.put('/coupon/manage-visibility/:id', verifyToken, couponController.editCourse)
 
 
@@ -57,5 +57,7 @@ router.put('/course/:id/manageEnrollmentRequest/:enrollmentId', verifyToken, cou
 router.post('/file/upload/:type', verifyToken, upload.single('file'), fileController.upload);
 
 router.get('/analytics/list/:type', courseController.getAnalytics)
+
+router.get('/transaction/list', verifyToken, couponController.getTransactions)
 
 module.exports = router;

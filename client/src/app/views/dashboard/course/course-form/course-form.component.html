@@ -36,11 +36,7 @@
                             Course name can only contain alpha-numeric, as well as the special characters '&'
                             and '-'.
                         </mat-error>
-                        <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
-                            courseForm.controls['name'].value.length}}
-                            {{nameMaxLength -
-                            courseForm.controls['name'].value.length>1?'characters':'character'}}
-                            left.</mat-hint>
+
                     </mat-form-field>
                 </div>
                 <div fxLayout="column" fxLayout.gt-xs="row">
@@ -49,7 +45,7 @@
                     <nav class="nav nav-pills nav-fill">
                         <a class="nav-link " *ngFor="let type of types"
                             [class.active]="courseForm.controls['type'].value == type.value"
-                            (click)="courseForm.controls['type'].setValue(type.value)">{{type.name}}</a>
+                            (click)="courseForm.controls['type'].setValue(type.value);typeChanged(type.value)">{{type.name}}</a>
 
                     </nav>
                     <!-- <mat-select formControlName="type">
@@ -109,6 +105,21 @@
                             && courseForm.controls['cover'].hasError('file_size')">
                         File size should not be greater than 4MB.
                     </mat-error>
+                </div>
+                <div fxLayout="column" fxLayout.gt-xs="row" class=" mt-20" *ngIf="selectedType =='paid'">
+                    <mat-label>Course Price
+                    </mat-label><mat-form-field
+                        [class.mb-10]="courseForm.controls['price'].touched && courseForm.controls['price'].hasError('required')"
+                        fxFlex="100">
+
+                        <input type="text" matInput formControlName="price" trim autocomplete="off"
+                            [errorStateMatcher]="matcher" maxlength="10" [readonly]="isViewOnly">
+                        <mat-error *ngIf="courseForm.controls['price'].hasError('required')">Required
+                        </mat-error>
+                        <mat-error *ngIf="courseForm.controls['price'].hasError('pattern')">Only numeric price allowed.
+                        </mat-error>
+
+                    </mat-form-field>
                 </div>
                 <div fxLayout="column" fxLayout.gt-xs="row" class="flex-center mt-20">
                     <!-- <mat-form-field> -->

@@ -38,6 +38,7 @@ export class CourseFormComponent implements OnInit {
     { value: 'private', name: 'Private' },
     { value: 'paid', name: 'Paid' },
   ];
+  selectedType: any = 'public';
   constructor(
     public matDialog: MatDialogRef<CourseFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -58,8 +59,10 @@ export class CourseFormComponent implements OnInit {
       description: [data.description || '', Validators.required],
       isPublished: [data.isPublished],
       cover: ['', Validators.required],
+      price: [data.price || ''],
     });
-
+    this.selectedType = data.type || 'public';
+    this.typeChanged(this.selectedType);
     if (data._id) {
       this.courseId = data._id || null;
       this.attachment = data.cover ? { ...data.cover } : {};
@@ -75,8 +78,32 @@ export class CourseFormComponent implements OnInit {
           this.checkCourseCategoryUniqueness();
         },
       });
+    // this.courseForm['controls']['type'].valueChanges.subscribe({
+    //   next: (data: any) => {
+    //     this.selectedType = data;
+    //     if (this.selectedType === 'paid') {
+    //       this.setValidators([
+    //         Validators.required,
+    //         Validators.pattern(/^[0-9]+$/),
+    //       ]);
+    //     } else {
+    //       this.setValidators([]);
+    //     }
+    //   },
+    // });
   }
-
+  typeChanged(type: any) {
+    this.selectedType = type;
+    if (this.selectedType === 'paid') {
+      this.setValidators([Validators.required, Validators.pattern(/^[0-9]+$/)]);
+    } else {
+      this.setValidators([]);
+    }
+  }
+  setValidators(validators: any) {
+    this.courseForm['controls']['price'].setValidators(validators);
+    this.courseForm['controls']['price'].updateValueAndValidity();
+  }
   checkCourseCategoryUniqueness() {
     // let formControl = this.courseForm['controls']['name'];
     // if (formControl.valid && formControl.value.trim() && formControl.value.trim() != this.categoryName) {
@@ -110,6 +137,9 @@ export class CourseFormComponent implements OnInit {
         isPublished: this.courseForm.value.isPublished,
         cover: this.attachment._id,
       };
+      if (payload.type == 'paid') {
+        payload.price = parseInt(this.courseForm.value.price);
+      }
       let apiUrl = apiConstants.createCourse;
       let apiCall = this.apiService.post(apiUrl, payload);
 

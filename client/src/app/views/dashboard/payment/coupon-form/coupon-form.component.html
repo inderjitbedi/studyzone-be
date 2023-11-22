@@ -1,0 +1,127 @@
+<div fxLayout="column" class="container-div">
+
+  <mat-toolbar class="mat-accent-bg m-0" fxLayoutAlign="end flex-end">
+    <div fxFlex="100" fxLayout="row" fxLayoutAlign="space-between flex-end" class="mat-toolbar-header">
+      <span class="title dialog-title">{{couponId?'Edit':'Create'}} Coupon</span>
+      <span class="mat-button-wrapper cursor-pointer" (click)="matDialog.close()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="#8F8F8F" stroke-width="1.5" />
+          <path d="M14.5 9.49999L9.5 14.5M9.49998 9.49997L14.5 14.4999" stroke="#8F8F8F" stroke-width="1.5"
+            stroke-linecap="round" />
+        </svg>
+
+      </span>
+      <!-- {{couponForm.valid}} -->
+    </div>
+  </mat-toolbar>
+  <!-- usagelimit - {{couponForm.controls['usageLimit'].errors|json}}
+  value -{{couponForm.controls['value'].errors|json}} -->
+
+  <!-- <mat-divider class="mt-10"></mat-divider> -->
+  <div class="content p-20 mt-20" fxLayout="column">
+    <form [formGroup]="couponForm" fx-layout="column">
+      <div fxLayout="column" fxLayout.gt-xs="row" [class.form-div]="!isViewOnly" [class.mt-30]="isViewOnly">
+
+        <div fxLayout="column" fxLayout.gt-xs="row">
+          <mat-label>Select Course</mat-label>
+          <mat-form-field>
+            <mat-select formControlName="course" (selectionChange)="priceCheck()">
+              <mat-option *ngFor="let course of allCourses" [value]="course._id">
+                {{course.name | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="column" fxLayout.gt-xs="row">
+          <mat-label>Coupon Name
+          </mat-label><mat-form-field
+            [class.mb-10]="couponForm.controls['name'].touched && couponForm.controls['name'].hasError('required')"
+            fxFlex="100">
+
+            <input type="text" matInput formControlName="name" trim autocomplete="off" [errorStateMatcher]="matcher"
+              maxlength="50" [readonly]="isViewOnly">
+            <mat-error *ngIf="couponForm.controls['name'].hasError('required')">Required
+            </mat-error>
+            <mat-error
+              *ngIf="!couponForm.controls['name'].hasError('required') && !couponForm.controls['name'].hasError('pattern') && couponForm.controls['name'].hasError('not_unique')">
+              Coupon name already exists.
+            </mat-error>
+            <mat-error
+              *ngIf="!couponForm.controls['name'].hasError('required') && couponForm.controls['name'].hasError('pattern')">
+              Coupon name can only contain alpha-numeric, as well as the special characters '&'
+              and '-' with no spaces in between.
+            </mat-error>
+            <mat-hint align="end" *ngIf="!isViewOnly">{{nameMaxLength -
+              couponForm.controls['name'].value.length}}
+              {{nameMaxLength -
+              couponForm.controls['name'].value.length>1?'characters':'character'}}
+              left.</mat-hint>
+          </mat-form-field>
+        </div>
+        <div fxLayout="column" fxLayout.gt-xs="row">
+          <mat-label>Discount Type</mat-label>
+          <nav class="nav nav-pills nav-fill">
+            <a class="nav-link " *ngFor="let type of types"
+              [class.active]="couponForm.controls['valueType'].value == type.value"
+              (click)="couponForm.controls['valueType'].setValue(type.value);priceCheck()">{{type.name}}</a>`
+          </nav>
+        </div>
+        <div fxLayout="column" fxLayout.gt-xs="row" *ngIf="selectedType !='free'">
+          <mat-label>{{selectedType|titlecase}} Discount Value
+          </mat-label><mat-form-field
+            [class.mb-10]="couponForm.controls['value'].touched && couponForm.controls['value'].hasError('required')"
+            fxFlex="100">
+
+            <input type="text" matInput formControlName="value" trim autocomplete="off" [errorStateMatcher]="matcher"
+              maxlength="10" [readonly]="isViewOnly" (change)="priceCheck()">
+            <mat-error *ngIf="couponForm.controls['value'].hasError('required')">Required
+            </mat-error>
+            <mat-hint align="end" *ngIf="!isViewOnly && selectedType =='percentage'">Value should be between 1 to
+              100.</mat-hint>
+            <mat-hint align="end" *ngIf="!isViewOnly&& selectedType =='fixed'">Should not exceed the course price
+              left.</mat-hint>
+
+            <mat-error *ngIf="couponForm.controls['value'].hasError('pattern')">{{
+              selectedType =='percentage'? 'Not a valid percentage value.':
+              (selectedType =='fixed'?'Only numeric value allowed.':'')}}
+            </mat-error>
+            <mat-error *ngIf="couponForm.controls['value'].hasError('max_value')">Discount Value can't exceed the Course
+              Price
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="column" fxLayout.gt-xs="row" class="flex-center mb-15">
+          Unlimited usage<mat-slide-toggle formControlName="isUnlimited" name="enablepublished"></mat-slide-toggle>
+        </div>
+        <div fxLayout="column" fxLayout.gt-xs="row" *ngIf="!isUnlimited">
+          <mat-label>Usage Limit
+          </mat-label>
+          <mat-form-field
+            [class.mb-10]="couponForm.controls['usageLimit'].touched && couponForm.controls['usageLimit'].hasError('required')"
+            fxFlex="100">
+            <input type="text" matInput formControlName="usageLimit" trim autocomplete="off"
+              [errorStateMatcher]="matcher" [readonly]="isViewOnly">
+            <mat-error *ngIf="couponForm.controls['usageLimit'].hasError('required')">Required
+            </mat-error>
+            <mat-error *ngIf="couponForm.controls['usageLimit'].hasError('pattern')">Only numeric value allowed.
+            </mat-error>
+            <!-- <mat-hint align="end" *ngIf="!isViewOnly">.</mat-hint> -->
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="column" fxLayout.gt-xs="row" class="flex-center" [class.mt-20]="isUnlimited">
+          Active <mat-slide-toggle formControlName="status" name="enablepublished"></mat-slide-toggle>
+        </div>
+      </div>
+    </form>
+  </div>
+  <mat-toolbar class="mat-accent-bg m-0 mt-12" fxLayoutAlign="center" *ngIf="!isViewOnly">
+    <div fxlayout="row" fxLayoutAlign="flex-end" class="mt-12" fxFlex="100" class="mat-toolbar-footer action-buttons">
+      <button type="submit" mat-raised-button color="primary" [disabled]="couponForm.invalid || apiCallActive"
+        (click)="saveCoupon()">Save</button>
+      <!-- <button type="button" mat-raised-button class="mr-20" (click)="matDialog.close()">Cancel</button> -->
+    </div>
+  </mat-toolbar>
+</div>

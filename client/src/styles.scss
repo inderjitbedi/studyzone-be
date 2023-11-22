@@ -74,6 +74,10 @@ body,
     margin-top: 10px;
 }
 
+.mt-3p {
+    margin-top: 3px;
+}
+
 .my-10 {
     margin: 10px 0;
 }
@@ -1088,4 +1092,8 @@ span.title.dialog-title {
 ::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
+}
+
+.mat-paginator-page-size-select {
+    width: 92px !important;
 }

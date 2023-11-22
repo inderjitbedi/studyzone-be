@@ -1,5 +1,6 @@
 const CourseCoupon = require("../models/couponModel");
-const Course = require("../models/courseModel");
+const Transaction = require("../models/transactionModel");
+const stripe = require('stripe')('sk_test_51OCYMFI5NMkvPoS4D38p4nASIkjgjU4CaPDCrQyKoUwSncqPNGef0nfJNR0B1cwMkQvyh2gW0f7oocg1uwCalZuN00bexnzlJP');
 
 const couponController = {
 
@@ -7,7 +8,7 @@ const couponController = {
     async add(req, res) {
         try {
             let reqBody = req.body;
-            const coupon = new CourseCoupon({ ...reqBody, course: req.params.id })
+            const coupon = new CourseCoupon({ ...reqBody })
             await coupon.save();
             const populatedCoupon = await coupon.populate('course');
 
@@ -22,76 +23,15 @@ const couponController = {
             const page = parseInt(req.query.pageNumber) || 1;
             const limit = parseInt(req.query.pageSize) || 9999;
             const startIndex = (page - 1) * limit;
-            // let filters = { course: req.params.id, isDeleted: false }
-            // const coupons = await CourseCoupon.find(filters)
-            //     .populate('course', ['name', 'type'])
-            //     .sort({ 'createdAt': -1 })
-            //     .skip((req.query.pageNumber - 1) * req.query.pageSize)
-            //     .limit(req.query.pageSize)
-
-            const pipeline = [
-                {
-                    $match: {
-                        type: req.params.type,
-                        isDeleted: false
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'coursecoupons', // Assuming the collection name is 'coursecoupons'
-                        localField: '_id',
-                        foreignField: 'course',
-                        as: 'coupons'
-                    }
-                },
-                {
-                    $unwind: '$coupons'
-                },
-                {
-                    $match: {
-                        'coupons.isDeleted': false,
-                    }
-                },
-                {
-                    $sort: { 'coupons.createdAt': -1 }
-                },
-                {
-                    $skip: (page - 1) * limit
-                },
-                {
-                    $limit: limit
-                }
-            ];
-
-            const result = await Course.aggregate(pipeline);
+            let filters = { isDeleted: false }
+            const coupons = await CourseCoupon.find(filters)
+                .populate('course', ['name', 'type'])
+                .sort({ 'createdAt': -1 })
+                .skip(startIndex)
+                .limit(limit)
 
 
-            const countResult = await Course.aggregate([
-                {
-                    $match: {
-                        type: req.params.type,
-                        isDeleted: false
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'coursecoupons', // Assuming the collection name is 'coursecoupons'
-                        localField: '_id',
-                        foreignField: 'course',
-                        as: 'coupons'
-                    }
-                },
-                {
-                    $unwind: '$coupons'
-                },
-                {
-                    $match: {
-                        'coupons.isDeleted': false,
-                    }
-                },]);
-
-            const coupons = result.length > 0 ? result[0].coupons : [];
-            const totalCoupons = countResult.length > 0 ? countResult[0].coupons.length : 0;
+            const totalCoupons = await CourseCoupon.countDocuments({ isDeleted: false });
             const totalPages = Math.ceil(totalCoupons / limit);
 
             res.json({
@@ -128,6 +68,7 @@ const couponController = {
         }
     },
 
+
     async edit(req, res) {
         try {
             let coupon = await CourseCoupon.findOne({ _id: req.params.couponid, isDeleted: false });
@@ -146,9 +87,7 @@ const couponController = {
     },
     async delete(req, res) {
         try {
-
-            let coupon = await CourseCoupon.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true })
-
+            let coupon = await CourseCoupon.findByIdAndUpdate(req.params.couponid, { isDeleted: true }, { new: true })
             res.json({ coupon, message: 'Coupon deleted successfully' });
         } catch (error) {
             console.error("\n\nadminController:editCourse:error -", error);
@@ -156,5 +95,89 @@ const couponController = {
         }
     },
 
+    async validate(req, res) {
+        try {
+            let coupon = await CourseCoupon.findOne({ course: req.params.id, name: req.params.promo, status: true, isDeleted: false }).populate('course', ['name', 'price']);
+            if (!coupon) {
+                res.status(400).json({ message: 'Invalid coupon' });
+            } else
+                if (coupon.usageLimit > 0 && coupon.usageLimit === coupon.usageCounter) {
+                    res.status(400).json({ message: 'Coupon is expired' });
+                } else {
+                    let coursePrice = coupon.course.price
+                    let couponValue = 0
+                    if (coupon.valueType === 'percentage') {
+                        couponValue = coursePrice * (coupon.value / 100)
+                    } else if (coupon.valueType === 'fixed') {
+                        couponValue = coupon.value
+                    }
+                    let finalPrice = coursePrice - couponValue;
+                    if (finalPrice < 0) {
+                        finalPrice = 0
+                    }
+                    res.json({ valid: true, finalPrice, couponValue, coupon: coupon._id, message: 'Coupon is valid' });
+                }
+
+
+        } catch (error) {
+            console.error("\n\nadminController:getCouponDetails:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
+    async paymentIntent(req, res) {
+        try {
+            const { amount } = req.body;
+
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount * 100, // amount in cents
+                currency: 'cad',
+            });
+
+            res.status(200).json({ clientSecret: paymentIntent.client_secret });
+        } catch (error) {
+            console.error("\n\nadminController:editCourse:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
+
+    async addTransaction(req, res) {
+        try {
+
+            let reqBody = req.body;
+            const transaction = new Transaction({ ...reqBody })
+            await transaction.save();
+            if (transaction.status === 'succeeded') {
+                let coupon = await CourseCoupon.findOne({ coupon: req.body.couponid })
+                if (coupon) {
+                    coupon.usageCounter = (coupon.usageCounter || 0) + 1;
+                    await coupon.save();
+                }
+            }
+
+            res.status(201).json({ message: 'Transaction saved successfully.' });
+
+        } catch (error) {
+            console.error("\n\nadminController:getCouponDetails:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
+
+    async getTransactions(req, res) {
+        try {
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const startIndex = (page - 1) * limit;
+            let transactions = await Transaction.find({ isDeleted: false })
+                .populate('course', ['name']).populate('coupon', ['name'])
+                .skip(startIndex)
+                .limit(limit).sort({ createdAt: -1 });
+            const totalTransactions = await Transaction.countDocuments({ isDeleted: false });
+            res.json({ transactions, totalTransactions, page, message: 'Transactions fetched successfully' })
+
+        } catch (error) {
+            console.error("\n\nadminController:getCouponDetails:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
 }
 module.exports = couponController

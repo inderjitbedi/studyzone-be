@@ -34,10 +34,55 @@ export class CourseDetailsComponent implements OnInit {
         this.selectedCourseId = route['id'];
         this.getCourseDetails();
       },
-    }); 
+    });
   }
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
+  manageCourseVisibility(course: any) {
+    this.openConfirmDialog(course, {
+      course,
+      type: 'visibility',
+      heading: (course.isPublished ? 'Unpublish' : 'Publish') + ' Course',
+      message:
+        'Are you sure you want to ' +
+        (course.isPublished ? 'un' : '') +
+        'publish this course?',
+    });
+  }
+  addCourseDialogRef: any;
+  openConfirmDialog(course: any, dialogData: any = {}): void {
+    this.addCourseDialogRef = this.dialog.open(ConfirmDialogComponent, {
+      minWidth: '320px',
+      width: '585px',
+      disableClose: true,
+      data: dialogData,
+    });
+    this.addCourseDialogRef.afterClosed().subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.manageCourse(course);
+        }
+      },
+    });
+  }
+  manageCourse(course: any) {
+    this.apiService
+      .put(apiConstants.manageCourseAccess + course._id, {
+        isPublished: !course.isPublished,
+      })
+      .subscribe({
+        next: (data) => {
+          // if (data.statusCode === 201 || data.statusCode === 200) {
+          this.courseDetails.isPublished = data.course.isPublished;
+
+          this.alertService.notify(data.message);
+          // } else {
+          //   this.errorHandlingService.handle(data);
+          // }
+        },
+        error: (e) => this.errorHandlingService.handle(e),
+      });
+  }
   courseDetails: any;
   getCourseDetails() {
     this.apiCallActive = true;

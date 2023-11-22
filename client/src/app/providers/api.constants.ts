@@ -17,6 +17,15 @@ export const apiConstants = {
   addComment: 'admin/course/:id/comment',
   getComments: 'admin/course/:id/comment',
   deleteComment: 'admin/course/:id/comment/:commentId',
+  allCourses: 'admin/course/list/paid',
+
+  coupon: 'admin/coupon/list/:type',
+  createCoupon: 'admin/coupon',
+  getCouponDetails: 'admin/coupon/',
+  updateCoupon: 'admin/coupon/',
+  deleteCoupon: 'admin/coupon/:id/delete',
+  manageCouponAccess: 'admin/coupon/manage-visibility/',
+  checkCouponUniqueness: 'admin/check-uniqueness-coupon/course/:id',
 
   manageEnrollmentRequest:
     'admin/course/:id/manageEnrollmentRequest/:enrollmentId',
@@ -38,7 +47,5 @@ export const apiConstants = {
   getUsersToEnroll: 'admin/course/:id/getUsersToEnroll',
 
   analytics: 'admin/analytics/list/:type',
-
-  coupon: 'admin/coupon/list/:type',
-  addCoupon: 'admin/coupon/list/:type',
+  getTransaction: 'admin/transaction/list',
 };

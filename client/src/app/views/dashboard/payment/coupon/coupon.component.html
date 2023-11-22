@@ -1,18 +1,18 @@
 <div class="title-group">
   <div class="title">
     <h1 class="mat-h1">
-      User Progress
+      Promo codes
     </h1>
   </div>
 </div>
 
 <div class="flex space-between mb-15">
-  <nav mat-tab-nav-bar class="mb-15">
+  <!-- <nav mat-tab-nav-bar class="mb-15">
     <a mat-tab-link *ngFor="let link of navLinks" (click)="updateUrl(link)"
       [active]="currentUrl.indexOf(link.link)>-1">{{link.label}}
     </a>
-  </nav>
-  <div class="title-buttons ">
+  </nav> -->
+  <div class="title-buttons ml-auto">
     <button mat-raised-button color="primary" (click)="openAddCouponForm(false)">
       <mat-icon>add</mat-icon> Add New
     </button>
@@ -21,8 +21,9 @@
 <mat-divider fxFlex="1 0"></mat-divider>
 
 <p class="no-data  flex-start" *ngIf="!apiCallActive && dataSource?.filteredData?.length <= 0">
-  There is no course created yet!
+  There is no promo code created yet!
 </p>
+
 
 <div *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
@@ -30,38 +31,48 @@
       <th mat-header-cell *matHeaderCellDef>#</th>
       <td mat-cell *matCellDef="let element; let i = index"> {{i+1}} </td>
     </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Code </th>
+      <td mat-cell *matCellDef="let element"> {{element?.name | uppercase }} </td>
+    </ng-container>
     <ng-container matColumnDef="coursename">
       <th mat-header-cell *matHeaderCellDef> Course Name </th>
       <td mat-cell *matCellDef="let element"> {{element?.course?.name | titlecase }} </td>
     </ng-container>
-    <ng-container matColumnDef="username">
-      <th mat-header-cell *matHeaderCellDef> User's Name </th>
-      <td mat-cell *matCellDef="let element"> {{element?.user?.fullName|| '-' }} </td>
+    <ng-container matColumnDef="value">
+      <th mat-header-cell *matHeaderCellDef> Discount Value </th>
+      <td mat-cell *matCellDef="let element"> {{element?.valueType ==='fixed'?'CA$'+element?.value:(element?.valueType
+        ==='percentage'?element?.value+"%":'Free') }} </td>
     </ng-container>
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef> User's Email </th>
-      <td mat-cell *matCellDef="let element"> {{element?.user?.email }} </td>
+    <ng-container matColumnDef="usageLimit">
+      <th mat-header-cell *matHeaderCellDef> Discount Limit </th>
+      <td mat-cell *matCellDef="let element"> {{element?.usageLimit?element?.usageLimit+'X':'Unlimited' }} </td>
     </ng-container>
-    <ng-container matColumnDef="enrolledOn">
-      <th mat-header-cell *matHeaderCellDef> Enrolled On </th>
-      <td mat-cell *matCellDef="let element"> {{element?.enrollment?.enrolledOn | date:'dd MMM yyyy hh:mm a'}}
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef> Status </th>
+      <td mat-cell *matCellDef="let element">
+        <span *ngIf="!element.status">Inactive</span>
+        <span *ngIf="element.status ">Active</span>
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="progress">
-      <th mat-header-cell *matHeaderCellDef> Progress </th>
-      <td mat-cell *matCellDef="let element">
-        <span *ngIf="element.progress && element.progress < 100">{{element.progress}}%
-          Slides
-          Completed</span>
-        <span *ngIf="!element.progress">Not started yet</span>
-        <span *ngIf="element.progress && element.progress >=100">All Slides Completed</span>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="lastActivity">
-      <th mat-header-cell *matHeaderCellDef> Last Activity </th>
-      <td mat-cell *matCellDef="let element"> {{(element?.latestProgress?.updatedAt | date:'dd MMM yyyy hh:mm a')||'-'
-        }}
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <a class="cursor-pointer" [matMenuTriggerFor]="menu">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="39.5" y="0.5" width="39" height="39" rx="19.5" transform="rotate(90 39.5 0.5)" fill="white"
+              stroke="#F3F3F3" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M20 10C21.1046 10 22 10.8954 22 12C22 13.1046 21.1046 14 20 14C18.8954 14 18 13.1046 18 12C18 10.8954 18.8954 10 20 10ZM20 18C21.1046 18 22 18.8954 22 20C22 21.1046 21.1046 22 20 22C18.8954 22 18 21.1046 18 20C18 18.8954 18.8954 18 20 18ZM22 28C22 26.8954 21.1046 26 20 26C18.8954 26 18 26.8954 18 28C18 29.1046 18.8954 30 20 30C21.1046 30 22 29.1046 22 28Z"
+              fill="#BFBFBF" />
+          </svg>
+        </a>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="openAddCouponForm(false,element)">Edit</button>
+          <button mat-menu-item (click)="delete(i,element)">Delete</button>
+          <!-- (click)="delete(i,course)" -->
+        </mat-menu>
       </td>
     </ng-container>
 

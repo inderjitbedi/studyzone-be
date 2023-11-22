@@ -19,22 +19,15 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./coupon-form.component.scss'],
 })
 export class CouponFormComponent implements OnInit {
-  apiKey: any = '2s5r3no6j3vom8zxctikpv6sh6s2j7qe8p277t61yl1h7boh';
-  setting: any = {
-    plugins:
-      'anchor autolink image link lists media searchreplace table visualblocks wordcount',
-    // toolbar:
-    //   'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-    tinycomments_mode: 'embedded',
-  };
-  environment = environment;
+  baseUrl = environment.baseUrl;
   toggle: boolean = false;
   isViewOnly: any;
-  slideId: any;
-  slideForm: FormGroup;
+  couponId: any;
+  categoryName: any;
+  couponForm!: FormGroup;
   apiCallActive: boolean = false;
   nameMaxLength: number = 50;
-  slideList: any = [];
+  courseList: any = [];
   color: any = '#039ee3';
   isUnique: boolean = true;
   fileObject: any = {};
@@ -42,16 +35,10 @@ export class CouponFormComponent implements OnInit {
   uploadingProgress: any;
   attachment: any = null;
   types: any[] = [
-    'text',
-    'video',
-    'audio',
-    'pdf',
-    // { value: 'text', name: 'Public' },
-    // { value: 'video', name: 'Private' },
-    // { value: 'paid', name: 'Paid' },
+    { value: 'free', name: 'Free' },
+    { value: 'percentage', name: 'Percentage' },
+    { value: 'fixed', name: 'Amount' },
   ];
-  selectedSlideDetails: any;
-  courseId: any;
   constructor(
     public matDialog: MatDialogRef<CouponFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -59,97 +46,209 @@ export class CouponFormComponent implements OnInit {
     private errorHandlingService: ErrorHandlingService,
     public matcher: ErrorStateMatcherService,
     private fb: FormBuilder,
-    private http: HttpClient,
     private alertService: AlertService,
-    private activeRoute: ActivatedRoute
+    private http: HttpClient
   ) {
-    this.isViewOnly = data.isViewOnly;
-    // console.log(data);
+    this.getAllCourses(data);
 
-    this.slideForm = this.fb.group({
+    this.isViewOnly = data.isViewOnly;
+    this.couponForm = this.fb.group({
+      course: [data.course || '', Validators.required],
       name: [
         data.name || '',
-        [Validators.required, Validators.pattern('^[a-zA-Z0-9& -]*$')],
+        [Validators.required, Validators.pattern('^[a-zA-Z0-9&-]*$')],
       ],
-      type: [data.type || 'text', Validators.required],
-      text: [data.text || ''],
-      file: [''],
-      // isPublished: [data.isPublished]
+      valueType: [data.valueType || 'free', Validators.required],
+      value: [data.value],
+      usageLimit: [
+        data.usageLimit || '',
+        [Validators.required, Validators.pattern(/^[0-9]+$/)],
+      ],
+      status: [
+        data.status != null || data.status != undefined ? data.status : true,
+      ],
+      isUnlimited: [data.usageLimit == 0 ? true : false],
     });
-    // console.log(this.slideForm.value);
+    this.typeUpdated(data.valueType || 'free');
 
-    this.selectedSlideDetails = data;
-    this.courseId = data.courseId;
-    // this.selectedType = data.type || 'text';
     if (data._id) {
-      this.slideId = data._id || null;
-      if (data.file) {
-        this.attachment = data.file ? { ...data.file } : {};
-        this.slideForm.controls['file'].setValue(
-          [this.attachment.destination, this.attachment.name].join('/')
-        );
+      this.couponId = data._id || null;
+      if (!data.usageLimit) {
+        this.couponForm['controls']['isUnlimited'].setValue(true);
+        this.isUnlimited = true;
+        this.couponForm['controls']['usageLimit'].setValue(null);
+        this.couponForm['controls']['usageLimit'].setValidators([]);
+        this.couponForm['controls']['usageLimit'].updateValueAndValidity();
       }
     }
-
-    this.slideForm['controls']['name'].valueChanges
-      .pipe(debounceTime(500))
-      .subscribe({
-        next: (value: any) => {
-          this.checkSlideUniqueness();
-        },
-      });
-    this.slideForm['controls']['type'].valueChanges.subscribe({
+    // this.couponForm['controls']['name'].valueChanges
+    //   .pipe(debounceTime(500))
+    //   .subscribe({
+    //     next: (data: any) => {
+    //       this.checkCouponCategoryUniqueness();
+    //     },
+    //   });
+    this.couponForm['controls']['isUnlimited'].valueChanges.subscribe({
       next: (value: any) => {
-        // this.typeUpdated(value);
+        this.isUnlimited = value;
+        if (value) {
+          this.couponForm['controls']['usageLimit'].setValue(null);
+          this.couponForm['controls']['usageLimit'].setValidators([]);
+          this.couponForm['controls']['usageLimit'].updateValueAndValidity();
+        } else {
+          this.couponForm['controls']['usageLimit'].setValidators([
+            Validators.required,
+            Validators.pattern(/^[0-9]+$/),
+          ]);
+          this.couponForm['controls']['usageLimit'].updateValueAndValidity();
+        }
+      },
+    });
+
+    this.couponForm['controls']['course'].valueChanges.subscribe({
+      next: (value: any) => {
+        this.selectedCourse =
+          this.allCourses.filter((course: any) => course._id == value)?.[0] ||
+          {};
+      },
+    });
+    this.couponForm['controls']['valueType'].valueChanges.subscribe({
+      next: (value: any) => {
+        this.typeUpdated(value);
+      },
+    });
+    // this.couponForm['controls']['value'].valueChanges.subscribe({
+    //   next: (value: any) => {
+    //     this.priceCheck(value);
+    //   },
+    // });
+    // this.couponForm['controls']['course'].valueChanges.subscribe({
+    //   next: (value: any) => {
+    //     this.priceCheck(value);
+    //   },
+    // });
+  }
+  priceCheck() {
+    let value = this.couponForm['controls']['value'].value;
+    console.log(
+      value,
+      this.selectedCourse.price,
+      parseInt(value) > parseInt(this.selectedCourse.price)
+    );
+
+    if (this.selectedType === 'fixed') {
+      if (
+        value &&
+        this.selectedCourse &&
+        parseInt(value) > parseInt(this.selectedCourse.price)
+      ) {
+        this.couponForm['controls']['value'].setErrors({ max_value: true });
+        this.couponForm['controls']['value'].updateValueAndValidity();
+        console.log('errorr', this.couponForm.get('value')?.errors);
+      } else {
+        if (this.couponForm.controls['value'].errors) {
+          delete this.couponForm.controls['value'].errors['max_value'];
+        }
+      }
+    } else {
+      if (this.couponForm.controls['value'].errors) {
+        delete this.couponForm.controls['value'].errors['max_value'];
+      }
+    }
+    this.couponForm['controls']['value'].updateValueAndValidity();
+  }
+  selectedCourse: any = null;
+  selectedType: any = '';
+  isUnlimited: boolean = false;
+  typeUpdated(value: any) {
+    this.selectedType = value;
+    switch (value) {
+      case 'percentage':
+        this.setValidators([
+          Validators.required,
+          Validators.pattern(/^(100(\.0{1,2})?|\d{0,2}(\.\d{1,2})?)$/),
+        ]);
+        break;
+      case 'fixed':
+        this.setValidators([
+          Validators.required,
+          Validators.pattern(/^[0-9]+$/),
+        ]);
+        break;
+      default:
+        this.setValidators([]);
+        break;
+    }
+  }
+  setValidators(validators: any) {
+    this.couponForm['controls']['value'].setValidators(validators);
+    this.couponForm['controls']['value'].updateValueAndValidity();
+  }
+  allCourses: any = [];
+  getAllCourses(data: any) {
+    this.apiCallActive = true;
+    this.apiService.get(apiConstants.allCourses).subscribe({
+      next: (result: any) => {
+        this.apiCallActive = false;
+
+        this.allCourses = result.courses;
+        // console.log(this.allCourses, data.course);
+        this.couponForm.controls['course'].setValue(data.course?._id);
+        console.log(this.couponForm);
+        this.priceCheck();
+      },
+      error: (e) => {
+        this.apiCallActive = false;
+        this.errorHandlingService.handle(e);
       },
     });
   }
-
-  checkSlideUniqueness() {
-    // let formControl = this.slideForm['controls']['name'];
-    // if (formControl.valid && formControl.value.trim() && formControl.value.trim() != this.categoryName) {
-    //   this.apiCallActive = true;
-    //   this.apiService.get(apiConstants.checkSlideUniqueness + formControl.value.trim().toLowerCase()).subscribe({
-    //     next: (data:any) => {
-    //       this.apiCallActive = false;
-    //       if (data.isUnique === false) {
-    //         formControl.setErrors({ 'not_unique': true });
-    //       } else {
-    //         if (this.slideForm.controls['name'].errors) {
-    //           delete this.slideForm.controls['name'].errors['not_unique'];
-    //         }
-    //       }
-    //     },
-    //     error: (e) => {
-    //       this.apiCallActive = false;
-    //       this.errorHandlingService.handle(e);
-    //     },
-    //   });
-    // }
-  }
-
-  ngOnInit(): void {}
-  saveSlide(): void {
-    if (this.slideForm.valid) {
+  checkCouponCategoryUniqueness() {
+    let formControl = this.couponForm['controls']['name'];
+    let course = this.couponForm['controls']['course'].value;
+    if (course && formControl.valid) {
       this.apiCallActive = true;
+      this.apiService
+        .get(
+          apiConstants.checkCouponUniqueness.replace(':id', course) +
+            formControl.value.trim().toLowerCase()
+        )
+        .subscribe({
+          next: (data: any) => {
+            this.apiCallActive = false;
+            if (data.isUnique === false) {
+              formControl.setErrors({ not_unique: true });
+            } else {
+              if (this.couponForm.controls['name'].errors) {
+                delete this.couponForm.controls['name'].errors['not_unique'];
+              }
+            }
+          },
+          error: (e) => {
+            this.apiCallActive = false;
+            this.errorHandlingService.handle(e);
+          },
+        });
+    }
+  }
+  ngOnInit(): void {}
+  saveCoupon(): void {
+    if (this.couponForm.valid) {
+      this.apiCallActive = true;
+      let value = this.couponForm.value;
       let payload: any = {
-        type: this.slideForm.value.type,
-        name: this.slideForm.value.name.trim().toLowerCase(),
-        // isPublished: this.slideForm.value.isPublished,
-        position:
-          this.selectedSlideDetails.position ||
-          this.selectedSlideDetails.totalSlides + 1,
+        name: value.name.trim().toLowerCase(),
+        valueType: value.valueType,
+        value: value.value,
+        usageLimit: value.usageLimit,
+        status: value.status,
+        course: value.course,
       };
-      if (payload.type == 'text') {
-        payload.text = this.slideForm.value.text;
-      } else {
-        payload.file = this.attachment._id;
-      }
-      let apiUrl = apiConstants.createSlide.replace(':id', this.courseId);
+      let apiUrl = apiConstants.createCoupon;
       let apiCall = this.apiService.post(apiUrl, payload);
 
-      if (this.slideId) {
-        apiUrl += '/' + this.slideId;
+      if (this.couponId) {
+        apiUrl += '/' + this.couponId;
         apiCall = this.apiService.put(apiUrl, payload);
       }
       apiCall.subscribe({

@@ -16,7 +16,8 @@
             </ol>
             <div class="flex flex-row published ml-auto border-0 align-items-center">
                 Published
-                <mat-slide-toggle [(ngModel)]="courseDetails.isPublished" disabled="" name="enablepublished">
+                <mat-slide-toggle [(ngModel)]="courseDetails.isPublished" name="enablepublished"
+                    (click)="$event.preventDefault();manageCourseVisibility(courseDetails)">
                 </mat-slide-toggle>
 
             </div>
@@ -30,6 +31,8 @@
     <mat-card>
         <mat-card-header>
             <mat-card-title class="h1">{{ courseDetails?.name | titlecase}}</mat-card-title>
+            <span class="card-title h2 mt-3p ml-auto" *ngIf="courseDetails.type =='paid'">
+                CA${{courseDetails.price}}</span>
         </mat-card-header>
         <mat-card-content>
             <!-- <div class="image-container">

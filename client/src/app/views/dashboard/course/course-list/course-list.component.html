@@ -45,6 +45,8 @@
                                 <span class="badge badge-pill badge-light">Private</span> -->
                                 <span class="badge badge-pill badge-success" *ngIf="course.type =='public'">Free</span>
                                 <span class="badge badge-pill badge-danger" *ngIf="course.type =='paid'">Paid</span>
+                                <span class="card-title h2 mt-3p" *ngIf="course.type =='paid'">
+                                    CA${{course.price}}</span>
                                 <span class="badge badge-pill badge-light"
                                     *ngIf="course.type =='private'">Private</span>
                                 <a [routerLink]="['/dashboard/course/details/',course._id]" class="view-course">View
