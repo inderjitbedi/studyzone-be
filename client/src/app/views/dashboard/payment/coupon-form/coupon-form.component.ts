@@ -1,6 +1,11 @@
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
@@ -59,7 +64,7 @@ export class CouponFormComponent implements OnInit {
         [Validators.required, Validators.pattern('^[a-zA-Z0-9&-]*$')],
       ],
       valueType: [data.valueType || 'free', Validators.required],
-      value: [data.value],
+      value: [data.value, Validators.required],
       usageLimit: [
         data.usageLimit || '',
         [Validators.required, Validators.pattern(/^[0-9]+$/)],
@@ -119,7 +124,7 @@ export class CouponFormComponent implements OnInit {
     });
     // this.couponForm['controls']['value'].valueChanges.subscribe({
     //   next: (value: any) => {
-    //     this.priceCheck(value);
+    //     this.priceCheck();
     //   },
     // });
     // this.couponForm['controls']['course'].valueChanges.subscribe({
@@ -130,21 +135,22 @@ export class CouponFormComponent implements OnInit {
   }
   priceCheck() {
     let value = this.couponForm['controls']['value'].value;
-    console.log(
-      value,
-      this.selectedCourse.price,
-      parseInt(value) > parseInt(this.selectedCourse.price)
-    );
 
     if (this.selectedType === 'fixed') {
+      console.log(
+        value,
+        this.selectedCourse.price,
+        parseInt(value) > parseInt(this.selectedCourse.price)
+      );
       if (
         value &&
         this.selectedCourse &&
         parseInt(value) > parseInt(this.selectedCourse.price)
       ) {
-        this.couponForm['controls']['value'].setErrors({ max_value: true });
+        let formControl = this.couponForm['controls']['value'];
+        formControl.setErrors({ max_value: true });
         this.couponForm['controls']['value'].updateValueAndValidity();
-        console.log('errorr', this.couponForm.get('value')?.errors);
+        console.log('errorr', this.couponForm.get('value'));
       } else {
         if (this.couponForm.controls['value'].errors) {
           delete this.couponForm.controls['value'].errors['max_value'];
@@ -156,6 +162,16 @@ export class CouponFormComponent implements OnInit {
       }
     }
     this.couponForm['controls']['value'].updateValueAndValidity();
+  }
+  customMaxValueValidator(control: AbstractControl) {
+    if (this.selectedCourse?.price) {
+      const inputValue = control.value;
+      const maxValue = parseInt(this.selectedCourse.price);
+      if (inputValue > maxValue) {
+        return { max_value: true };
+      }
+    }
+    return null;
   }
   selectedCourse: any = null;
   selectedType: any = '';
@@ -173,6 +189,7 @@ export class CouponFormComponent implements OnInit {
         this.setValidators([
           Validators.required,
           Validators.pattern(/^[0-9]+$/),
+          this.customMaxValueValidator.bind(this),
         ]);
         break;
       default:

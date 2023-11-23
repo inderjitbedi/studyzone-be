@@ -74,7 +74,7 @@
             fxFlex="100">
 
             <input type="text" matInput formControlName="value" trim autocomplete="off" [errorStateMatcher]="matcher"
-              maxlength="10" [readonly]="isViewOnly" (change)="priceCheck()">
+              maxlength="10" [readonly]="isViewOnly" (input)="priceCheck()">
             <mat-error *ngIf="couponForm.controls['value'].hasError('required')">Required
             </mat-error>
             <mat-hint align="end" *ngIf="!isViewOnly && selectedType =='percentage'">Value should be between 1 to
@@ -87,7 +87,7 @@
               (selectedType =='fixed'?'Only numeric value allowed.':'')}}
             </mat-error>
             <mat-error *ngIf="couponForm.controls['value'].hasError('max_value')">Discount Value can't exceed the Course
-              Price
+              Price (CA${{this.selectedCourse?.price}})
             </mat-error>
           </mat-form-field>
         </div>

@@ -52,9 +52,9 @@
                 </a>
                 <a mat-tab-link (click)="activeSlide=3" [active]="activeSlide==3"> Enrollments
                 </a>
-                <a *ngIf="courseDetails?.type == 'paid'" mat-tab-link (click)="activeSlide=4" [active]="activeSlide==4">
+                <!-- <a *ngIf="courseDetails?.type == 'paid'" mat-tab-link (click)="activeSlide=4" [active]="activeSlide==4">
                     Enrollment Requests
-                </a>
+                </a> -->
 
             </nav>
             <div *ngIf="activeSlide == 1" class="bg-white">
@@ -69,9 +69,9 @@
             <div *ngIf="activeSlide == 3" class="bg-white">
                 <manage-enrollment [courseDetails]="courseDetails"></manage-enrollment>
             </div>
-            <div *ngIf="activeSlide == 4  && courseDetails?.type == 'paid'" class="bg-white">
+            <!-- <div *ngIf="activeSlide == 4  && courseDetails?.type == 'paid'" class="bg-white">
                 <manage-enrollment-requests [courseDetails]="courseDetails"></manage-enrollment-requests>
-            </div>
+            </div> -->
         </mat-card-content>
     </mat-card>
 </div>

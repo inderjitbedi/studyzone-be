@@ -12,8 +12,8 @@
 </nav>
 <mat-divider fxFlex="1 0"></mat-divider>
 
-<p class="no-data  flex-start" *ngIf="!apiCallActive && dataSource?.filteredData?.length <= 0">
-    There is no course created yet!
+<p class="no-data  flex-center" *ngIf="!apiCallActive && dataSource?.filteredData?.length <= 0">
+    There is no progress by any user yet!
 </p>
 
 <div *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
@@ -52,7 +52,8 @@
         </ng-container>
         <ng-container matColumnDef="lastActivity">
             <th mat-header-cell *matHeaderCellDef> Last Activity </th>
-            <td mat-cell *matCellDef="let element"> {{(element?.latestProgress?.updatedAt | date:'dd MMM yyyy hh:mm a')||'-' }}
+            <td mat-cell *matCellDef="let element"> {{(element?.latestProgress?.updatedAt | date:'dd MMM yyyy hh:mm
+                a')||'-' }}
             </td>
         </ng-container>
 

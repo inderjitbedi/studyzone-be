@@ -6,6 +6,7 @@ import { MaterialModule } from 'src/app/material/material.module';
 import { CouponFormComponent } from './coupon-form/coupon-form.component';
 import { RouterModule } from '@angular/router';
 import { StripeStatusPipe } from 'src/app/providers/stripeStatus.pipe';
+import { PipesModule } from 'src/app/providers/pipes.module';
 
 const routes = [
   { path: 'promo-codes', component: CouponComponent },
@@ -14,12 +15,12 @@ const routes = [
 ];
 
 @NgModule({
-  declarations: [
-    PaymentHistoryComponent,
-    CouponComponent,
-    CouponFormComponent,
-    StripeStatusPipe,
+  declarations: [PaymentHistoryComponent, CouponComponent, CouponFormComponent],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    MaterialModule,
+    PipesModule,
   ],
-  imports: [CommonModule, RouterModule.forChild(routes), MaterialModule],
 })
 export class PaymentModule {}

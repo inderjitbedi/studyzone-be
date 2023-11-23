@@ -9,7 +9,7 @@ const courseEnrollmentSchema = new mongoose.Schema({
     // when the user requests a paid course
     enrollmentRequestedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     enrollmentRequestedOn: { type: Date },
-    requestStatus: { type: String, enum: ['pending', 'accepted', 'declined'] },
+    requestStatus: { type: String, enum: ['pending', 'accepted', 'declined', 'payment_received'] },
 
     // when admin accepts the user request for paid course
     // or when admin un/assign the private course

@@ -34,6 +34,7 @@ export class CouponComponent implements OnInit {
       'coursename',
       'value',
       'usageLimit',
+      'usageCounter',
       'status',
       'actions',
     ];

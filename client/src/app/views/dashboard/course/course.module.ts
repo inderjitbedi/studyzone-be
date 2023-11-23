@@ -15,6 +15,7 @@ import { ManageEnrollmentComponent } from './manage-enrollment/manage-enrollment
 import { NewEnrollmentComponent } from './new-enrollment/new-enrollment.component';
 import { ManageEnrollmentRequestsComponent } from './manage-enrollment-requests/manage-enrollment-requests.component';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { PipesModule } from 'src/app/providers/pipes.module';
 
 const routes = [
   { path: 'list/:type', component: CourseListComponent },
@@ -30,7 +31,6 @@ const routes = [
     CourseFormComponent,
     SlideFormComponent,
     SlideListComponent,
-    InitialsPipe,
     CommentComponent,
     ManageEnrollmentComponent,
     NewEnrollmentComponent,
@@ -43,6 +43,7 @@ const routes = [
     MaterialModule,
     LoaderModule,
     DragDropModule,
+    PipesModule,
   ],
 })
 export class CourseModule {}

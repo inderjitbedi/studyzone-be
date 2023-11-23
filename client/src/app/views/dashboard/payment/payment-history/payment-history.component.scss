@@ -79,15 +79,22 @@ table {
 
     background-color: #F9F9F9;
 
-    // &:last-child {
-    //     width: 100px;
-    //     // text-align: center;
-    //     align-content: flex-end;
+    &:nth-child(3) {
+      width: 150px;
+    }
 
-    //     .mat-icon-button {
-    //         width: 25px;
-    //     }
-    // }
+    &:nth-child(4) {
+      width: 100px;
+    }
+
+    &:nth-child(6) {
+      width: 180px;
+    }
+
+    &:last-child {
+      width: 150px;
+
+    }
   }
 
   th {

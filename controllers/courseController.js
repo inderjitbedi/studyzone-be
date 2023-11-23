@@ -147,7 +147,7 @@ const courseController = {
                 if (course && course.type === 'paid') {
                     const enrollment = await CourseEnrollment.findOne({
                         course: course._id,
-                        enrollmentRequestedBy: req.user._id,
+                        $or: [{ enrollmentRequestedBy: req.user._id }, { user: req.user._id }],
                         isDeleted: false
                     });
                     if (enrollment) {
@@ -220,9 +220,6 @@ const courseController = {
     async addComment(req, res) {
         try {
             let comment = await Course.addComment({ course: req.params.id, author: req.user._id, ...req.body })
-
-
-
                 .populate({
                     path: 'author',
                     select: ['fullName']
@@ -280,7 +277,7 @@ const courseController = {
                 // enrollmentRequestedBy: null
             }
             if (course.type === 'paid')
-                filters.$or = [{ requestStatus: 'accepted' }, { requestStatus: 'declined' }]
+                filters.$or = [{ requestStatus: 'accepted' }, { requestStatus: 'payment_received' }, { requestStatus: 'declined' }]
 
             const enrollments = await CourseEnrollment.find(filters).populate([{
                 path: 'user',
@@ -364,8 +361,6 @@ const courseController = {
     },
     async manageCourseEnrollment(req, res) {
         try {
-
-
             const enrollment = await CourseEnrollment.findByIdAndUpdate(req.params.enrollmentId, {
                 isEnrolled: false,
                 isDeleted: true,
@@ -517,23 +512,7 @@ const courseController = {
             res.status(400).json({ message: error.toString() });;
         }
     },
-    async requestCourseEnrollment(req, res) {
-        try {
-            const enrollment = await CourseEnrollment({
-                // ...req.body,
-                course: req.params.id,
-                enrollmentRequestedBy: req.user._id,
-                enrollmentRequestedOn: new Date(),
-                isEnrolled: false,
-                requestStatus: 'pending'
-            });
-            await enrollment.save();
-            res.json({ enrollment, message: 'Course enrollment requested successfully' });
-        } catch (error) {
-            console.error("\n\nadminController:addComment:error -", error);
-            res.status(400).json({ message: error.toString() });;
-        }
-    },
+
     async getMyCourses(req, res) {
         try {
 
@@ -665,7 +644,23 @@ const courseController = {
             res.status(400).json({ message: error.toString() });;
         }
     },
-
+    async requestCourseEnrollment(req, res) {
+        try {
+            const enrollment = await CourseEnrollment({
+                // ...req.body,
+                course: req.params.id,
+                enrollmentRequestedBy: req.user._id,
+                enrollmentRequestedOn: new Date(),
+                isEnrolled: false,
+                requestStatus: 'pending'
+            });
+            await enrollment.save();
+            res.json({ enrollment, message: 'Course enrollment requested successfully' });
+        } catch (error) {
+            console.error("\n\nadminController:addComment:error -", error);
+            res.status(400).json({ message: error.toString() });;
+        }
+    },
     async enrollCourse(req, res) {
         try {
             let filters = {

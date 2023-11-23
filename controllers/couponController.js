@@ -1,4 +1,5 @@
 const CourseCoupon = require("../models/couponModel");
+const CourseEnrollment = require("../models/courseEnrollmentModel");
 const Transaction = require("../models/transactionModel");
 const stripe = require('stripe')('sk_test_51OCYMFI5NMkvPoS4D38p4nASIkjgjU4CaPDCrQyKoUwSncqPNGef0nfJNR0B1cwMkQvyh2gW0f7oocg1uwCalZuN00bexnzlJP');
 
@@ -98,6 +99,8 @@ const couponController = {
     async validate(req, res) {
         try {
             let coupon = await CourseCoupon.findOne({ course: req.params.id, name: req.params.promo, status: true, isDeleted: false }).populate('course', ['name', 'price']);
+
+            console.log(req.params, coupon);
             if (!coupon) {
                 res.status(400).json({ message: 'Invalid coupon' });
             } else
@@ -110,6 +113,8 @@ const couponController = {
                         couponValue = coursePrice * (coupon.value / 100)
                     } else if (coupon.valueType === 'fixed') {
                         couponValue = coupon.value
+                    } else if (coupon.valueType === 'free') {
+                        couponValue = coursePrice
                     }
                     let finalPrice = coursePrice - couponValue;
                     if (finalPrice < 0) {
@@ -142,16 +147,46 @@ const couponController = {
 
     async addTransaction(req, res) {
         try {
-
             let reqBody = req.body;
+            console.log("reqBody = ", reqBody);
+
             const transaction = new Transaction({ ...reqBody })
             await transaction.save();
+            // console.log("transaction = ", transaction);
             if (transaction.status === 'succeeded') {
-                let coupon = await CourseCoupon.findOne({ coupon: req.body.couponid })
+                let coupon = await CourseCoupon.findOne({ _id: req.body.coupon })
+                console.log("coupon = ", coupon);
+
                 if (coupon) {
+                    console.log("coupon usageCounter= ", coupon.usageCounter);
                     coupon.usageCounter = (coupon.usageCounter || 0) + 1;
+                    console.log("coupon usageCounter after = ", coupon.usageCounter);
                     await coupon.save();
+                    coupon = await CourseCoupon.findOne({ coupon: req.body.couponid })
+                    console.log("coupon after update = ", coupon);
                 }
+
+
+                let filters = {
+                    course: reqBody.course,
+                    user: req.user._id
+                }
+                let enrollment = await CourseEnrollment.findOne(filters)
+                //enrollmentRequestedBy
+                // enrollmentRequestedOn
+                let body = {
+                    course: reqBody.course,
+                    user: req.user._id,
+                    isEnrolled: true,
+                    enrolledOn: new Date(),
+                    requestStatus: 'payment_received'
+                }
+                if (!enrollment)
+                    enrollment = await CourseEnrollment.create(body);
+                else
+                    enrollment = await CourseEnrollment.findOneAndUpdate(filters, body, { new: true });
+
+                console.log("saved", enrollment);
             }
 
             res.status(201).json({ message: 'Transaction saved successfully.' });

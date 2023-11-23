@@ -1,15 +1,15 @@
 <div class="title-group">
   <div class="title">
     <h1 class="mat-h1">
-      User Progress
+      Transactions
     </h1>
   </div>
 </div>
 
 <mat-divider fxFlex="1 0"></mat-divider>
 
-<p class="no-data  flex-start" *ngIf="!apiCallActive && dataSource?.filteredData?.length <= 0">
-  There is no course created yet!
+<p class="no-data  flex-center" *ngIf="!apiCallActive && dataSource?.filteredData?.length <= 0">
+  There is no transactions made yet!
 </p>
 
 <div *ngIf="!apiCallActive && dataSource?.filteredData?.length > 0">
@@ -33,7 +33,7 @@
     </ng-container>
     <ng-container matColumnDef="email">
       <th mat-header-cell *matHeaderCellDef> User's Email </th>
-      <td mat-cell *matCellDef="let element"> {{element?.email }} </td>
+      <td mat-cell *matCellDef="let element"> {{element?.email |lowercase}} </td>
     </ng-container>
     <ng-container matColumnDef="createdAt">
       <th mat-header-cell *matHeaderCellDef> Transaction Timestamp </th>
