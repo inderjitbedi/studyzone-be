@@ -31,8 +31,12 @@
       <th mat-header-cell *matHeaderCellDef> Amount </th>
       <td mat-cell *matCellDef="let element"> CA${{element?.amount||0 }} </td>
     </ng-container>
+    <ng-container matColumnDef="user">
+      <th mat-header-cell *matHeaderCellDef> User's Name </th>
+      <td mat-cell *matCellDef="let element"> {{element?.user?.fullName|titlecase }} </td>
+    </ng-container>
     <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef> User's Email </th>
+      <th mat-header-cell *matHeaderCellDef> Contact Email </th>
       <td mat-cell *matCellDef="let element"> {{element?.email |lowercase}} </td>
     </ng-container>
     <ng-container matColumnDef="createdAt">

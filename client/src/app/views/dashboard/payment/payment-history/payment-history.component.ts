@@ -27,6 +27,7 @@ export class PaymentHistoryComponent implements OnInit {
       'coursename',
       'coupon',
       'amount',
+      'user',
       'email',
       'createdAt',
       'status',

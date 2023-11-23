@@ -149,7 +149,7 @@ const couponController = {
         try {
             let reqBody = req.body;
             console.log("reqBody = ", reqBody);
-
+            reqBody.user = req.user._id
             const transaction = new Transaction({ ...reqBody })
             await transaction.save();
             // console.log("transaction = ", transaction);
@@ -203,7 +203,9 @@ const couponController = {
             const limit = parseInt(req.query.limit) || 10;
             const startIndex = (page - 1) * limit;
             let transactions = await Transaction.find({ isDeleted: false })
-                .populate('course', ['name']).populate('coupon', ['name'])
+                .populate('course', ['name'])
+                .populate('coupon', ['name'])
+                .populate('user', ['fullName', 'email'])
                 .skip(startIndex)
                 .limit(limit).sort({ createdAt: -1 });
             const totalTransactions = await Transaction.countDocuments({ isDeleted: false });
